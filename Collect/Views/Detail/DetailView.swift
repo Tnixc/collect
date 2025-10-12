@@ -63,7 +63,7 @@ struct DetailView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
                                 ForEach(
-                                    appState.authorCounts.sorted(by: {
+                                    appState.filteredAuthorCounts.sorted(by: {
                                         $0.key < $1.key
                                     }),
                                     id: \.key

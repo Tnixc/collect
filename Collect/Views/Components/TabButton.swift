@@ -16,9 +16,9 @@ struct TabButton: View {
             .foregroundColor(isSelected ? AppTheme.textPrimary : AppTheme.textSecondary)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-            .background(isSelected ? AppTheme.badgeBeige : Color.clear)
             .cornerRadius(6)
         }
         .buttonStyle(.plain)
+        .smartFocusRing()
     }
 }

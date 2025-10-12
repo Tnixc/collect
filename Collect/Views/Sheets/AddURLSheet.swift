@@ -53,6 +53,7 @@ struct AddURLSheet: View {
                         RoundedRectangle(cornerRadius: 6)
                             .stroke(AppTheme.dividerColor, lineWidth: 1)
                     )
+                    .smartFocusRing()
                     .disabled(isDownloading)
 
                 UIButton(

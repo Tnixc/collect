@@ -112,6 +112,7 @@ struct ContentView: View {
                                 .frame(width: 200)
                                 .foregroundColor(AppTheme.textPrimary)
                                 .padding(.vertical, 4)
+                                .smartFocusRing()
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)

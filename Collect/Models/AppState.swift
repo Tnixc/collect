@@ -69,6 +69,23 @@ class AppState: ObservableObject {
         return counts
     }
 
+    var filteredAuthorCounts: [String: Int] {
+        var counts: [String: Int] = [:]
+        
+        // Get the file IDs from filteredFiles (which are already filtered by category)
+        let filteredFileIDs = Set(filteredFiles.map { $0.id })
+        
+        // Count authors only from filtered files
+        for fileID in filteredFileIDs {
+            if let meta = metadata[fileID] {
+                for author in meta.authors {
+                    counts[author, default: 0] += 1
+                }
+            }
+        }
+        return counts
+    }
+
     var recentFiles: [FileItem] {
         let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
         return files.filter { $0.dateAdded > sevenDaysAgo }

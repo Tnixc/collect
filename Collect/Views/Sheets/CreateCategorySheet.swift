@@ -57,6 +57,7 @@ struct CreateCategorySheet: View {
                         RoundedRectangle(cornerRadius: 6)
                             .stroke(AppTheme.dividerColor, lineWidth: 1)
                     )
+                    .smartFocusRing()
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 20)

@@ -589,6 +589,7 @@ class FileCardItem: NSCollectionViewItem {
             target: self,
             action: #selector(handleClick)
         )
+        clickGesture.numberOfClicksRequired = 2
         view.addGestureRecognizer(clickGesture)
     }
 

@@ -138,10 +138,6 @@ enum AppTheme {
     static let shadowNSColor = NSColor.black.withAlphaComponent(0.06)
     static let pillBackgroundNSColor = NSColor(white: 1, alpha: 0.55)
 
-    // Badge colors
-    static let badgeBrown = Color(hex: "#969492")
-    static let badgeBeige = Color(hex: "#b4b2b0")
-
     // Semantic colors
     static let borderColor = Color(hex: "#c3c1bf")
     static let dividerColor = Color(hex: "#d2d0ce")

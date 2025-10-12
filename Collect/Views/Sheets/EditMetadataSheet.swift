@@ -82,6 +82,7 @@ struct EditMetadataSheet: View {
                                     RoundedRectangle(cornerRadius: 6)
                                         .stroke(AppTheme.dividerColor, lineWidth: 1)
                                 )
+                                .smartFocusRing()
                         }
 
                         // Title
@@ -102,6 +103,7 @@ struct EditMetadataSheet: View {
                                     RoundedRectangle(cornerRadius: 6)
                                         .stroke(AppTheme.dividerColor, lineWidth: 1)
                                 )
+                                .smartFocusRing()
                         }
 
                         // Authors
@@ -132,6 +134,7 @@ struct EditMetadataSheet: View {
                                 RoundedRectangle(cornerRadius: 6)
                                     .stroke(AppTheme.dividerColor, lineWidth: 1)
                             )
+                            .smartFocusRing()
                         }
 
                         // Year
@@ -152,6 +155,7 @@ struct EditMetadataSheet: View {
                                     RoundedRectangle(cornerRadius: 6)
                                         .stroke(AppTheme.dividerColor, lineWidth: 1)
                                 )
+                                .smartFocusRing()
                         }
 
                         // Tags
@@ -182,6 +186,7 @@ struct EditMetadataSheet: View {
                                 RoundedRectangle(cornerRadius: 6)
                                     .stroke(AppTheme.dividerColor, lineWidth: 1)
                             )
+                            .smartFocusRing()
                         }
 
                         // Card Color
