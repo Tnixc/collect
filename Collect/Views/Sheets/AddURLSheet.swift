@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct AddURLSheet: View {
     @Environment(\.dismiss) private var dismiss
@@ -58,7 +59,7 @@ struct AddURLSheet: View {
 
                 UIButton(
                     action: {
-                        if !urlString.isEmpty && !isDownloading {
+                        if !urlString.isEmpty, !isDownloading {
                             downloadFile()
                         }
                     },
@@ -105,7 +106,7 @@ struct AddURLSheet: View {
                     .foregroundColor(AppTheme.textSecondary)
 
                 UIButton(
-                    action: { /* TODO: implement file picker */  },
+                    action: { selectFiles() },
                     style: .primary,
                     label: "Click to select",
                     icon: "folder"
@@ -121,6 +122,9 @@ struct AddURLSheet: View {
             )
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
+            .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+                handleFileDrop(providers: providers)
+            }
         }
         .frame(width: 600)
         .background(AppTheme.backgroundPrimary)
@@ -168,10 +172,108 @@ struct AddURLSheet: View {
                 // For now, just dismiss
                 dismiss()
 
+            } catch let error as DownloadService.DownloadError {
+                switch error {
+                case .curlNotFound:
+                    downloadError = "curl is not available. This should not happen on macOS."
+                case .downloadFailed:
+                    downloadError = "Download failed. Please check the URL and try again."
+                case .notAPDF:
+                    downloadError = "The downloaded file is not a PDF. Please provide a direct link to a PDF file."
+                }
+                isDownloading = false
             } catch {
                 downloadError = "Download failed: \(error.localizedDescription)"
                 isDownloading = false
             }
         }
+    }
+
+    private func selectFiles() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = true
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedContentTypes = [UTType.pdf]
+
+        panel.begin { response in
+            if response == .OK {
+                for url in panel.urls {
+                    do {
+                        let copiedURL = try FileSystemService.shared.copyFile(from: url, to: SettingsSheet.getSourceDirectoryURL()!)
+
+                        // Process the copied file
+                        let fileID = FileSystemService.shared.ensureFileID(for: copiedURL)
+                        let fileItem = FileItem(id: fileID, fileURL: copiedURL)
+
+                        // Add to app state
+                        var files = self.appState.files
+                        files.append(fileItem)
+                        self.appState.setFiles(files)
+
+                        // Create initial metadata
+                        let filename = copiedURL.lastPathComponent
+                        let pages = FileSystemService.shared.getPageCount(for: copiedURL)
+                        let metadata = MetadataService.shared.createMetadata(
+                            fileID: fileID,
+                            title: filename,
+                            pages: pages
+                        )
+                        self.appState.updateMetadata(for: fileID, metadata: metadata)
+
+                    } catch {
+                        self.downloadError = "Failed to copy file: \(error.localizedDescription)"
+                    }
+                }
+            }
+        }
+    }
+
+    private func handleFileDrop(providers: [NSItemProvider]) -> Bool {
+        guard let sourceDirectory = SettingsSheet.getSourceDirectoryURL() else {
+            downloadError = "No source directory set"
+            return false
+        }
+
+        for provider in providers {
+            provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, error in
+                guard let data = item as? Data,
+                      let url = URL(dataRepresentation: data, relativeTo: nil),
+                      url.pathExtension.lowercased() == "pdf"
+                else {
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    do {
+                        let copiedURL = try FileSystemService.shared.copyFile(from: url, to: sourceDirectory)
+
+                        // Process the copied file
+                        let fileID = FileSystemService.shared.ensureFileID(for: copiedURL)
+                        let fileItem = FileItem(id: fileID, fileURL: copiedURL)
+
+                        // Add to app state
+                        var files = self.appState.files
+                        files.append(fileItem)
+                        self.appState.setFiles(files)
+
+                        // Create initial metadata
+                        let filename = copiedURL.lastPathComponent
+                        let pages = FileSystemService.shared.getPageCount(for: copiedURL)
+                        let metadata = MetadataService.shared.createMetadata(
+                            fileID: fileID,
+                            title: filename,
+                            pages: pages
+                        )
+                        self.appState.updateMetadata(for: fileID, metadata: metadata)
+
+                    } catch {
+                        self.downloadError = "Failed to copy file: \(error.localizedDescription)"
+                    }
+                }
+            }
+        }
+
+        return true
     }
 }

@@ -1,5 +1,5 @@
-import SwiftUI
 import AppKit
+import SwiftUI
 
 struct UIDropdown<T: Hashable>: View {
     @Binding var selectedOption: T

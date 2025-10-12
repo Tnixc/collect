@@ -67,4 +67,24 @@ class FileSystemService {
         guard let pdf = PDFDocument(url: url) else { return nil }
         return pdf.pageCount
     }
+
+    // Copy file to destination directory
+    func copyFile(from sourceURL: URL, to destinationDirectory: URL) throws -> URL {
+        let filename = sourceURL.lastPathComponent
+        let destinationURL = destinationDirectory.appendingPathComponent(filename)
+
+        // If file already exists, make a unique name
+        var finalDestinationURL = destinationURL
+        var counter = 1
+        while FileManager.default.fileExists(atPath: finalDestinationURL.path) {
+            let nameWithoutExtension = (filename as NSString).deletingPathExtension
+            let `extension` = (filename as NSString).pathExtension
+            let newName = "\(nameWithoutExtension) (\(counter)).\(`extension`)"
+            finalDestinationURL = destinationDirectory.appendingPathComponent(newName)
+            counter += 1
+        }
+
+        try FileManager.default.copyItem(at: sourceURL, to: finalDestinationURL)
+        return finalDestinationURL
+    }
 }

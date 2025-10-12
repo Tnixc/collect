@@ -29,7 +29,7 @@ struct FileCard: View {
                     pill(tag, color: color)
                 }
                 if !year.isEmpty {
-                    pill(year, color: "gray")
+                    pill(year)
                 }
                 Spacer()
             }
@@ -55,13 +55,12 @@ struct FileCard: View {
 
             // Bottom area: info pills and menu
             WrappingHStack(spacing: 6) {
-                pill(formatFileSize(size), color: "gray")
+                pill(formatFileSize(size))
                 if let p = pages {
-                    pill("\(p) pages", color: "gray")
+                    pill("\(p) pages")
                 }
                 pill(
-                    lastOpened.map { formatLastOpened($0) } ?? "Never opened",
-                    color: "gray"
+                    lastOpened.map { formatLastOpened($0) } ?? "Never opened"
                 )
             }
             .padding(.horizontal, 12)
@@ -130,11 +129,13 @@ struct FileCard: View {
             "Opened \(formatter.localizedString(for: date, relativeTo: Date()))"
     }
 
-    private func pill(_ text: String, color: String) -> some View {
+    private func pill(_ text: String, color: String? = nil) -> some View {
         HStack(spacing: 4) {
-            Circle()
-                .fill(colorFromName(color))
-                .frame(width: 6, height: 6)
+            if let color {
+                Circle()
+                    .fill(colorFromName(color))
+                    .frame(width: 6, height: 6)
+            }
             Text(text)
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(AppTheme.textSecondary)

@@ -113,7 +113,7 @@ struct ContentView: View {
                             action: { showingAddURL = true },
                             style: .plain,
                             label: "Add Item",
-                            icon: "plus",
+                            icon: "plus"
                         )
                         .help("Add items")
                     }

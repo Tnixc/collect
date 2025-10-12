@@ -6,34 +6,40 @@ class DownloadService {
     private init() {}
 
     func downloadFile(from url: URL, to destinationDirectory: URL) async throws -> URL {
-        // Check if wget is available
-        guard isWgetAvailable() else {
-            throw DownloadError.wgetNotFound
+        // Check if curl is available
+        guard isCurlAvailable() else {
+            throw DownloadError.curlNotFound
         }
 
         // Create destination URL in the directory
         let filename = url.lastPathComponent
         let destinationURL = destinationDirectory.appendingPathComponent(filename)
 
-        // Run wget
+        // Run curl
         let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/local/bin/wget") // Assuming installed via homebrew
-        process.arguments = ["-P", destinationDirectory.path, url.absoluteString]
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/curl")
+        process.arguments = ["-L", "-o", destinationURL.path, url.absoluteString]
 
         try process.run()
         process.waitUntilExit()
 
         if process.terminationStatus == 0 {
+            // Validate that the downloaded file is a PDF
+            guard destinationURL.pathExtension.lowercased() == "pdf" else {
+                // Try to delete the non-PDF file
+                try? FileManager.default.removeItem(at: destinationURL)
+                throw DownloadError.notAPDF
+            }
             return destinationURL
         } else {
             throw DownloadError.downloadFailed
         }
     }
 
-    private func isWgetAvailable() -> Bool {
+    private func isCurlAvailable() -> Bool {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/which")
-        process.arguments = ["wget"]
+        process.arguments = ["curl"]
 
         let pipe = Pipe()
         process.standardOutput = pipe
@@ -48,7 +54,8 @@ class DownloadService {
     }
 
     enum DownloadError: Error {
-        case wgetNotFound
+        case curlNotFound
         case downloadFailed
+        case notAPDF
     }
 }

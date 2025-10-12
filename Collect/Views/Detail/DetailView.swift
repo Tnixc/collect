@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct DetailView: View {
     @EnvironmentObject var appState: AppState
@@ -80,7 +81,7 @@ struct DetailView: View {
                                     ) {
                                         appState.selectedAuthor =
                                             appState.selectedAuthor == author
-                                            ? nil : author
+                                                ? nil : author
                                     }
                                 }
                             }
@@ -130,7 +131,7 @@ struct DetailView: View {
                                     GridItem(
                                         .adaptive(minimum: 240, maximum: 320),
                                         spacing: 16
-                                    )
+                                    ),
                                 ],
                                 spacing: 16
                             ) {
@@ -203,6 +204,9 @@ struct DetailView: View {
                 }
             }
         }
+        .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+            handleFileDrop(providers: providers)
+        }
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .overlay(
             RoundedRectangle(cornerRadius: 8)
@@ -221,7 +225,7 @@ struct DetailView: View {
             CreateCategorySheet { name, color in
                 appState.tagColors[name] = color
                 if let fileID = creatingForFileID,
-                    var meta = appState.metadata[fileID]
+                   var meta = appState.metadata[fileID]
                 {
                     if !meta.tags.contains(name) {
                         meta.tags.append(name)
@@ -235,5 +239,54 @@ struct DetailView: View {
     private func editMetadata(for fileID: UUID) {
         editingFileID = fileID
         showingEditSheet = true
+    }
+
+    private func handleFileDrop(providers: [NSItemProvider]) -> Bool {
+        guard let sourceDirectory = SettingsSheet.getSourceDirectoryURL() else {
+            // TODO: Show error to user
+            return false
+        }
+
+        for provider in providers {
+            provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, error in
+                guard let data = item as? Data,
+                      let url = URL(dataRepresentation: data, relativeTo: nil),
+                      url.pathExtension.lowercased() == "pdf"
+                else {
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    do {
+                        let copiedURL = try FileSystemService.shared.copyFile(from: url, to: sourceDirectory)
+
+                        // Process the copied file
+                        let fileID = FileSystemService.shared.ensureFileID(for: copiedURL)
+                        let fileItem = FileItem(id: fileID, fileURL: copiedURL)
+
+                        // Add to app state
+                        var files = self.appState.files
+                        files.append(fileItem)
+                        self.appState.setFiles(files)
+
+                        // Create initial metadata
+                        let filename = copiedURL.lastPathComponent
+                        let pages = FileSystemService.shared.getPageCount(for: copiedURL)
+                        let metadata = MetadataService.shared.createMetadata(
+                            fileID: fileID,
+                            title: filename,
+                            pages: pages
+                        )
+                        self.appState.updateMetadata(for: fileID, metadata: metadata)
+
+                    } catch {
+                        // TODO: Show error to user
+                        print("Failed to copy file: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
+
+        return true
     }
 }

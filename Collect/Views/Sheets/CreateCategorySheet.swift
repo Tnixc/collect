@@ -5,11 +5,11 @@ struct CreateCategorySheet: View {
     @EnvironmentObject var appState: AppState
     @State private var categoryName: String = ""
     @State private var selectedColor: String = "blue"
-    
+
     let predefinedColors = ["blue", "green", "orange", "pink", "purple", "yellow", "gray", "tan"]
-    
+
     var onCreate: (String, String) -> Void
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Header
@@ -17,9 +17,9 @@ struct CreateCategorySheet: View {
                 Text("Create New Category")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(AppTheme.textPrimary)
-                
+
                 Spacer()
-                
+
                 Button(action: { dismiss() }) {
                     Image(systemName: "xmark")
                         .font(.system(size: 12, weight: .medium))
@@ -31,7 +31,7 @@ struct CreateCategorySheet: View {
             .padding(.horizontal, 24)
             .padding(.top, 24)
             .padding(.bottom, 12)
-            
+
             // Description
             Text("Create a new category to organize your documents. Choose a name and color.")
                 .font(.system(size: 13))
@@ -39,13 +39,13 @@ struct CreateCategorySheet: View {
                 .lineSpacing(4)
                 .padding(.horizontal, 24)
                 .padding(.bottom, 20)
-            
+
             // Category Name Input
             VStack(alignment: .leading, spacing: 8) {
                 Text("Category Name")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(AppTheme.textPrimary)
-                
+
                 TextField("Enter category name", text: $categoryName)
                     .textFieldStyle(.plain)
                     .font(.system(size: 13))
@@ -62,13 +62,13 @@ struct CreateCategorySheet: View {
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 20)
-            
+
             // Color Picker
             VStack(alignment: .leading, spacing: 8) {
                 Text("Color")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(AppTheme.textPrimary)
-                
+
                 HStack(spacing: 12) {
                     ForEach(predefinedColors, id: \.self) { colorName in
                         Button(action: { selectedColor = colorName }) {
@@ -91,13 +91,13 @@ struct CreateCategorySheet: View {
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
-            
+
             // Action Buttons
             HStack(spacing: 12) {
                 UIButton(action: { dismiss() }, style: .ghost, label: "Cancel")
-                
+
                 Spacer()
-                
+
                 UIButton(
                     action: {
                         if !categoryName.isEmpty {
