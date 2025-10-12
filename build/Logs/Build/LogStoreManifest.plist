@@ -6,48 +6,6 @@
 	<integer>11</integer>
 	<key>logs</key>
 	<dict>
-		<key>4952C164-1753-4F8F-BEBB-E04D2398E2D2</key>
-		<dict>
-			<key>className</key>
-			<string>IDECommandLineBuildLog</string>
-			<key>documentTypeString</key>
-			<string>&lt;nil&gt;</string>
-			<key>domainType</key>
-			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
-			<key>fileName</key>
-			<string>4952C164-1753-4F8F-BEBB-E04D2398E2D2.xcactivitylog</string>
-			<key>hasPrimaryLog</key>
-			<true/>
-			<key>primaryObservable</key>
-			<dict>
-				<key>highLevelStatus</key>
-				<string>W</string>
-				<key>totalNumberOfAnalyzerIssues</key>
-				<integer>0</integer>
-				<key>totalNumberOfErrors</key>
-				<integer>0</integer>
-				<key>totalNumberOfTestFailures</key>
-				<integer>0</integer>
-				<key>totalNumberOfWarnings</key>
-				<integer>1</integer>
-			</dict>
-			<key>schemeIdentifier-containerName</key>
-			<string>Collect project</string>
-			<key>schemeIdentifier-schemeName</key>
-			<string>Collect</string>
-			<key>schemeIdentifier-sharedScheme</key>
-			<integer>1</integer>
-			<key>signature</key>
-			<string>Building project Collect with scheme Collect and configuration Debug</string>
-			<key>timeStartedRecording</key>
-			<real>781935810.42734396</real>
-			<key>timeStoppedRecording</key>
-			<real>781935812.61621404</real>
-			<key>title</key>
-			<string>Building project Collect with scheme Collect and configuration Debug</string>
-			<key>uniqueIdentifier</key>
-			<string>4952C164-1753-4F8F-BEBB-E04D2398E2D2</string>
-		</dict>
 		<key>4D6AE6AC-0B67-4651-9D9A-38AD42AC04F2</key>
 		<dict>
 			<key>className</key>
