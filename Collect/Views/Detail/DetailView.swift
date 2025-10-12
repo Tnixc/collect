@@ -107,7 +107,7 @@ struct DetailView: View {
                                         },
                                         editAction: { editMetadata(for: file.id) }
                                     )
-                                    .frame(width: 180, height: 240)
+                                    .frame(width: 280, height: 260)
                                 }
                             }
                         }
@@ -167,7 +167,7 @@ struct DetailView: View {
                             LazyVGrid(
                                 columns: [
                                     GridItem(
-                                        .adaptive(minimum: 180, maximum: 220),
+                                        .adaptive(minimum: 240, maximum: 320),
                                         spacing: 16
                                     )
                                 ],
@@ -192,7 +192,7 @@ struct DetailView: View {
                                             },
                                             editAction: { editMetadata(for: file.id) }
                                         )
-                                        .frame(minHeight: 240, maxHeight: 280)
+                                        .frame(height: 260)
                                     }
                                 }
                             }
