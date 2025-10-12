@@ -283,7 +283,7 @@ struct DetailView: View {
                                     }
                                     .background(AppTheme.backgroundSecondary)
                                     .clipShape(RoundedRectangle(cornerRadius: 6))
-                                    
+
                                     UIDropdown(
                                         selectedOption: $appState.sortOption,
                                         isExpanded: $isDropdownExpanded,
@@ -298,134 +298,134 @@ struct DetailView: View {
                             .padding(.top, 24)
 
                             if (appState.showReadingList && appState.readingListFiles.isEmpty) || (!appState.showReadingList && appState.filteredFiles.isEmpty) {
-                            VStack(spacing: 16) {
-                                Image(systemName: appState.showReadingList ? "book" : "doc.text")
-                                    .font(.system(size: 48))
-                                    .foregroundColor(AppTheme.textTertiary)
-                                Text(appState.showReadingList ? "No items in reading list" : "No PDFs found")
-                                    .font(.title2)
-                                    .foregroundColor(AppTheme.textPrimary)
-                                Text(
-                                    appState.showReadingList ? "Add items to your reading list from the context menu." : "Select a source directory in Settings to get started."
-                                )
-                                .font(.body)
-                                .foregroundColor(AppTheme.textSecondary)
-                                .multilineTextAlignment(.center)
-                            }
-                            .frame(maxWidth: .infinity, minHeight: 200)
-                            .padding(.vertical, 40)
-                        } else {
-                            // Grid or List View
-                            if appState.viewMode == .grid {
-                                AppKitCardsGrid(
-                                    files: appState.showReadingList ? appState.readingListFiles : appState.filteredFiles,
-                                    metadata: appState.metadata,
-                                    categories: appState.categories,
-                                    cardColors: cardColors,
-                                    disableHover: isDropdownExpanded,
-                                    onTap: { fileID in
-                                        if let meta = appState.metadata[fileID] {
-                                            NSWorkspace.shared.open(
-                                                appState.files.first(where: {
-                                                    $0.id == fileID
-                                                })!.fileURL
-                                            )
-                                            var updatedMeta = meta
-                                            updatedMeta.lastOpened = Date()
-                                            appState.updateMetadata(
-                                                for: fileID,
-                                                metadata: updatedMeta
-                                            )
-                                        }
-                                    },
-                                    editAction: { fileID in
-                                        editMetadata(for: fileID)
-                                    },
-                                    addToCategoryAction: { fileID, categoryName in
-                                        if var meta = appState.metadata[fileID] {
-                                            if !meta.tags.contains(categoryName) {
-                                                meta.tags.append(categoryName)
-                                                appState.updateMetadata(
-                                                    for: fileID,
-                                                    metadata: meta
-                                                )
-                                            }
-                                        }
-                                    },
-                                    createCategoryAction: { fileID in
-                                        creatingForFileID = fileID
-                                        showingCreateCategory = true
-                                    },
-                                    deleteAction: { fileID in
-                                        appState.deleteFile(fileID: fileID)
-                                    },
-                                    showInFinderAction: { fileID in
-                                        if let file = appState.files.first(where: { $0.id == fileID }) {
-                                            NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
-                                        }
-                                    },
-                                    addToReadingListAction: { fileID in
-                                        appState.addToReadingList(fileID: fileID)
-                                    },
-                                    removeFromReadingListAction: { fileID in
-                                        appState.removeFromReadingList(fileID: fileID)
-                                    }
-                                ).zIndex(-1)
+                                VStack(spacing: 16) {
+                                    Image(systemName: appState.showReadingList ? "book" : "doc.text")
+                                        .font(.system(size: 48))
+                                        .foregroundColor(AppTheme.textTertiary)
+                                    Text(appState.showReadingList ? "No items in reading list" : "No PDFs found")
+                                        .font(.title2)
+                                        .foregroundColor(AppTheme.textPrimary)
+                                    Text(
+                                        appState.showReadingList ? "Add items to your reading list from the context menu." : "Select a source directory in Settings to get started."
+                                    )
+                                    .font(.body)
+                                    .foregroundColor(AppTheme.textSecondary)
+                                    .multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: .infinity, minHeight: 200)
+                                .padding(.vertical, 40)
                             } else {
-                                AppKitListView(
-                                    files: appState.showReadingList ? appState.readingListFiles : appState.filteredFiles,
-                                    metadata: appState.metadata,
-                                    categories: appState.categories,
-                                    onTap: { fileID in
-                                        if let meta = appState.metadata[fileID] {
-                                            NSWorkspace.shared.open(
-                                                appState.files.first(where: {
-                                                    $0.id == fileID
-                                                })!.fileURL
-                                            )
-                                            var updatedMeta = meta
-                                            updatedMeta.lastOpened = Date()
-                                            appState.updateMetadata(
-                                                for: fileID,
-                                                metadata: updatedMeta
-                                            )
-                                        }
-                                    },
-                                    editAction: { fileID in
-                                        editMetadata(for: fileID)
-                                    },
-                                    addToCategoryAction: { fileID, categoryName in
-                                        if var meta = appState.metadata[fileID] {
-                                            if !meta.tags.contains(categoryName) {
-                                                meta.tags.append(categoryName)
+                                // Grid or List View
+                                if appState.viewMode == .grid {
+                                    AppKitCardsGrid(
+                                        files: appState.showReadingList ? appState.readingListFiles : appState.filteredFiles,
+                                        metadata: appState.metadata,
+                                        categories: appState.categories,
+                                        cardColors: cardColors,
+                                        disableHover: isDropdownExpanded,
+                                        onTap: { fileID in
+                                            if let meta = appState.metadata[fileID] {
+                                                NSWorkspace.shared.open(
+                                                    appState.files.first(where: {
+                                                        $0.id == fileID
+                                                    })!.fileURL
+                                                )
+                                                var updatedMeta = meta
+                                                updatedMeta.lastOpened = Date()
                                                 appState.updateMetadata(
                                                     for: fileID,
-                                                    metadata: meta
+                                                    metadata: updatedMeta
                                                 )
                                             }
+                                        },
+                                        editAction: { fileID in
+                                            editMetadata(for: fileID)
+                                        },
+                                        addToCategoryAction: { fileID, categoryName in
+                                            if var meta = appState.metadata[fileID] {
+                                                if !meta.tags.contains(categoryName) {
+                                                    meta.tags.append(categoryName)
+                                                    appState.updateMetadata(
+                                                        for: fileID,
+                                                        metadata: meta
+                                                    )
+                                                }
+                                            }
+                                        },
+                                        createCategoryAction: { fileID in
+                                            creatingForFileID = fileID
+                                            showingCreateCategory = true
+                                        },
+                                        deleteAction: { fileID in
+                                            appState.deleteFile(fileID: fileID)
+                                        },
+                                        showInFinderAction: { fileID in
+                                            if let file = appState.files.first(where: { $0.id == fileID }) {
+                                                NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
+                                            }
+                                        },
+                                        addToReadingListAction: { fileID in
+                                            appState.addToReadingList(fileID: fileID)
+                                        },
+                                        removeFromReadingListAction: { fileID in
+                                            appState.removeFromReadingList(fileID: fileID)
                                         }
-                                    },
-                                    createCategoryAction: { fileID in
-                                        creatingForFileID = fileID
-                                        showingCreateCategory = true
-                                    },
-                                    deleteAction: { fileID in
-                                        appState.deleteFile(fileID: fileID)
-                                    },
-                                    showInFinderAction: { fileID in
-                                        if let file = appState.files.first(where: { $0.id == fileID }) {
-                                            NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
+                                    ).zIndex(-1)
+                                } else {
+                                    AppKitListView(
+                                        files: appState.showReadingList ? appState.readingListFiles : appState.filteredFiles,
+                                        metadata: appState.metadata,
+                                        categories: appState.categories,
+                                        onTap: { fileID in
+                                            if let meta = appState.metadata[fileID] {
+                                                NSWorkspace.shared.open(
+                                                    appState.files.first(where: {
+                                                        $0.id == fileID
+                                                    })!.fileURL
+                                                )
+                                                var updatedMeta = meta
+                                                updatedMeta.lastOpened = Date()
+                                                appState.updateMetadata(
+                                                    for: fileID,
+                                                    metadata: updatedMeta
+                                                )
+                                            }
+                                        },
+                                        editAction: { fileID in
+                                            editMetadata(for: fileID)
+                                        },
+                                        addToCategoryAction: { fileID, categoryName in
+                                            if var meta = appState.metadata[fileID] {
+                                                if !meta.tags.contains(categoryName) {
+                                                    meta.tags.append(categoryName)
+                                                    appState.updateMetadata(
+                                                        for: fileID,
+                                                        metadata: meta
+                                                    )
+                                                }
+                                            }
+                                        },
+                                        createCategoryAction: { fileID in
+                                            creatingForFileID = fileID
+                                            showingCreateCategory = true
+                                        },
+                                        deleteAction: { fileID in
+                                            appState.deleteFile(fileID: fileID)
+                                        },
+                                        showInFinderAction: { fileID in
+                                            if let file = appState.files.first(where: { $0.id == fileID }) {
+                                                NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
+                                            }
+                                        },
+                                        addToReadingListAction: { fileID in
+                                            appState.addToReadingList(fileID: fileID)
+                                        },
+                                        removeFromReadingListAction: { fileID in
+                                            appState.removeFromReadingList(fileID: fileID)
                                         }
-                                    },
-                                    addToReadingListAction: { fileID in
-                                        appState.addToReadingList(fileID: fileID)
-                                    },
-                                    removeFromReadingListAction: { fileID in
-                                        appState.removeFromReadingList(fileID: fileID)
-                                    }
-                                )
-                                .frame(height: CGFloat(appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count) * 80)
-                            }
+                                    )
+                                    .frame(height: CGFloat(appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count) * 80)
+                                }
                             }
                         }
                         .padding(.horizontal, 32)

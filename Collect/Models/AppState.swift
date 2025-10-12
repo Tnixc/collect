@@ -40,7 +40,7 @@ public enum SortOption: String, CaseIterable {
 public enum ViewMode: String, CaseIterable, Hashable {
     case grid = "Grid"
     case list = "List"
-    
+
     var iconName: String {
         switch self {
         case .grid:
@@ -64,6 +64,7 @@ class AppState: ObservableObject {
             UserDefaults.standard.set(sortOption.rawValue, forKey: "sortOption")
         }
     }
+
     @Published var showReadingList: Bool = false
     @Published var showRecent: Bool = false
     @Published var viewMode: ViewMode = .grid {
@@ -79,7 +80,7 @@ class AppState: ObservableObject {
         {
             sortOption = option
         }
-        
+
         // Load view mode from UserDefaults
         if let savedViewMode = UserDefaults.standard.string(forKey: "viewMode"),
            let mode = ViewMode(rawValue: savedViewMode)

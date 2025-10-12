@@ -62,7 +62,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
 
     func updateNSView(_ nsView: NSView, context: Context) {
         guard let containerView = nsView as? ResizingContainerView,
-            let collectionView = containerView.collectionView
+              let collectionView = containerView.collectionView
         else { return }
         context.coordinator.files = files
         context.coordinator.metadata = metadata
@@ -212,7 +212,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
             let layout = collectionViewLayout as! NSCollectionViewFlowLayout
             let availableWidth =
                 collectionView.bounds.width - layout.sectionInset.left
-                - layout.sectionInset.right
+                    - layout.sectionInset.right
             let minWidth: CGFloat = 250
             let maxWidth: CGFloat = 330
             let spacing: CGFloat = layout.minimumInteritemSpacing
@@ -224,14 +224,14 @@ struct AppKitCardsGrid: NSViewRepresentable {
             )
             var itemWidth =
                 (availableWidth - (CGFloat(columns - 1) * spacing))
-                / CGFloat(columns)
+                    / CGFloat(columns)
 
             // If itemWidth > maxWidth, increase columns to reduce width
             while itemWidth > maxWidth && columns < 20 {
                 columns += 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                    / CGFloat(columns)
+                        / CGFloat(columns)
             }
 
             // If itemWidth < minWidth, decrease columns to increase width
@@ -239,7 +239,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
                 columns -= 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                    / CGFloat(columns)
+                        / CGFloat(columns)
             }
 
             // Clamp to min and max to maintain consistent card sizes
@@ -255,7 +255,7 @@ extension NSBezierPath {
         let path = CGMutablePath()
         var points = [CGPoint](repeating: .zero, count: 3)
 
-        for i in 0..<elementCount {
+        for i in 0 ..< elementCount {
             let type = element(at: i, associatedPoints: &points)
             switch type {
             case .moveTo:
@@ -517,17 +517,7 @@ class FileCardItem: NSCollectionViewItem {
         titleLabel.isEditable = false
         titleLabel.isBordered = false
         titleLabel.backgroundColor = .clear
-        titleLabel.font = NSFont(
-            descriptor: (NSFont(name: "New York Medium", size: 18)
-                ?? NSFont.systemFont(ofSize: 18, weight: .semibold))
-                .fontDescriptor
-                .addingAttributes([
-                    .traits: [
-                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold
-                    ]
-                ]),
-            size: 18
-        )
+        titleLabel.font = NewYork.nsFont(size: 18, weight: .semibold, opticalSize: .medium) ?? NSFont.systemFont(ofSize: 18, weight: .semibold)
         titleLabel.maximumNumberOfLines = 3
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.usesSingleLineMode = false
@@ -538,7 +528,7 @@ class FileCardItem: NSCollectionViewItem {
         authorLabel.isEditable = false
         authorLabel.isBordered = false
         authorLabel.backgroundColor = .clear
-        authorLabel.font = NSFont.systemFont(ofSize: 12)
+        authorLabel.font = NewYork.nsFont(size: 12, weight: .regular, opticalSize: .small) ?? NSFont.systemFont(ofSize: 12)
         authorLabel.textColor = AppTheme.textSecondaryNSColor
         authorLabel.maximumNumberOfLines = 1
         authorLabel.lineBreakMode = .byTruncatingTail
@@ -920,63 +910,7 @@ class FileCardItem: NSCollectionViewItem {
     }
 
     private func createPill(text: String, colorName: String?) -> NSView {
-        let container = NSView()
-        container.wantsLayer = true
-        container.layer?.backgroundColor =
-            AppTheme.pillBackgroundNSColor.cgColor
-        container.layer?.cornerRadius = 8
-        container.translatesAutoresizingMaskIntoConstraints = false
-
-        let stack = NSStackView()
-        stack.orientation = .horizontal
-        stack.spacing = 4
-        stack.alignment = .centerY
-        stack.distribution = .gravityAreas
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(stack)
-
-        if let colorName = colorName {
-            let colorView = NSView()
-            colorView.wantsLayer = true
-            colorView.layer?.backgroundColor = colorFromName(colorName).cgColor
-            colorView.layer?.cornerRadius = 3
-            colorView.translatesAutoresizingMaskIntoConstraints = false
-            stack.addArrangedSubview(colorView)
-            colorView.widthAnchor.constraint(equalToConstant: 6).isActive = true
-            colorView.heightAnchor.constraint(equalToConstant: 6).isActive =
-                true
-        }
-
-        let label = NSTextField(labelWithString: text)
-        label.font = NSFont.systemFont(ofSize: 11, weight: .medium)
-        label.textColor = AppTheme.textSecondaryNSColor
-        label.lineBreakMode = .byTruncatingTail
-        stack.addArrangedSubview(label)
-
-        NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(
-                equalTo: container.leadingAnchor,
-                constant: 8
-            ),
-            stack.trailingAnchor.constraint(
-                equalTo: container.trailingAnchor,
-                constant: -8
-            ),
-            stack.topAnchor.constraint(
-                equalTo: container.topAnchor,
-                constant: 4
-            ),
-            stack.bottomAnchor.constraint(
-                equalTo: container.bottomAnchor,
-                constant: -4
-            ),
-            container.heightAnchor.constraint(
-                equalTo: stack.heightAnchor,
-                constant: 8
-            ),
-        ])
-
-        return container
+        return PillView(text: text, colorName: colorName)
     }
 
     private func formatFileSize(_ bytes: Int64) -> String {
@@ -1039,21 +973,21 @@ class ResizingContainerView: NSView {
             columns += 1
             itemWidth =
                 (availableWidth - CGFloat(columns - 1) * spacing)
-                / CGFloat(columns)
+                    / CGFloat(columns)
         }
 
         while itemWidth < minWidth, columns > 1 {
             columns -= 1
             itemWidth =
                 (availableWidth - CGFloat(columns - 1) * spacing)
-                / CGFloat(columns)
+                    / CGFloat(columns)
         }
 
         itemWidth = max(minWidth, min(maxWidth, itemWidth))
 
         let rows =
             numberOfItems == 0
-            ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
+                ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
         let contentHeight =
             rows == 0 ? 0 : CGFloat(rows) * 280 + CGFloat(rows - 1) * 16 + 16
         totalHeight = contentHeight
