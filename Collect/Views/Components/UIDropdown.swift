@@ -46,7 +46,7 @@ struct UIDropdown<T: Hashable>: View {
                 selectionButton
             }
         }
-        .zIndex(isExpanded ? 10000 : -10)
+        .zIndex(isExpanded ? 999 : -10)
         .onAppear {
             setupMouseEventMonitor()
         }
@@ -55,29 +55,38 @@ struct UIDropdown<T: Hashable>: View {
     private var selectionButton: some View {
         Button(action: toggleExpanded) {
             HStack {
+                Text(optionToString(selectedOption))
+                    .fontWeight(.medium)
+                    .foregroundColor(AppTheme.textPrimary)
+                Spacer()
                 if let icon = optionToIcon?(selectedOption) {
                     Image(systemName: icon)
                         .foregroundColor(AppTheme.textPrimary)
                         .font(.system(size: 14))
                 }
-                Text(optionToString(selectedOption))
-                    .fontWeight(.medium)
-                    .foregroundColor(AppTheme.textPrimary)
-                Spacer()
                 Image(systemName: "chevron.down")
                     .foregroundColor(AppTheme.textSecondary)
                     .fontWeight(.bold)
             }
             .padding(8)
             .frame(width: width, height: height)
-            .background(isButtonHovered ? AppTheme.backgroundTertiary.opacity(1.5) : AppTheme.backgroundTertiary)
+            .background(
+                isButtonHovered
+                    ? AppTheme.backgroundTertiary.opacity(1.5)
+                    : AppTheme.backgroundTertiary
+            )
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
         .smartFocusRing()
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(isButtonHovered ? AppTheme.dividerColor.opacity(1.5) : AppTheme.dividerColor, lineWidth: 1)
+                .stroke(
+                    isButtonHovered
+                        ? AppTheme.dividerColor.opacity(1.5)
+                        : AppTheme.dividerColor,
+                    lineWidth: 1
+                )
         )
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.15)) {
@@ -105,7 +114,7 @@ struct UIDropdown<T: Hashable>: View {
             y: itemHeight / 2 * CGFloat(options.count) + itemHeight * 2 - 6
         )
         .transition(.blurReplace)
-        .zIndex(10001)
+        .zIndex(1000)
         .frame(maxHeight: height).fixedSize(horizontal: true, vertical: true)
         .shadow(color: AppTheme.dropdownShadow, radius: 20)
     }
@@ -146,7 +155,9 @@ struct UIDropdown<T: Hashable>: View {
     }
 
     private func setupMouseEventMonitor() {
-        NSEvent.addLocalMonitorForEvents(matching: [.leftMouseUp, .rightMouseUp]) {
+        NSEvent.addLocalMonitorForEvents(matching: [
+            .leftMouseUp, .rightMouseUp,
+        ]) {
             event in
             if isExpanded {
                 DispatchQueue.main.async {
@@ -177,20 +188,25 @@ struct DropdownMenuItemView<T: Hashable>: View {
                     .fontWeight(.medium)
                     .frame(width: 15)
                     .padding(.leading, 8)
-                if let icon = optionToIcon?(option) {
-                    Image(systemName: icon)
-                        .foregroundColor(AppTheme.textPrimary)
-                        .font(.system(size: 14))
-                        .frame(width: 20)
-                }
                 Text(optionToString(option))
                     .foregroundColor(AppTheme.textPrimary)
                     .padding(.vertical)
                     .frame(height: itemHeight)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer()
+                if let icon = optionToIcon?(option) {
+                    Image(systemName: icon)
+                        .foregroundColor(AppTheme.textPrimary)
+                        .font(.system(size: 14))
+                        .frame(width: 20)
+                        .padding(.trailing, 6)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(isHovered ? AppTheme.backgroundTertiary.opacity(0.5) : Color.clear)
+            .background(
+                isHovered
+                    ? AppTheme.backgroundTertiary.opacity(0.5) : Color.clear
+            )
             .cornerRadius(8)
         }
         .buttonStyle(.borderless)

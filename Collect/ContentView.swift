@@ -47,7 +47,7 @@ struct ContentView: View {
                         appState.tagColors[name] = color
                     }
                 }
-                .animation(.easeInOut(duration: 0.25), value: isSidebarVisible)
+                .animation(.snappy(), value: isSidebarVisible)
                 .toolbar {
                     ToolbarItem(placement: .navigation) {
                         UIButton(
@@ -55,7 +55,8 @@ struct ContentView: View {
                                 toggleSidebar()
                             },
                             style: .ghost,
-                            icon: "sidebar.left"
+                            icon: "sidebar.left",
+                            width: 32
                         )
                         .help("Toggle Sidebar")
                     }
@@ -76,7 +77,11 @@ struct ContentView: View {
                             }) {
                                 HStack(spacing: 4) {
                                     Circle()
-                                        .fill(AppTheme.categoryColor(for: category.color))
+                                        .fill(
+                                            AppTheme.categoryColor(
+                                                for: category.color
+                                            )
+                                        )
                                         .frame(width: 8, height: 8)
                                     Text(category.name)
                                         .font(.system(size: 13))
@@ -158,7 +163,7 @@ struct ContentView: View {
     }
 
     private func toggleSidebar() {
-        withAnimation(.easeInOut(duration: 0.25)) {
+        withAnimation(.snappy()) {
             isSidebarVisible.toggle()
         }
     }
@@ -194,7 +199,9 @@ struct ContentView: View {
 
             // Create default metadata for files without existing metadata
             if appState.metadata[file.id] == nil {
-                let pages = FileSystemService.shared.getPageCount(for: file.fileURL)
+                let pages = FileSystemService.shared.getPageCount(
+                    for: file.fileURL
+                )
                 let defaultMetadata = MetadataService.shared.createMetadata(
                     fileID: file.id,
                     title: file.filename,

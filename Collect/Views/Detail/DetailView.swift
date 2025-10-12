@@ -103,9 +103,9 @@ struct DetailView: View {
                                 options: SortOption.allCases,
                                 optionToString: { $0.rawValue },
                                 optionToIcon: { $0.iconName },
-                                width: 150,
+                                width: 250,
                                 height: 32
-                            )
+                            ).zIndex(999)
                         }
                         .padding(.top, 24)
 
@@ -174,7 +174,7 @@ struct DetailView: View {
                                         NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
                                     }
                                 }
-                            )
+                            ).zIndex(-1)
                         }
                     }
                     .padding(.horizontal, 32)
