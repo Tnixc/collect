@@ -1,0 +1,289 @@
+{
+  "" : {
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Collect-primary.dia",
+    "emit-module-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Collect-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Collect-primary-emit-module.dia",
+    "pch" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Collect-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Collect-primary.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/CollectApp.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CollectApp.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CollectApp.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CollectApp.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/CollectApp.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CollectApp.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CollectApp.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CollectApp.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CollectApp~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/ContentView.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Models/AppState.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Models/Category.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Models/FileItem.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Models/FileMetadata.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Services/DownloadService.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DownloadService.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DownloadService.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DownloadService.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/DownloadService.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DownloadService.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DownloadService.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DownloadService.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DownloadService~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Services/FileSystemService.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileSystemService.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileSystemService.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileSystemService.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileSystemService.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileSystemService.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileSystemService.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileSystemService.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileSystemService~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Services/MetadataService.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/MetadataService.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/MetadataService.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/MetadataService.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/MetadataService.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/MetadataService.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/MetadataService.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/MetadataService.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/MetadataService~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Theme/AppTheme.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppTheme.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppTheme.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppTheme.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppTheme.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppTheme.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppTheme.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppTheme.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppTheme~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Theme/Typography.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Components/AppKitCardsGrid.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Components/AuthorChip.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Components/Buttons.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Components/FileCard.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileCard.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileCard.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileCard.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileCard.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileCard.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileCard.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileCard.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileCard~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Components/TabButton.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/TabButton.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/TabButton.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/TabButton.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/TabButton.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/TabButton.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/TabButton.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/TabButton.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/TabButton~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Components/UIDropdown.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/UIDropdown.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/UIDropdown.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/UIDropdown.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/UIDropdown.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/UIDropdown.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/UIDropdown.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/UIDropdown.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/UIDropdown~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Components/WrappingHStack.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/WrappingHStack.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/WrappingHStack.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/WrappingHStack.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/WrappingHStack.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/WrappingHStack.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/WrappingHStack.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/WrappingHStack.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/WrappingHStack~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Detail/DetailView.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DetailView.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DetailView.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DetailView.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/DetailView.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DetailView.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DetailView.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DetailView.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/DetailView~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/OnboardingView.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sheets/AddURLSheet.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AddURLSheet.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AddURLSheet.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AddURLSheet.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/AddURLSheet.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AddURLSheet.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AddURLSheet.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AddURLSheet.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AddURLSheet~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sheets/CreateCategorySheet.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CreateCategorySheet.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CreateCategorySheet.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CreateCategorySheet.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/CreateCategorySheet.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CreateCategorySheet.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CreateCategorySheet.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CreateCategorySheet.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/CreateCategorySheet~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sheets/EditMetadataSheet.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sheets/SettingsSheet.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sidebar/SidebarCategoryItem.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sidebar/SidebarItem.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sidebar/SidebarView.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView~partial.swiftmodule"
+  },
+  "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/Collect.build/Debug/Collect.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}
