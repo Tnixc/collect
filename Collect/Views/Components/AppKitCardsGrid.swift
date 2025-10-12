@@ -185,6 +185,8 @@ class FileCardItem: NSCollectionViewItem {
     private var editAction: (() -> Void)?
     private var addToCategoryAction: ((String) -> Void)?
     private var createCategoryAction: (() -> Void)?
+    private var titleToTopConstraint: NSLayoutConstraint?
+    private var titleToTagsConstraint: NSLayoutConstraint?
 
     override func loadView() {
         view = NSView()
@@ -271,10 +273,6 @@ class FileCardItem: NSCollectionViewItem {
                 equalTo: view.trailingAnchor,
                 constant: -12
             ),
-            titleLabel.topAnchor.constraint(
-                equalTo: tagsContainer.bottomAnchor,
-                constant: 12
-            ),
 
             authorLabel.leadingAnchor.constraint(
                 equalTo: view.leadingAnchor,
@@ -302,6 +300,10 @@ class FileCardItem: NSCollectionViewItem {
                 constant: -12
             ),
         ])
+
+        titleToTagsConstraint = titleLabel.topAnchor.constraint(equalTo: tagsContainer.bottomAnchor, constant: 12)
+        titleToTopConstraint = titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 12)
+        titleToTagsConstraint?.isActive = true
     }
 
     private func setupGestures() {
@@ -409,6 +411,15 @@ class FileCardItem: NSCollectionViewItem {
             tagsContainer.addSubview(pill)
         }
 
+        tagsContainer.isHidden = tagsContainer.subviews.isEmpty
+        if tagsContainer.subviews.isEmpty {
+            titleToTagsConstraint?.isActive = false
+            titleToTopConstraint?.isActive = true
+        } else {
+            titleToTopConstraint?.isActive = false
+            titleToTagsConstraint?.isActive = true
+        }
+
         titleLabel.stringValue = metadata.title ?? file.filename
         authorLabel.stringValue = metadata.authors.joined(separator: ", ")
 
@@ -436,6 +447,7 @@ class FileCardItem: NSCollectionViewItem {
 
         tagsContainer.needsLayout = true
         bottomContainer.needsLayout = true
+        view.needsLayout = true
     }
 
     private func createPill(text: String, colorName: String?) -> NSView {
