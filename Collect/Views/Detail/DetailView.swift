@@ -2,9 +2,13 @@ import AppKit
 import SwiftUI
 import UniformTypeIdentifiers
 
+// Extension to make UUID work with .sheet(item:)
+extension UUID: Identifiable {
+    public var id: UUID { self }
+}
+
 struct DetailView: View {
     @EnvironmentObject var appState: AppState
-    @State private var showingEditSheet = false
     @State private var editingFileID: UUID?
     @State private var showingCreateCategory = false
     @State private var creatingForFileID: UUID?
@@ -183,11 +187,9 @@ struct DetailView: View {
         .padding(.bottom, 8)
         .padding(.top, 1)
         .shadow(color: AppTheme.borderColor.opacity(0.2), radius: 8, y: -4)
-        .sheet(isPresented: $showingEditSheet) {
-            if let fileID = editingFileID {
-                EditMetadataSheet(fileID: fileID)
-                    .environmentObject(appState)
-            }
+        .sheet(item: $editingFileID) { fileID in
+            EditMetadataSheet(fileID: fileID)
+                .environmentObject(appState)
         }
         .sheet(isPresented: $showingCreateCategory) {
             CreateCategorySheet { name, color in
@@ -207,7 +209,6 @@ struct DetailView: View {
 
     private func editMetadata(for fileID: UUID) {
         editingFileID = fileID
-        showingEditSheet = true
     }
 
     private func handleFileDrop(providers: [NSItemProvider]) -> Bool {
