@@ -1,6 +1,42 @@
 import Combine
 import Foundation
 
+// Assuming these are in the same module, but adding imports if needed
+// import "./FileItem"
+// import "./FileMetadata"
+// import "./Category"
+// import "../Services/MetadataService"
+// import "../Services/FileSystemService"
+
+public enum SortOption: String, CaseIterable {
+    case recentlyAdded = "Recently Added"
+    case recentlyOpened = "Recently Opened"
+    case dateModified = "Date Modified"
+    case titleAZ = "Title A-Z"
+    case titleZA = "Title Z-A"
+    case authorAZ = "Author A-Z"
+    case authorZA = "Author Z-A"
+
+    var iconName: String {
+        switch self {
+        case .recentlyAdded:
+            return "plus.circle"
+        case .recentlyOpened:
+            return "clock"
+        case .dateModified:
+            return "calendar"
+        case .titleAZ:
+            return "arrow.up"
+        case .titleZA:
+            return "arrow.down"
+        case .authorAZ:
+            return "person.2"
+        case .authorZA:
+            return "person.2"
+        }
+    }
+}
+
 class AppState: ObservableObject {
     @Published var files: [FileItem] = []
     @Published var metadata: [UUID: FileMetadata] = [:]
@@ -9,6 +45,7 @@ class AppState: ObservableObject {
     @Published var selectedAuthor: String? = nil
     @Published var searchText: String = ""
     @Published var tagColors: [String: String] = [:]
+    @Published var sortOption: SortOption = .recentlyOpened
 
     // Computed properties
     var filteredFiles: [FileItem] {
@@ -48,7 +85,39 @@ class AppState: ObservableObject {
             }
         }
 
-        return filtered
+        // Sort the filtered files
+        return filtered.sorted { lhs, rhs in
+            switch sortOption {
+            case .recentlyAdded:
+                return lhs.dateAdded > rhs.dateAdded
+            case .recentlyOpened:
+                let lhsOpened = metadata[lhs.id]?.lastOpened ?? Date.distantPast
+                let rhsOpened = metadata[rhs.id]?.lastOpened ?? Date.distantPast
+                return lhsOpened > rhsOpened
+            case .dateModified:
+                return lhs.dateModified > rhs.dateModified
+            case .titleAZ:
+                let lhsTitle = metadata[lhs.id]?.title ?? lhs.filename
+                let rhsTitle = metadata[rhs.id]?.title ?? rhs.filename
+                return lhsTitle.localizedCaseInsensitiveCompare(rhsTitle) == .orderedAscending
+            case .titleZA:
+                let lhsTitle = metadata[lhs.id]?.title ?? lhs.filename
+                let rhsTitle = metadata[rhs.id]?.title ?? rhs.filename
+                return lhsTitle.localizedCaseInsensitiveCompare(rhsTitle) == .orderedDescending
+            case .authorAZ:
+                let lhsAuthors = metadata[lhs.id]?.authors ?? []
+                let rhsAuthors = metadata[rhs.id]?.authors ?? []
+                let lhsAuthor = lhsAuthors.first ?? ""
+                let rhsAuthor = rhsAuthors.first ?? ""
+                return lhsAuthor.localizedCaseInsensitiveCompare(rhsAuthor) == .orderedAscending
+            case .authorZA:
+                let lhsAuthors = metadata[lhs.id]?.authors ?? []
+                let rhsAuthors = metadata[rhs.id]?.authors ?? []
+                let lhsAuthor = lhsAuthors.first ?? ""
+                let rhsAuthor = rhsAuthors.first ?? ""
+                return lhsAuthor.localizedCaseInsensitiveCompare(rhsAuthor) == .orderedDescending
+            }
+        }
     }
 
     var allAuthors: [String] {

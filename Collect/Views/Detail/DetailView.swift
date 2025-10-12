@@ -98,11 +98,13 @@ struct DetailView: View {
 
                             Spacer()
 
-                            UIButton(
-                                action: {},
-                                style: .plain,
-                                label: "Recently added",
-                                icon: "arrow.up.arrow.down"
+                            UIDropdown(
+                                selectedOption: $appState.sortOption,
+                                options: SortOption.allCases,
+                                optionToString: { $0.rawValue },
+                                optionToIcon: { $0.iconName },
+                                width: 150,
+                                height: 32
                             )
                         }
                         .padding(.top, 24)

@@ -5,6 +5,7 @@ struct UIDropdown<T: Hashable>: View {
     @Binding var selectedOption: T
     private let options: [T]
     private let optionToString: (T) -> String
+    private let optionToIcon: ((T) -> String)?
     private let width: CGFloat
     private let height: CGFloat
     private let onSelect: ((T) -> Void)?
@@ -20,6 +21,7 @@ struct UIDropdown<T: Hashable>: View {
         selectedOption: Binding<T>,
         options: [T],
         optionToString: @escaping (T) -> String,
+        optionToIcon: ((T) -> String)? = nil,
         width: CGFloat,
         height: CGFloat,
         onSelect: ((T) -> Void)? = nil,
@@ -28,6 +30,7 @@ struct UIDropdown<T: Hashable>: View {
         _selectedOption = selectedOption
         self.options = options
         self.optionToString = optionToString
+        self.optionToIcon = optionToIcon
         self.width = width
         self.height = height
         self.onSelect = onSelect
@@ -43,7 +46,7 @@ struct UIDropdown<T: Hashable>: View {
                 selectionButton
             }
         }
-        .zIndex(isExpanded ? 1000 : -10)
+        .zIndex(isExpanded ? 10000 : -10)
         .onAppear {
             setupMouseEventMonitor()
         }
@@ -52,6 +55,11 @@ struct UIDropdown<T: Hashable>: View {
     private var selectionButton: some View {
         Button(action: toggleExpanded) {
             HStack {
+                if let icon = optionToIcon?(selectedOption) {
+                    Image(systemName: icon)
+                        .foregroundColor(AppTheme.textPrimary)
+                        .font(.system(size: 14))
+                }
                 Text(optionToString(selectedOption))
                     .fontWeight(.medium)
                     .foregroundColor(AppTheme.textPrimary)
@@ -97,7 +105,7 @@ struct UIDropdown<T: Hashable>: View {
             y: itemHeight / 2 * CGFloat(options.count) + itemHeight * 2 - 6
         )
         .transition(.blurReplace)
-        .zIndex(2000)
+        .zIndex(10001)
         .frame(maxHeight: height).fixedSize(horizontal: true, vertical: true)
         .shadow(color: AppTheme.dropdownShadow, radius: 20)
     }
@@ -107,6 +115,7 @@ struct UIDropdown<T: Hashable>: View {
             option: option,
             isSelected: selectedOption == option,
             optionToString: optionToString,
+            optionToIcon: optionToIcon,
             itemHeight: itemHeight,
             onSelect: { selectOption(option) }
         )
@@ -153,6 +162,7 @@ struct DropdownMenuItemView<T: Hashable>: View {
     let option: T
     let isSelected: Bool
     let optionToString: (T) -> String
+    let optionToIcon: ((T) -> String)?
     let itemHeight: CGFloat
     let onSelect: () -> Void
 
@@ -167,6 +177,12 @@ struct DropdownMenuItemView<T: Hashable>: View {
                     .fontWeight(.medium)
                     .frame(width: 15)
                     .padding(.leading, 8)
+                if let icon = optionToIcon?(option) {
+                    Image(systemName: icon)
+                        .foregroundColor(AppTheme.textPrimary)
+                        .font(.system(size: 14))
+                        .frame(width: 20)
+                }
                 Text(optionToString(option))
                     .foregroundColor(AppTheme.textPrimary)
                     .padding(.vertical)
