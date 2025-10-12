@@ -99,7 +99,7 @@ struct UIDropdown<T: Hashable>: View {
         .transition(.blurReplace)
         .zIndex(2000)
         .frame(maxHeight: height).fixedSize(horizontal: true, vertical: true)
-        .shadow(color: Color.black.opacity(0.1), radius: 20)
+        .shadow(color: AppTheme.dropdownShadow, radius: 20)
     }
 
     private func dropdownMenuItem(for option: T) -> some View {

@@ -18,7 +18,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
         let layout = LeftAlignedFlowLayout()
         layout.minimumInteritemSpacing = 16
         layout.minimumLineSpacing = 16
-        layout.sectionInset = NSEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        layout.sectionInset = NSEdgeInsets(top: 0, left: 0, bottom: 16, right: 0)
         collectionView.collectionViewLayout = layout
         collectionView.dataSource = context.coordinator
         collectionView.delegate = context.coordinator
@@ -49,7 +49,12 @@ struct AppKitCardsGrid: NSViewRepresentable {
         context.coordinator.metadata = metadata
         context.coordinator.categories = categories
         context.coordinator.cardColors = cardColors
+        containerView.numberOfItems = files.count
         collectionView.reloadData()
+        // Ensure the collection view resizes properly
+        collectionView.collectionViewLayout?.invalidateLayout()
+        // Recalculate total height
+        containerView.recalculateTotalHeight()
     }
 
     func makeCoordinator() -> Coordinator {
@@ -133,8 +138,8 @@ struct AppKitCardsGrid: NSViewRepresentable {
             let availableWidth =
                 collectionView.bounds.width - layout.sectionInset.left
                     - layout.sectionInset.right
-            let minWidth: CGFloat = 210
-            let maxWidth: CGFloat = 290
+            let minWidth: CGFloat = 250
+            let maxWidth: CGFloat = 330
             let spacing: CGFloat = layout.minimumInteritemSpacing
 
             // Calculate number of columns that best fits the width
@@ -187,11 +192,10 @@ class FileCardItem: NSCollectionViewItem {
         view.layer?.masksToBounds = false
         view.layer?.cornerRadius = 8
         view.layer?.borderWidth = 2
-        view.layer?.borderColor =
-            NSColor(red: 0.90, green: 0.88, blue: 0.86, alpha: 1).cgColor
+        view.layer?.borderColor = AppTheme.dividerNSColor.cgColor
 
         // Add subtle shadow
-        view.layer?.shadowColor = NSColor.black.withAlphaComponent(0.06).cgColor
+        view.layer?.shadowColor = AppTheme.shadowNSColor.cgColor
         view.layer?.shadowOffset = NSSize(width: 0, height: 2)
         view.layer?.shadowRadius = 4
         view.layer?.shadowOpacity = 1.0
@@ -230,12 +234,7 @@ class FileCardItem: NSCollectionViewItem {
         authorLabel.isBordered = false
         authorLabel.backgroundColor = .clear
         authorLabel.font = NSFont.systemFont(ofSize: 12)
-        authorLabel.textColor = NSColor(
-            red: 0.55,
-            green: 0.52,
-            blue: 0.48,
-            alpha: 1
-        )
+        authorLabel.textColor = AppTheme.textSecondaryNSColor
         authorLabel.maximumNumberOfLines = 1
         authorLabel.lineBreakMode = .byTruncatingTail
         view.addSubview(authorLabel)
@@ -442,9 +441,8 @@ class FileCardItem: NSCollectionViewItem {
     private func createPill(text: String, colorName: String?) -> NSView {
         let container = NSView()
         container.wantsLayer = true
-        container.layer?.backgroundColor =
-            NSColor(white: 1, alpha: 0.55).cgColor
-        container.layer?.cornerRadius = 12
+        container.layer?.backgroundColor = AppTheme.pillBackgroundNSColor.cgColor
+        container.layer?.cornerRadius = 4
         container.translatesAutoresizingMaskIntoConstraints = false
 
         let stack = NSStackView()
@@ -469,7 +467,7 @@ class FileCardItem: NSCollectionViewItem {
 
         let label = NSTextField(labelWithString: text)
         label.font = NSFont.systemFont(ofSize: 11, weight: .medium)
-        label.textColor = NSColor(red: 0.55, green: 0.52, blue: 0.48, alpha: 1)
+        label.textColor = AppTheme.textSecondaryNSColor
         label.lineBreakMode = .byTruncatingTail
         stack.addArrangedSubview(label)
 
@@ -521,7 +519,44 @@ class FileCardItem: NSCollectionViewItem {
 // Container view that observes size changes and invalidates layout
 class ResizingContainerView: NSView {
     weak var collectionView: NSCollectionView?
+    var numberOfItems: Int = 0
+    var totalHeight: CGFloat = 0 {
+        didSet {
+            invalidateIntrinsicContentSize()
+        }
+    }
+
+    override var intrinsicContentSize: NSSize {
+        return NSSize(width: NSView.noIntrinsicMetric, height: totalHeight)
+    }
+
     private var resizeWorkItem: DispatchWorkItem?
+
+    func recalculateTotalHeight() {
+        let availableWidth = bounds.width
+        let minWidth: CGFloat = 210
+        let maxWidth: CGFloat = 290
+        let spacing: CGFloat = 16
+
+        var columns = max(1, Int(floor((availableWidth + spacing) / (minWidth + spacing))))
+        var itemWidth = (availableWidth - CGFloat(columns - 1) * spacing) / CGFloat(columns)
+
+        while itemWidth > maxWidth, columns < 20 {
+            columns += 1
+            itemWidth = (availableWidth - CGFloat(columns - 1) * spacing) / CGFloat(columns)
+        }
+
+        while itemWidth < minWidth, columns > 1 {
+            columns -= 1
+            itemWidth = (availableWidth - CGFloat(columns - 1) * spacing) / CGFloat(columns)
+        }
+
+        itemWidth = max(minWidth, min(maxWidth, itemWidth))
+
+        let rows = numberOfItems == 0 ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
+        let contentHeight = rows == 0 ? 0 : CGFloat(rows) * 280 + CGFloat(rows - 1) * 16 + 16
+        totalHeight = contentHeight
+    }
 
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
@@ -531,6 +566,9 @@ class ResizingContainerView: NSView {
 
         // Invalidate immediately for better responsiveness
         collectionView?.collectionViewLayout?.invalidateLayout()
+
+        // Recalculate total height
+        recalculateTotalHeight()
 
         // Schedule a final invalidation after resize settles
         let workItem = DispatchWorkItem { [weak self] in

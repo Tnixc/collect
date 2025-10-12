@@ -9,51 +9,76 @@ struct SettingsSheet: View {
     private let sourceDirectoryBookmarkKey = "sourceDirectoryBookmark"
 
     var body: some View {
-        ZStack {
-            AppTheme.backgroundPrimary
-                .ignoresSafeArea()
-
-            VStack(spacing: 20) {
+        VStack(alignment: .leading, spacing: 0) {
+            // Header
+            HStack {
                 Text("Settings")
-                    .font(.title)
+                    .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(AppTheme.textPrimary)
-                    .padding(.top)
-
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Source Directory")
-                        .font(.headline)
-                        .foregroundColor(AppTheme.textPrimary)
-
-                    HStack {
-                        Text(sourceDirectoryURL?.path ?? "No directory selected")
-                            .foregroundColor(sourceDirectoryURL != nil ? AppTheme.textPrimary : AppTheme.textSecondary)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-
-                        Spacer()
-
-                        UIButton(action: { selectDirectory() }, label: "Choose...")
-                    }
-                    .padding(8)
-                    .background(AppTheme.backgroundSecondary.opacity(0.5))
-                    .cornerRadius(6)
-                }
-                .padding(.horizontal)
 
                 Spacer()
 
-                HStack {
-                    UIButton(action: { dismiss() }, label: "Cancel")
-
-                    Spacer()
-
-                    UIButton(action: { saveSettings(); dismiss() }, label: "Save")
+                Button(action: { dismiss() }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(AppTheme.textSecondary)
                 }
-                .padding(.horizontal)
-                .padding(.bottom)
+                .buttonStyle(.plain)
+                .focusable(false)
             }
+            .padding(.horizontal, 24)
+            .padding(.top, 24)
+            .padding(.bottom, 12)
+
+            // Description
+            Text("Select the directory where your PDF files are stored.")
+                .font(.system(size: 13))
+                .foregroundColor(AppTheme.textSecondary)
+                .lineSpacing(4)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 20)
+
+            // Directory Selection
+            HStack(spacing: 8) {
+                Text(sourceDirectoryURL?.path ?? "No directory selected")
+                    .font(.system(size: 13))
+                    .foregroundColor(sourceDirectoryURL != nil ? AppTheme.textPrimary : AppTheme.textSecondary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .background(AppTheme.backgroundTertiary)
+                    .cornerRadius(6)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(AppTheme.dividerColor, lineWidth: 1)
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+
+                UIButton(
+                    action: { selectDirectory() },
+                    style: .primary,
+                    label: "Choose...",
+                    height: 36
+                )
+            }
+            .padding(.horizontal, 24)
+            .padding(.bottom, 24)
+
+            // Bottom Buttons
+            HStack {
+                UIButton(action: { dismiss() }, style: .ghost, label: "Cancel")
+
+                Spacer()
+
+                UIButton(action: { saveSettings(); dismiss() }, style: .primary, label: "Save")
+            }
+            .padding(.horizontal, 24)
+            .padding(.bottom, 24)
         }
-        .frame(width: 400, height: 200)
+        .frame(width: 500)
+        .background(AppTheme.backgroundPrimary)
+        .cornerRadius(12)
         .onAppear {
             loadSettings()
         }

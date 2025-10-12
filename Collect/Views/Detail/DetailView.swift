@@ -9,24 +9,7 @@ struct DetailView: View {
     @State private var showingCreateCategory = false
     @State private var creatingForFileID: UUID?
 
-    private let cardColors: [NSColor] = [
-        NSColor(red: 0.93, green: 0.88, blue: 0.82, alpha: 1),
-        NSColor(red: 0.95, green: 0.94, blue: 0.78, alpha: 1),
-        NSColor(red: 0.85, green: 0.92, blue: 0.82, alpha: 1),
-        NSColor(red: 0.84, green: 0.89, blue: 0.92, alpha: 1),
-        NSColor(red: 0.95, green: 0.88, blue: 0.88, alpha: 1),
-        NSColor(red: 0.90, green: 0.87, blue: 0.93, alpha: 1),
-        NSColor(red: 0.91, green: 0.90, blue: 0.89, alpha: 1),
-        NSColor(red: 0.95, green: 0.90, blue: 0.85, alpha: 1),
-    ]
-
-    private var gridHeight: CGFloat {
-        let itemHeight: CGFloat = 260
-        let spacing: CGFloat = 16
-        let columns = 3 // approximate
-        let rows = ceil(CGFloat(appState.filteredFiles.count) / CGFloat(columns))
-        return rows * itemHeight + (rows - 1) * spacing
-    }
+    private let cardColors: [NSColor] = AppTheme.cardNSColors
 
     var body: some View {
         ZStack {
@@ -44,7 +27,7 @@ struct DetailView: View {
 
                             UIButton(
                                 action: {
-                                    // TODO: Edit category description
+                                    // TODO: rename
                                 },
                                 style: .ghost,
                                 icon: "pencil",
@@ -55,16 +38,10 @@ struct DetailView: View {
 
                             Spacer()
                         }
-
-                        Text(
-                            "A description or notes about \(appState.selectedCategory ?? "All Items")"
-                        )
-                        .font(.system(size: 14))
-                        .foregroundColor(AppTheme.textSecondary)
-                        .padding(.bottom, 16)
                     }
                     .padding(.horizontal, 32)
-                    .padding(.top, 24)
+                    .padding(.top, 64)
+                    .padding(.bottom, 24)
 
                     // Divider
                     Rectangle()
@@ -148,7 +125,9 @@ struct DetailView: View {
                                 onTap: { fileID in
                                     if let meta = appState.metadata[fileID] {
                                         NSWorkspace.shared.open(
-                                            appState.files.first(where: { $0.id == fileID })!.fileURL
+                                            appState.files.first(where: {
+                                                $0.id == fileID
+                                            })!.fileURL
                                         )
                                         var updatedMeta = meta
                                         updatedMeta.lastOpened = Date()
@@ -165,7 +144,10 @@ struct DetailView: View {
                                     if var meta = appState.metadata[fileID] {
                                         if !meta.tags.contains(categoryName) {
                                             meta.tags.append(categoryName)
-                                            appState.updateMetadata(for: fileID, metadata: meta)
+                                            appState.updateMetadata(
+                                                for: fileID,
+                                                metadata: meta
+                                            )
                                         }
                                     }
                                 },
@@ -174,7 +156,6 @@ struct DetailView: View {
                                     showingCreateCategory = true
                                 }
                             )
-                            .frame(height: gridHeight)
                         }
                     }
                     .padding(.horizontal, 32)
@@ -226,7 +207,10 @@ struct DetailView: View {
         }
 
         for provider in providers {
-            provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, error in
+            provider.loadItem(
+                forTypeIdentifier: UTType.fileURL.identifier,
+                options: nil
+            ) { item, error in
                 guard let data = item as? Data,
                       let url = URL(dataRepresentation: data, relativeTo: nil),
                       url.pathExtension.lowercased() == "pdf"
@@ -236,10 +220,15 @@ struct DetailView: View {
 
                 DispatchQueue.main.async {
                     do {
-                        let copiedURL = try FileSystemService.shared.copyFile(from: url, to: sourceDirectory)
+                        let copiedURL = try FileSystemService.shared.copyFile(
+                            from: url,
+                            to: sourceDirectory
+                        )
 
                         // Process the copied file
-                        let fileID = FileSystemService.shared.ensureFileID(for: copiedURL)
+                        let fileID = FileSystemService.shared.ensureFileID(
+                            for: copiedURL
+                        )
                         let fileItem = FileItem(id: fileID, fileURL: copiedURL)
 
                         // Add to app state
@@ -249,17 +238,24 @@ struct DetailView: View {
 
                         // Create initial metadata
                         let filename = copiedURL.lastPathComponent
-                        let pages = FileSystemService.shared.getPageCount(for: copiedURL)
+                        let pages = FileSystemService.shared.getPageCount(
+                            for: copiedURL
+                        )
                         let metadata = MetadataService.shared.createMetadata(
                             fileID: fileID,
                             title: filename,
                             pages: pages
                         )
-                        self.appState.updateMetadata(for: fileID, metadata: metadata)
+                        self.appState.updateMetadata(
+                            for: fileID,
+                            metadata: metadata
+                        )
 
                     } catch {
                         // TODO: Show error to user
-                        print("Failed to copy file: \(error.localizedDescription)")
+                        print(
+                            "Failed to copy file: \(error.localizedDescription)"
+                        )
                     }
                 }
             }

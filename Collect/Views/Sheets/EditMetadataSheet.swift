@@ -86,7 +86,7 @@ struct EditMetadataSheet: View {
                                     .frame(width: 30, height: 30)
                                     .overlay(
                                         Circle()
-                                            .stroke(Color.gray.opacity(0.5), lineWidth: cardColorName == colorName ? 2 : 0)
+                                            .stroke(AppTheme.selectionStroke.opacity(0.5), lineWidth: cardColorName == colorName ? 2 : 0)
                                     )
                                     .onTapGesture {
                                         cardColorName = colorName

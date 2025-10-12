@@ -41,7 +41,7 @@ struct UIButton: View {
         if style == .ghost || style == .plain {
             return isHovered ? AppTheme.backgroundTertiary.opacity(0.5) : .clear
         } else if style == .destructive && isHovered {
-            return Color.red.opacity(0.2)
+            return AppTheme.destructive.opacity(0.2)
         } else if style == .primary {
             return isHovered
                 ? AppTheme.accentPrimary.opacity(0.8) : AppTheme.accentPrimary
@@ -73,18 +73,18 @@ struct UIButton: View {
                         .font(.system(size: 15)).frame(width: 14)
                         .foregroundColor(
                             style == .destructive && isHovered
-                                ? Color.red
+                                ? AppTheme.destructive
                                 : (style == .primary
-                                    ? .white : AppTheme.textPrimary)
+                                    ? AppTheme.buttonTextLight : AppTheme.textPrimary)
                         )
                 }
                 if label != nil {
                     Text(label ?? "")
                         .foregroundColor(
                             style == .destructive && isHovered
-                                ? Color.red
+                                ? AppTheme.destructive
                                 : (style == .primary
-                                    ? .white : AppTheme.textPrimary)
+                                    ? AppTheme.buttonTextLight : AppTheme.textPrimary)
                         )
                 }
                 if align == .leading {

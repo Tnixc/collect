@@ -119,16 +119,6 @@ struct CreateCategorySheet: View {
     }
 
     private func colorFromName(_ name: String) -> Color {
-        switch name {
-        case "blue": return Color.blue
-        case "green": return Color.green
-        case "orange": return Color.orange
-        case "pink": return Color.pink
-        case "purple": return Color.purple
-        case "yellow": return Color.yellow
-        case "gray": return Color.gray
-        case "tan": return Color(red: 0.93, green: 0.88, blue: 0.82)
-        default: return Color.blue
-        }
+        AppTheme.categoryColor(for: name)
     }
 }

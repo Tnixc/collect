@@ -145,7 +145,7 @@ struct FileCard: View {
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
-        .background(Color.white.opacity(0.55))
+        .background(AppTheme.pillBackground)
         .clipShape(Capsule())
     }
 
