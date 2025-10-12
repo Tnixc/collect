@@ -68,7 +68,14 @@ class MetadataService {
 
     // Create new metadata entry
     func createMetadata(fileID: UUID, title: String? = nil, pages: Int? = nil) -> FileMetadata {
-        FileMetadata(id: fileID, title: title, pages: pages)
+        // Assign a random card color from the available palette
+        let cardColorNames = [
+            "cardTan", "cardYellow", "cardGreen", "cardBlue", "cardPink",
+            "cardPurple", "cardGray", "cardPeach", "cardRed", "cardOrange",
+            "cardTeal", "cardNavy",
+        ]
+        let randomColor = cardColorNames[abs(fileID.hashValue) % cardColorNames.count]
+        return FileMetadata(id: fileID, title: title, pages: pages, cardColor: randomColor)
     }
 
     // Update metadata (same as save, but for individual)

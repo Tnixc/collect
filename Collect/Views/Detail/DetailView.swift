@@ -13,6 +13,7 @@ struct DetailView: View {
     @State private var showingCreateCategory = false
     @State private var creatingForFileID: UUID?
     @State private var editingCategory: Category?
+    @State private var isDropdownExpanded = false
 
     private let cardColors: [NSColor] = AppTheme.cardNSColors
 
@@ -32,7 +33,8 @@ struct DetailView: View {
 
                             if let categoryName = appState.selectedCategory,
                                categoryName != "Uncategorized",
-                               let category = appState.categories.first(where: { $0.name == categoryName }) {
+                               let category = appState.categories.first(where: { $0.name == categoryName })
+                            {
                                 UIButton(
                                     action: {
                                         editingCategory = category
@@ -100,10 +102,11 @@ struct DetailView: View {
 
                             UIDropdown(
                                 selectedOption: $appState.sortOption,
+                                isExpanded: $isDropdownExpanded,
                                 options: SortOption.allCases,
                                 optionToString: { $0.rawValue },
                                 optionToIcon: { $0.iconName },
-                                width: 250,
+                                width: 200,
                                 height: 32
                             ).zIndex(999)
                         }
@@ -133,6 +136,7 @@ struct DetailView: View {
                                 metadata: appState.metadata,
                                 categories: appState.categories,
                                 cardColors: cardColors,
+                                disableHover: isDropdownExpanded,
                                 onTap: { fileID in
                                     if let meta = appState.metadata[fileID] {
                                         NSWorkspace.shared.open(

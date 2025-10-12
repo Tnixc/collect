@@ -49,7 +49,7 @@ struct EditCategorySheet: View {
                 .lineSpacing(4)
                 .padding(.horizontal, 24)
                 .padding(.bottom, showError ? 12 : 20)
-            
+
             // Error Message
             if showError {
                 HStack(spacing: 8) {
@@ -124,7 +124,7 @@ struct EditCategorySheet: View {
             // Action Buttons
             HStack(spacing: 12) {
                 UIButton(action: { dismiss() }, style: .plain, label: "Cancel")
-                
+
                 UIButton(
                     action: { showDeleteConfirmation = true },
                     style: .destructive,
@@ -139,21 +139,21 @@ struct EditCategorySheet: View {
                     action: {
                         // Trim whitespace
                         let trimmedName = categoryName.trimmingCharacters(in: .whitespacesAndNewlines)
-                        
+
                         // Validate name is not empty
                         guard !trimmedName.isEmpty else {
                             errorMessage = "Category name cannot be empty"
                             showError = true
                             return
                         }
-                        
+
                         // Validate name is different or only color changed
                         guard trimmedName != category.name || selectedColor != category.color else {
                             errorMessage = "No changes made"
                             showError = true
                             return
                         }
-                        
+
                         // Check for duplicate names (case-insensitive) if name changed
                         if trimmedName.lowercased() != category.name.lowercased() {
                             let existingCategories = appState.categories.map { $0.name.lowercased() }
@@ -163,7 +163,7 @@ struct EditCategorySheet: View {
                                 return
                             }
                         }
-                        
+
                         // All validation passed
                         showError = false
                         onEdit(trimmedName, selectedColor)
@@ -181,7 +181,7 @@ struct EditCategorySheet: View {
         .background(AppTheme.backgroundPrimary)
         .cornerRadius(12)
         .alert("Delete Category?", isPresented: $showDeleteConfirmation) {
-            Button("Cancel", role: .cancel) { }
+            Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 appState.deleteCategory(category.name)
                 dismiss()

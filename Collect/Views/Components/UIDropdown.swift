@@ -3,6 +3,7 @@ import SwiftUI
 
 struct UIDropdown<T: Hashable>: View {
     @Binding var selectedOption: T
+    @Binding var isExpanded: Bool
     private let options: [T]
     private let optionToString: (T) -> String
     private let optionToIcon: ((T) -> String)?
@@ -11,7 +12,6 @@ struct UIDropdown<T: Hashable>: View {
     private let onSelect: ((T) -> Void)?
     private let onClick: (() -> Void)?
 
-    @State private var isExpanded = false
     @State private var isButtonEnabled = true
     @State private var isButtonHovered = false
 
@@ -19,6 +19,7 @@ struct UIDropdown<T: Hashable>: View {
 
     init(
         selectedOption: Binding<T>,
+        isExpanded: Binding<Bool>,
         options: [T],
         optionToString: @escaping (T) -> String,
         optionToIcon: ((T) -> String)? = nil,
@@ -28,6 +29,7 @@ struct UIDropdown<T: Hashable>: View {
         onClick: (() -> Void)? = nil
     ) {
         _selectedOption = selectedOption
+        _isExpanded = isExpanded
         self.options = options
         self.optionToString = optionToString
         self.optionToIcon = optionToIcon

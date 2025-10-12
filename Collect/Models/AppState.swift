@@ -26,9 +26,9 @@ public enum SortOption: String, CaseIterable {
         case .dateModified:
             return "calendar"
         case .titleAZ:
-            return "arrow.up"
+            return "text.insert"
         case .titleZA:
-            return "arrow.down"
+            return "text.append"
         case .authorAZ:
             return "person.2"
         case .authorZA:
@@ -45,7 +45,20 @@ class AppState: ObservableObject {
     @Published var selectedAuthor: String? = nil
     @Published var searchText: String = ""
     @Published var tagColors: [String: String] = [:]
-    @Published var sortOption: SortOption = .recentlyOpened
+    @Published var sortOption: SortOption = .recentlyOpened {
+        didSet {
+            UserDefaults.standard.set(sortOption.rawValue, forKey: "sortOption")
+        }
+    }
+
+    init() {
+        // Load sort option from UserDefaults
+        if let savedSortOption = UserDefaults.standard.string(forKey: "sortOption"),
+           let option = SortOption(rawValue: savedSortOption)
+        {
+            sortOption = option
+        }
+    }
 
     // Computed properties
     var filteredFiles: [FileItem] {
@@ -140,10 +153,10 @@ class AppState: ObservableObject {
 
     var filteredAuthorCounts: [String: Int] {
         var counts: [String: Int] = [:]
-        
+
         // Get the file IDs from filteredFiles (which are already filtered by category)
         let filteredFileIDs = Set(filteredFiles.map { $0.id })
-        
+
         // Count authors only from filtered files
         for fileID in filteredFileIDs {
             if let meta = metadata[fileID] {
@@ -241,13 +254,13 @@ class AppState: ObservableObject {
             print("Cannot rename the Uncategorized category")
             return
         }
-        
+
         // Prevent renaming to "Uncategorized"
         guard newName != "Uncategorized" else {
             print("Cannot rename a category to Uncategorized")
             return
         }
-        
+
         // Update tagColors
         tagColors.removeValue(forKey: oldName)
         tagColors[newName] = color
@@ -270,17 +283,17 @@ class AppState: ObservableObject {
         MetadataService.shared.save(metadata: metadata)
         updateCategories()
     }
-    
+
     func deleteCategory(_ categoryName: String) {
         // Prevent deleting the "Uncategorized" category
         guard categoryName != "Uncategorized" else {
             print("Cannot delete the Uncategorized category")
             return
         }
-        
+
         // Remove from tagColors
         tagColors.removeValue(forKey: categoryName)
-        
+
         // Remove category from all metadata tags
         for (fileID, var meta) in metadata {
             if let index = meta.tags.firstIndex(of: categoryName) {
@@ -288,12 +301,12 @@ class AppState: ObservableObject {
                 metadata[fileID] = meta
             }
         }
-        
+
         // Clear selected category if it was the deleted one
         if selectedCategory == categoryName {
             selectedCategory = nil
         }
-        
+
         // Save metadata and update categories
         MetadataService.shared.tagColors = tagColors
         MetadataService.shared.save(metadata: metadata)

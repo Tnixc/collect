@@ -11,7 +11,7 @@ struct SidebarCategoryItem: View {
     var body: some View {
         SidebarItemBase(
             isSelected: isSelected,
-            isHovered: isHovered,
+            isHovered: isHovered
         ) {
             HStack(spacing: 8) {
                 if isUncategorized {

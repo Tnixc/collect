@@ -7,6 +7,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
     let metadata: [UUID: FileMetadata]
     let categories: [Collect.Category]
     let cardColors: [NSColor]
+    let disableHover: Bool
     let onTap: (UUID) -> Void
     let editAction: (UUID) -> Void
     let addToCategoryAction: (UUID, String) -> Void
@@ -59,12 +60,24 @@ struct AppKitCardsGrid: NSViewRepresentable {
 
     func updateNSView(_ nsView: NSView, context: Context) {
         guard let containerView = nsView as? ResizingContainerView,
-            let collectionView = containerView.collectionView
+              let collectionView = containerView.collectionView
         else { return }
         context.coordinator.files = files
         context.coordinator.metadata = metadata
         context.coordinator.categories = categories
         context.coordinator.cardColors = cardColors
+
+        // Update disableHover state and propagate to visible cards
+        if context.coordinator.disableHover != disableHover {
+            context.coordinator.disableHover = disableHover
+            // Update all visible items
+            for item in collectionView.visibleItems() {
+                if let cardItem = item as? FileCardItem {
+                    cardItem.updateHoverState(disabled: disableHover)
+                }
+            }
+        }
+
         containerView.numberOfItems = files.count
         collectionView.reloadData()
         // Ensure the collection view resizes properly
@@ -75,6 +88,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
 
     func makeCoordinator() -> Coordinator {
         Coordinator(
+            disableHover: disableHover,
             onTap: onTap,
             editAction: editAction,
             addToCategoryAction: addToCategoryAction,
@@ -91,7 +105,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
         var metadata: [UUID: FileMetadata] = [:]
         var categories: [Collect.Category] = []
         var cardColors: [NSColor] = []
-
+        var disableHover: Bool = false
         let onTap: (UUID) -> Void
         let editAction: (UUID) -> Void
         let addToCategoryAction: (UUID, String) -> Void
@@ -100,6 +114,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
         let showInFinderAction: (UUID) -> Void
 
         init(
+            disableHover: Bool,
             onTap: @escaping (UUID) -> Void,
             editAction: @escaping (UUID) -> Void,
             addToCategoryAction: @escaping (UUID, String) -> Void,
@@ -107,6 +122,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
             deleteAction: @escaping (UUID) -> Void,
             showInFinderAction: @escaping (UUID) -> Void
         ) {
+            self.disableHover = disableHover
             self.onTap = onTap
             self.editAction = editAction
             self.addToCategoryAction = addToCategoryAction
@@ -135,13 +151,23 @@ struct AppKitCardsGrid: NSViewRepresentable {
                 ) as! FileCardItem
             let file = files[indexPath.item]
             if let meta = metadata[file.id] {
+                // Use metadata.cardColor to determine the background color
+                let backgroundColor: NSColor
+                if let colorName = AppTheme.cardColors[meta.cardColor] {
+                    backgroundColor = NSColor(colorName)
+                } else {
+                    // Fallback to hash-based color if cardColor is not found
+                    backgroundColor = cardColors[
+                        abs(file.id.hashValue) % cardColors.count
+                    ]
+                }
+
                 item.configure(
                     with: file,
                     metadata: meta,
                     categories: categories,
-                    backgroundColor: cardColors[
-                        indexPath.item % cardColors.count
-                    ],
+                    backgroundColor: backgroundColor,
+                    disableHover: disableHover,
                     onTap: { self.onTap(file.id) },
                     editAction: { self.editAction(file.id) },
                     addToCategoryAction: { category in
@@ -165,7 +191,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
             let layout = collectionViewLayout as! NSCollectionViewFlowLayout
             let availableWidth =
                 collectionView.bounds.width - layout.sectionInset.left
-                - layout.sectionInset.right
+                    - layout.sectionInset.right
             let minWidth: CGFloat = 250
             let maxWidth: CGFloat = 330
             let spacing: CGFloat = layout.minimumInteritemSpacing
@@ -177,14 +203,14 @@ struct AppKitCardsGrid: NSViewRepresentable {
             )
             var itemWidth =
                 (availableWidth - (CGFloat(columns - 1) * spacing))
-                / CGFloat(columns)
+                    / CGFloat(columns)
 
             // If itemWidth > maxWidth, increase columns to reduce width
             while itemWidth > maxWidth && columns < 20 {
                 columns += 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                    / CGFloat(columns)
+                        / CGFloat(columns)
             }
 
             // If itemWidth < minWidth, decrease columns to increase width
@@ -192,7 +218,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
                 columns -= 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                    / CGFloat(columns)
+                        / CGFloat(columns)
             }
 
             // Clamp to min and max to maintain consistent card sizes
@@ -208,7 +234,7 @@ extension NSBezierPath {
         let path = CGMutablePath()
         var points = [CGPoint](repeating: .zero, count: 3)
 
-        for i in 0..<elementCount {
+        for i in 0 ..< elementCount {
             let type = element(at: i, associatedPoints: &points)
             switch type {
             case .moveTo:
@@ -304,6 +330,7 @@ class FileCardItem: NSCollectionViewItem {
     private var titleToTopConstraint: NSLayoutConstraint?
     private var titleToTagsConstraint: NSLayoutConstraint?
     private var isHovering = false
+    private var disableHover = false
 
     private var backgroundLayer: CAShapeLayer?
     private var contentContainer: NSView?
@@ -492,8 +519,8 @@ class FileCardItem: NSCollectionViewItem {
                 .fontDescriptor
                 .addingAttributes([
                     .traits: [
-                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold
-                    ]
+                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold,
+                    ],
                 ]),
             size: 18
         )
@@ -602,15 +629,19 @@ class FileCardItem: NSCollectionViewItem {
     override func mouseEntered(with event: NSEvent) {
         super.mouseEntered(with: event)
         isHovering = true
-        animateHover(isEntering: true)
-        NSCursor.pointingHand.push()
+        if !disableHover {
+            animateHover(isEntering: true)
+            NSCursor.pointingHand.push()
+        }
     }
 
     override func mouseExited(with event: NSEvent) {
         super.mouseExited(with: event)
         isHovering = false
-        animateHover(isEntering: false)
-        NSCursor.pop()
+        if !disableHover {
+            animateHover(isEntering: false)
+            NSCursor.pop()
+        }
     }
 
     private func animateHover(isEntering: Bool) {
@@ -773,6 +804,7 @@ class FileCardItem: NSCollectionViewItem {
         metadata: FileMetadata,
         categories: [Collect.Category],
         backgroundColor: NSColor,
+        disableHover: Bool,
         onTap: @escaping () -> Void,
         editAction: @escaping () -> Void,
         addToCategoryAction: @escaping (String) -> Void,
@@ -788,6 +820,7 @@ class FileCardItem: NSCollectionViewItem {
         self.createCategoryAction = createCategoryAction
         self.deleteAction = deleteAction
         self.showInFinderAction = showInFinderAction
+        self.disableHover = disableHover
 
         view.menu = createMenu()
         contentContainer?.layer?.backgroundColor = backgroundColor.cgColor
@@ -927,6 +960,14 @@ class FileCardItem: NSCollectionViewItem {
     private func colorFromName(_ name: String) -> NSColor {
         AppTheme.categoryNSColor(for: name)
     }
+
+    func updateHoverState(disabled: Bool) {
+        disableHover = disabled
+        // If we're disabling hover and currently hovering, exit hover state
+        if disabled, isHovering {
+            mouseExited(with: NSEvent())
+        }
+    }
 }
 
 // Container view that observes size changes and invalidates layout
@@ -962,21 +1003,21 @@ class ResizingContainerView: NSView {
             columns += 1
             itemWidth =
                 (availableWidth - CGFloat(columns - 1) * spacing)
-                / CGFloat(columns)
+                    / CGFloat(columns)
         }
 
         while itemWidth < minWidth, columns > 1 {
             columns -= 1
             itemWidth =
                 (availableWidth - CGFloat(columns - 1) * spacing)
-                / CGFloat(columns)
+                    / CGFloat(columns)
         }
 
         itemWidth = max(minWidth, min(maxWidth, itemWidth))
 
         let rows =
             numberOfItems == 0
-            ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
+                ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
         let contentHeight =
             rows == 0 ? 0 : CGFloat(rows) * 280 + CGFloat(rows - 1) * 16 + 16
         totalHeight = contentHeight

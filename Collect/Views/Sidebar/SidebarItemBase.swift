@@ -50,14 +50,14 @@ struct SidebarIcon: View {
     var body: some View {
         Group {
             switch type {
-            case .systemIcon(let name):
+            case let .systemIcon(name):
                 Image(systemName: name)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(
                         isSelected
                             ? AppTheme.textPrimary : AppTheme.textSecondary
                     )
-            case .colorDot(let color):
+            case let .colorDot(color):
                 Circle()
                     .fill(color)
                     .frame(width: 8, height: 8)

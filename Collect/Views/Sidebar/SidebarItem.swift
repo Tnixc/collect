@@ -16,7 +16,7 @@ struct SidebarItem: View {
                         isSelected: isSelected
                     )
                 }
-                
+
                 Text(title)
                     .font(.system(size: 13))
                     .foregroundColor(isSelected ? AppTheme.textPrimary : AppTheme.textSecondary)
