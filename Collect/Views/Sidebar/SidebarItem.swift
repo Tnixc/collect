@@ -5,6 +5,7 @@ struct SidebarItem: View {
     let icon: String?
     let count: Int?
     let isHovered: Bool
+    let isSelected: Bool
     
     var body: some View {
         HStack(spacing: 8) {
@@ -26,7 +27,7 @@ struct SidebarItem: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 5)
-        .background(isHovered ? AppTheme.sidebarItemHover : Color.clear)
+        .background(isSelected ? AppTheme.sidebarItemActive : (isHovered ? AppTheme.sidebarItemHover : Color.clear))
         .cornerRadius(5)
         .padding(.horizontal, 8)
     }

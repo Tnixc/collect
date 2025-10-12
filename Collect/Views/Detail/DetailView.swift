@@ -2,6 +2,10 @@ import SwiftUI
 
 struct DetailView: View {
     @EnvironmentObject var appState: AppState
+    @State private var showingEditSheet = false
+    @State private var editingFileID: UUID?
+
+    private let cardColors = [AppTheme.cardTan, AppTheme.cardYellow, AppTheme.cardGreen, AppTheme.cardBlue, AppTheme.cardPink, AppTheme.cardPurple, AppTheme.cardGray, AppTheme.cardPeach]
 
     var body: some View {
         ZStack {
@@ -13,11 +17,13 @@ struct DetailView: View {
                     // Header Section
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(alignment: .top) {
-                            Text("Computer Science")
+                            Text(appState.selectedCategory ?? "All Items")
                                 .font(Typography.largeTitle)
                                 .foregroundColor(AppTheme.textPrimary)
 
-                            Button(action: {}) {
+                            Button(action: {
+                                // TODO: Edit category description
+                            }) {
                                 Image(systemName: "pencil")
                                     .font(.system(size: 14))
                                     .foregroundColor(AppTheme.textSecondary)
@@ -29,7 +35,7 @@ struct DetailView: View {
                         }
 
                         Text(
-                            "A description or notes about Computer Science"
+                            "A description or notes about \(appState.selectedCategory ?? "All Items")"
                         )
                         .font(.system(size: 14))
                         .foregroundColor(AppTheme.textSecondary)
@@ -44,16 +50,6 @@ struct DetailView: View {
                             title: "Items",
                             icon: "doc.text.fill",
                             isSelected: true
-                        )
-                        TabButton(
-                            title: "Notebooks",
-                            icon: "book.fill",
-                            isSelected: false
-                        )
-                        TabButton(
-                            title: "Canvases",
-                            icon: "square.grid.2x2",
-                            isSelected: false
                         )
                     }
                     .padding(.horizontal, 32)
@@ -74,50 +70,54 @@ struct DetailView: View {
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
-                                AuthorChip(name: "unknown", count: 3)
-                                AuthorChip(name: "DR", count: 1)
-                                AuthorChip(
-                                    name: "Llama Team @ Meta",
-                                    count: 1
-                                )
-                                AuthorChip(
-                                    name: "Antti Laaksonen",
-                                    count: 1
-                                )
-                                AuthorChip(
-                                    name: "Daniel Nishball",
-                                    count: 1
-                                )
-                                AuthorChip(name: "Dylan Patel", count: 1)
-                                AuthorChip(name: "Douglas Thain", count: 1)
+                                ForEach(appState.authorCounts.sorted(by: { $0.key < $1.key }), id: \.key) { author, count in
+                                    AuthorChip(name: author, count: count, isSelected: appState.selectedAuthor == author) {
+                                        appState.selectedAuthor = appState.selectedAuthor == author ? nil : author
+                                    }
+                                }
                             }
                         }
                     }
                     .padding(.horizontal, 32)
 
                     // New Items Section
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("New items (1)")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(AppTheme.textPrimary)
-                            .padding(.top, 24)
+                    if !appState.recentFiles.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("New items (\(appState.recentFiles.count))")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(AppTheme.textPrimary)
+                                .padding(.top, 24)
 
-                        FileCard(
-                            title: "NOT.pdf",
-                            author: "unknown",
-                            year: "2025",
-                            tags: ["NEW", "Computer Scienc"],
-                            backgroundColor: AppTheme.cardYellow,
-                            noteCount: 0
-                        )
-                        .frame(width: 180, height: 240)
+                            ForEach(Array(appState.recentFiles.prefix(1))) { file in
+                                if let meta = appState.metadata[file.id] {
+                                    FileCard(
+                                        title: meta.title ?? file.filename,
+                                        author: meta.authors.joined(separator: ", "),
+                                        year: meta.year.map(String.init) ?? "",
+                                        tags: meta.tags,
+                                        size: file.fileSize,
+                                        pages: meta.pages,
+                                        lastOpened: meta.lastOpened,
+                                        backgroundColor: cardColors[0], // First color for new items
+                                        onTap: {
+                                            NSWorkspace.shared.open(file.fileURL)
+                                            var updatedMeta = meta
+                                            updatedMeta.lastOpened = Date()
+                                            appState.updateMetadata(for: file.id, metadata: updatedMeta)
+                                        },
+                                        editAction: { editMetadata(for: file.id) }
+                                    )
+                                    .frame(width: 180, height: 240)
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 32)
                     }
-                    .padding(.horizontal, 32)
 
                     // Items Grid Section
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("Items (8)")
+                            Text("Items (\(appState.filteredFiles.count))")
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundColor(AppTheme.textPrimary)
 
@@ -147,69 +147,55 @@ struct DetailView: View {
                         }
                         .padding(.top, 24)
 
-                        // Grid of Cards
-                        LazyVGrid(
-                            columns: [
-                                GridItem(
-                                    .adaptive(minimum: 180, maximum: 220),
-                                    spacing: 16
-                                )
-                            ],
-                            spacing: 16
-                        ) {
-                            FileCard(
-                                title:
-                                    "An Incremental Approach to Compiler Construction",
-                                author: "unknown",
-                                year: "2025",
-                                tags: ["Computer Science"],
-                                backgroundColor: AppTheme.cardTan,
-                                noteCount: 0
-                            )
-                            .frame(minHeight: 240, maxHeight: 280)
-
-                            FileCard(
-                                title:
-                                    "The Deep Learning Compiler: A Comprehensive Survey",
-                                author: "unknown",
-                                year: "2025",
-                                tags: ["Computer Science"],
-                                backgroundColor: AppTheme.cardYellow,
-                                noteCount: 0
-                            )
-                            .frame(minHeight: 240, maxHeight: 280)
-
-                            FileCard(
-                                title:
-                                    "Language Server Protocol and Language Servers.pdf",
-                                author: "DR",
-                                year: "2025",
-                                tags: ["Computer Science"],
-                                backgroundColor: AppTheme.cardBlue,
-                                noteCount: 0
-                            )
-                            .frame(minHeight: 240, maxHeight: 280)
-
-                            FileCard(
-                                title: "LLM Scaling Laws",
-                                author: "Dylan Patel, Daniel Nishball",
-                                year: "2024",
-                                tags: ["Computer Science"],
-                                backgroundColor: AppTheme.cardGreen,
-                                noteCount: 0
-                            )
-                            .frame(minHeight: 240, maxHeight: 280)
-
-                            FileCard(
-                                title:
-                                    "Introduction to Compilers and Language Design",
-                                author: "Douglas Thain",
-                                year: "2023",
-                                tags: ["Computer Science"],
-                                backgroundColor: AppTheme.cardPeach,
-                                noteCount: 0
-                            )
-                            .frame(minHeight: 240, maxHeight: 280)
+                        if appState.filteredFiles.isEmpty {
+                            VStack(spacing: 16) {
+                                Image(systemName: "doc.text")
+                                    .font(.system(size: 48))
+                                    .foregroundColor(AppTheme.textTertiary)
+                                Text("No PDFs found")
+                                    .font(.title2)
+                                    .foregroundColor(AppTheme.textPrimary)
+                                Text("Select a source directory in Settings to get started.")
+                                    .font(.body)
+                                    .foregroundColor(AppTheme.textSecondary)
+                                    .multilineTextAlignment(.center)
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 200)
+                            .padding(.vertical, 40)
+                        } else {
+                            // Grid of Cards
+                            LazyVGrid(
+                                columns: [
+                                    GridItem(
+                                        .adaptive(minimum: 180, maximum: 220),
+                                        spacing: 16
+                                    )
+                                ],
+                                spacing: 16
+                            ) {
+                                ForEach(Array(appState.filteredFiles.enumerated()), id: \.element.id) { index, file in
+                                    if let meta = appState.metadata[file.id] {
+                                        FileCard(
+                                            title: meta.title ?? file.filename,
+                                            author: meta.authors.joined(separator: ", "),
+                                            year: meta.year.map(String.init) ?? "",
+                                            tags: meta.tags,
+                                            size: file.fileSize,
+                                            pages: meta.pages,
+                                            lastOpened: meta.lastOpened,
+                                            backgroundColor: cardColors[index % cardColors.count],
+                                            onTap: {
+                                                NSWorkspace.shared.open(file.fileURL)
+                                                var updatedMeta = meta
+                                                updatedMeta.lastOpened = Date()
+                                                appState.updateMetadata(for: file.id, metadata: updatedMeta)
+                                            },
+                                            editAction: { editMetadata(for: file.id) }
+                                        )
+                                        .frame(minHeight: 240, maxHeight: 280)
+                                    }
+                                }
+                            }
                         }
                     }
                     .padding(.horizontal, 32)
@@ -223,5 +209,15 @@ struct DetailView: View {
                 .stroke(AppTheme.dividerColor, lineWidth: 2)
         )
         .padding(8)
+        .sheet(isPresented: $showingEditSheet) {
+            if let fileID = editingFileID {
+                EditMetadataSheet(fileID: fileID)
+            }
+        }
+    }
+
+    private func editMetadata(for fileID: UUID) {
+        editingFileID = fileID
+        showingEditSheet = true
     }
 }

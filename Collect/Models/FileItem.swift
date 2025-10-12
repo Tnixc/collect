@@ -8,8 +8,6 @@ struct FileItem: Identifiable {
     let dateAdded: Date
     let dateModified: Date
     
-    // TODO: Add QLPreviewItem conformance later
-    
     init(id: UUID, fileURL: URL, dateAdded: Date = Date()) {
         self.id = id
         self.fileURL = fileURL

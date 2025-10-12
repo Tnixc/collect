@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SidebarView: View {
     @EnvironmentObject var appState: AppState
+    @Binding var showingSettings: Bool
     @State private var hoveredItem: String? = nil
     
     var body: some View {
@@ -13,25 +14,32 @@ struct SidebarView: View {
                     title: "Recent",
                     icon: nil,
                     count: nil,
-                    isHovered: hoveredItem == "Recent"
+                    isHovered: hoveredItem == "Recent",
+                    isSelected: false
                 )
                 .onHover { hoveredItem = $0 ? "Recent" : nil }
-                
+
                 SidebarItem(
                     title: "Reading list",
                     icon: nil,
                     count: nil,
-                    isHovered: hoveredItem == "Reading list"
+                    isHovered: hoveredItem == "Reading list",
+                    isSelected: false
                 )
                 .onHover { hoveredItem = $0 ? "Reading list" : nil }
-                
+
                 SidebarItem(
-                    title: "Discover",
+                    title: "All Items",
                     icon: nil,
                     count: nil,
-                    isHovered: hoveredItem == "Discover"
+                    isHovered: hoveredItem == "All Items",
+                    isSelected: appState.selectedCategory == nil
                 )
-                .onHover { hoveredItem = $0 ? "Discover" : nil }
+                .onHover { hoveredItem = $0 ? "All Items" : nil }
+                .onTapGesture {
+                    appState.selectedCategory = nil
+                    appState.selectedAuthor = nil
+                }
             }
             .padding(.horizontal, 8)
             .padding(.top, 12)
@@ -54,14 +62,17 @@ struct SidebarView: View {
                     .padding(.horizontal, 16)
                     .padding(.bottom, 8)
                 
-                ForEach(sampleCategories) { category in
+                ForEach(appState.categories) { category in
                     SidebarCategoryItem(
                         title: category.name,
                         color: category.color,
                         count: category.itemCount,
-                        isSelected: category.name == "Computer Science",
+                        isSelected: appState.selectedCategory == category.name,
                         isHovered: hoveredItem == category.name
                     )
+                    .onTapGesture {
+                        appState.selectedCategory = appState.selectedCategory == category.name ? nil : category.name
+                    }
                     .onHover { hoveredItem = $0 ? category.name : nil }
                 }
                 
@@ -95,7 +106,7 @@ struct SidebarView: View {
             Spacer()
             
             // Settings Button
-            Button(action: {}) {
+            Button(action: { showingSettings = true }) {
                 HStack(spacing: 8) {
                     Image(systemName: "gearshape")
                         .font(.system(size: 13))
@@ -127,12 +138,5 @@ struct SidebarView: View {
         // Custom divider overlay removed; manual split controls spacing now
     }
     
-    var sampleCategories: [Category] {
-        [
-            Category(name: "Uncategorized", color: "gray", itemCount: 0),
-            Category(name: "Computer Science", color: "blue", itemCount: 8),
-            Category(name: "Finance", color: "orange", itemCount: 1),
-            Category(name: "Math", color: "pink", itemCount: 2),
-        ]
-    }
+
 }

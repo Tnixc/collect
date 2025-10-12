@@ -59,8 +59,8 @@ class MetadataService {
     }
     
     // Create new metadata entry
-    func createMetadata(fileID: UUID, title: String? = nil) -> FileMetadata {
-        FileMetadata(id: fileID, title: title)
+    func createMetadata(fileID: UUID, title: String? = nil, pages: Int? = nil) -> FileMetadata {
+        FileMetadata(id: fileID, title: title, pages: pages)
     }
     
     // Update metadata (same as save, but for individual)

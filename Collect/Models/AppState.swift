@@ -57,7 +57,17 @@ class AppState: ObservableObject {
         }
         return Array(authors).sorted()
     }
-    
+
+    var authorCounts: [String: Int] {
+        var counts: [String: Int] = [:]
+        for meta in metadata.values {
+            for author in meta.authors {
+                counts[author, default: 0] += 1
+            }
+        }
+        return counts
+    }
+
     var recentFiles: [FileItem] {
         let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
         return files.filter { $0.dateAdded > sevenDaysAgo }
@@ -77,7 +87,7 @@ class AppState: ObservableObject {
     func updateCategories() {
         var tagCounts: [String: Int] = [:]
         var uncategorizedCount = 0
-        
+
         for file in files {
             if let meta = metadata[file.id], !meta.tags.isEmpty {
                 for tag in meta.tags {
@@ -87,10 +97,18 @@ class AppState: ObservableObject {
                 uncategorizedCount += 1
             }
         }
-        
-        categories = tagCounts.map { Category(name: $0.key, itemCount: $0.value) }.sorted(by: { $0.name < $1.name })
+
+        let colors = ["blue", "green", "orange", "pink", "purple", "yellow", "gray", "tan"]
+        var colorIndex = 0
+
+        categories = tagCounts.map { name, count in
+            let color = colors[colorIndex % colors.count]
+            colorIndex += 1
+            return Category(name: name, color: color, itemCount: count)
+        }.sorted(by: { $0.name < $1.name })
+
         if uncategorizedCount > 0 {
-            categories.insert(Category(name: "Uncategorized", itemCount: uncategorizedCount), at: 0)
+            categories.insert(Category(name: "Uncategorized", color: "gray", itemCount: uncategorizedCount), at: 0)
         }
     }
     

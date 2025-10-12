@@ -3,6 +3,8 @@ import SwiftUI
 struct AuthorChip: View {
     let name: String
     let count: Int
+    let isSelected: Bool
+    let action: () -> Void
     
     var body: some View {
         HStack(spacing: 4) {
@@ -12,10 +14,13 @@ struct AuthorChip: View {
                 .font(.system(size: 11))
                 .foregroundColor(AppTheme.textTertiary)
         }
-        .foregroundColor(AppTheme.textSecondary)
+        .foregroundColor(isSelected ? AppTheme.textPrimary : AppTheme.textSecondary)
         .padding(.horizontal, 10)
         .padding(.vertical, 5)
-        .background(AppTheme.badgeBrown)
+        .background(isSelected ? AppTheme.badgeBeige : AppTheme.badgeBrown)
         .cornerRadius(12)
+        .onTapGesture {
+            action()
+        }
     }
 }

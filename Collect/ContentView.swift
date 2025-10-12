@@ -1,13 +1,31 @@
 import SwiftUI
 
+extension ContentView {
+    private func colorFromName(_ name: String) -> Color {
+        switch name {
+        case "blue": return Color.blue
+        case "green": return Color.green
+        case "orange": return Color.orange
+        case "pink": return Color.pink
+        case "purple": return Color.purple
+        case "yellow": return Color.yellow
+        case "gray": return Color.gray
+        case "tan": return Color(red: 0.93, green: 0.88, blue: 0.82)
+        default: return Color.blue
+        }
+    }
+}
+
 struct ContentView: View {
     @StateObject private var appState = AppState()
     @State private var isSidebarVisible: Bool = true
+    @State private var showingSettings = false
+    @State private var showingAddURL = false
     
     var body: some View {
         HStack(spacing: 0) {
             // Custom Sidebar (fixed width, not user-resizable)
-            SidebarView()
+            SidebarView(showingSettings: $showingSettings)
                 .environmentObject(appState)
                 .frame(width: isSidebarVisible ? 240 : 0)
                 .clipped()
@@ -16,6 +34,12 @@ struct ContentView: View {
             DetailView()
                 .environmentObject(appState)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .sheet(isPresented: $showingSettings) {
+            SettingsSheet()
+        }
+        .sheet(isPresented: $showingAddURL) {
+            AddURLSheet()
         }
         .animation(.easeInOut(duration: 0.25), value: isSidebarVisible)
         .toolbar {
@@ -35,25 +59,31 @@ struct ContentView: View {
                 HStack(spacing: 6) {
                     Text("My Library")
                         .font(.system(size: 13))
-                        .foregroundColor(AppTheme.textSecondary)
+                        .foregroundStyle(AppTheme.textSecondary)
                     
                     Text("/")
                         .font(.system(size: 13))
-                        .foregroundColor(AppTheme.textTertiary)
+                        .foregroundStyle(AppTheme.textTertiary)
                     
-                    HStack(spacing: 4) {
-                        Circle()
-                            .fill(Color(red: 0.4, green: 0.6, blue: 0.9))
-                            .frame(width: 8, height: 8)
-                        Text("Computer Science")
+                    if let category = appState.categories.first(where: { $0.name == appState.selectedCategory }) {
+                        HStack(spacing: 4) {
+                            Circle()
+                                .fill(colorFromName(category.color))
+                                .frame(width: 8, height: 8)
+                            Text(category.name)
+                                .font(.system(size: 13))
+                                .foregroundStyle(AppTheme.textPrimary)
+                        }
+                    } else {
+                        Text("All Items")
                             .font(.system(size: 13))
-                            .foregroundColor(AppTheme.textPrimary)
+                            .foregroundStyle(AppTheme.textPrimary)
                     }
                 }
             }
             
             ToolbarItem(placement: .automatic) {
-                Button(action: {}) {
+                Button(action: { showingAddURL = true }) {
                     Label("Add items", systemImage: "plus")
                         .labelStyle(.iconOnly)
                 }
@@ -61,11 +91,18 @@ struct ContentView: View {
             }
             
             ToolbarItem(placement: .automatic) {
-                Button(action: {}) {
-                    Label("Search", systemImage: "magnifyingglass")
-                        .labelStyle(.iconOnly)
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(AppTheme.textSecondary)
+                    TextField("Search", text: $appState.searchText)
+                        .textFieldStyle(.plain)
+                        .frame(width: 200)
+                        .foregroundColor(AppTheme.textPrimary)
                 }
-                .help("Search")
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(6)
             }
             
             ToolbarItem(placement: .automatic) {
@@ -88,7 +125,7 @@ struct ContentView: View {
                     window.toolbar?.showsBaselineSeparator = false
                 }
             }
-            // loadData() // Temporarily disabled for sandboxing
+            loadData()
         }
     }
     
@@ -101,9 +138,9 @@ struct ContentView: View {
     private func loadData() {
         // Load metadata
         appState.metadata = MetadataService.shared.load()
-        
-        // TODO: Get source directory from settings
-        if let sourceURL = getSourceDirectory() {
+
+        // Get source directory from settings
+        if let sourceURL = SettingsSheet.getSourceDirectoryURL() {
             let pdfURLs = FileSystemService.shared.scanDirectory(at: sourceURL)
             var files: [FileItem] = []
             for url in pdfURLs {
@@ -112,11 +149,18 @@ struct ContentView: View {
                 files.append(file)
             }
             appState.setFiles(files)
+
+            // Create default metadata for files without existing metadata
+            for file in files {
+                if appState.metadata[file.id] == nil {
+                    let pages = FileSystemService.shared.getPageCount(for: file.fileURL)
+                    let defaultMetadata = MetadataService.shared.createMetadata(fileID: file.id, title: file.filename, pages: pages)
+                    appState.updateMetadata(for: file.id, metadata: defaultMetadata)
+                }
+            }
+
+            // Note: Keep security scope accessed while app is running
+            // Will stop when app terminates
         }
-    }
-    
-    private func getSourceDirectory() -> URL? {
-        // Placeholder: Replace with actual source directory selection
-        return URL(fileURLWithPath: "/Users/tnixc/Developer/testpdfs")
     }
 }

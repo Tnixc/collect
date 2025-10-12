@@ -1,4 +1,5 @@
 import Foundation
+import PDFKit
 
 class FileSystemService {
     static let shared = FileSystemService()
@@ -59,5 +60,11 @@ class FileSystemService {
             setFileID(for: url, id: newID)
             return newID
         }
+    }
+
+    // Get PDF page count
+    func getPageCount(for url: URL) -> Int? {
+        guard let pdf = PDFDocument(url: url) else { return nil }
+        return pdf.pageCount
     }
 }
