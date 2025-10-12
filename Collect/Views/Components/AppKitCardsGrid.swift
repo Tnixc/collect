@@ -18,7 +18,12 @@ struct AppKitCardsGrid: NSViewRepresentable {
         let layout = LeftAlignedFlowLayout()
         layout.minimumInteritemSpacing = 16
         layout.minimumLineSpacing = 16
-        layout.sectionInset = NSEdgeInsets(top: 0, left: 0, bottom: 16, right: 0)
+        layout.sectionInset = NSEdgeInsets(
+            top: 0,
+            left: 0,
+            bottom: 16,
+            right: 0
+        )
         collectionView.collectionViewLayout = layout
         collectionView.dataSource = context.coordinator
         collectionView.delegate = context.coordinator
@@ -33,10 +38,18 @@ struct AppKitCardsGrid: NSViewRepresentable {
         containerView.addSubview(collectionView)
 
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            collectionView.topAnchor.constraint(
+                equalTo: containerView.topAnchor
+            ),
+            collectionView.leadingAnchor.constraint(
+                equalTo: containerView.leadingAnchor
+            ),
+            collectionView.trailingAnchor.constraint(
+                equalTo: containerView.trailingAnchor
+            ),
+            collectionView.bottomAnchor.constraint(
+                equalTo: containerView.bottomAnchor
+            ),
         ])
 
         return containerView
@@ -44,7 +57,8 @@ struct AppKitCardsGrid: NSViewRepresentable {
 
     func updateNSView(_ nsView: NSView, context: Context) {
         guard let containerView = nsView as? ResizingContainerView,
-              let collectionView = containerView.collectionView else { return }
+            let collectionView = containerView.collectionView
+        else { return }
         context.coordinator.files = files
         context.coordinator.metadata = metadata
         context.coordinator.categories = categories
@@ -137,7 +151,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
             let layout = collectionViewLayout as! NSCollectionViewFlowLayout
             let availableWidth =
                 collectionView.bounds.width - layout.sectionInset.left
-                    - layout.sectionInset.right
+                - layout.sectionInset.right
             let minWidth: CGFloat = 250
             let maxWidth: CGFloat = 330
             let spacing: CGFloat = layout.minimumInteritemSpacing
@@ -149,14 +163,14 @@ struct AppKitCardsGrid: NSViewRepresentable {
             )
             var itemWidth =
                 (availableWidth - (CGFloat(columns - 1) * spacing))
-                    / CGFloat(columns)
+                / CGFloat(columns)
 
             // If itemWidth > maxWidth, increase columns to reduce width
             while itemWidth > maxWidth && columns < 20 {
                 columns += 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                        / CGFloat(columns)
+                    / CGFloat(columns)
             }
 
             // If itemWidth < minWidth, decrease columns to increase width
@@ -164,13 +178,98 @@ struct AppKitCardsGrid: NSViewRepresentable {
                 columns -= 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                        / CGFloat(columns)
+                    / CGFloat(columns)
             }
 
             // Clamp to min and max to maintain consistent card sizes
             itemWidth = max(minWidth, min(maxWidth, itemWidth))
 
             return NSSize(width: itemWidth, height: 280)
+        }
+    }
+}
+
+extension NSBezierPath {
+    var cgPath: CGPath {
+        let path = CGMutablePath()
+        var points = [CGPoint](repeating: .zero, count: 3)
+
+        for i in 0..<elementCount {
+            let type = element(at: i, associatedPoints: &points)
+            switch type {
+            case .moveTo:
+                path.move(to: points[0])
+            case .lineTo:
+                path.addLine(to: points[0])
+            case .curveTo:
+                path.addCurve(
+                    to: points[2],
+                    control1: points[0],
+                    control2: points[1]
+                )
+            case .closePath:
+                path.closeSubpath()
+            @unknown default:
+                break
+            }
+        }
+
+        return path
+    }
+}
+
+class HoverableCardView: NSView {
+    var onMouseEntered: (() -> Void)?
+    var onMouseExited: (() -> Void)?
+    private var trackingArea: NSTrackingArea?
+    private var isMouseInside = false
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+
+        if let trackingArea = trackingArea {
+            removeTrackingArea(trackingArea)
+        }
+
+        let options: NSTrackingArea.Options = [
+            .mouseEnteredAndExited,
+            .activeInKeyWindow,
+            .inVisibleRect,
+        ]
+        trackingArea = NSTrackingArea(
+            rect: bounds,
+            options: options,
+            owner: self,
+            userInfo: nil
+        )
+        if let trackingArea = trackingArea {
+            addTrackingArea(trackingArea)
+        }
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        isMouseInside = true
+        onMouseEntered?()
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        isMouseInside = false
+        onMouseExited?()
+    }
+
+    override func viewDidEndLiveResize() {
+        super.viewDidEndLiveResize()
+        // Check if mouse is still inside after resize/scroll
+        if isMouseInside {
+            let mouseLocation =
+                window?.mouseLocationOutsideOfEventStream ?? .zero
+            let locationInView = convert(mouseLocation, from: nil)
+            if !bounds.contains(locationInView) {
+                isMouseInside = false
+                onMouseExited?()
+            }
         }
     }
 }
@@ -187,29 +286,185 @@ class FileCardItem: NSCollectionViewItem {
     private var createCategoryAction: (() -> Void)?
     private var titleToTopConstraint: NSLayoutConstraint?
     private var titleToTagsConstraint: NSLayoutConstraint?
+    private var isHovering = false
+
+    private var backgroundLayer: CAShapeLayer?
+    private var contentContainer: NSView?
+    private var scrollObserver: NSObjectProtocol?
+
+    deinit {
+        if let observer = scrollObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
 
     override func loadView() {
-        view = NSView()
+        view = HoverableCardView()
         view.wantsLayer = true
         view.layer?.masksToBounds = false
-        view.layer?.cornerRadius = 8
-        view.layer?.borderWidth = 2
-        view.layer?.borderColor = AppTheme.dividerNSColor.cgColor
 
-        // Add subtle shadow
-        view.layer?.shadowColor = AppTheme.shadowNSColor.cgColor
-        view.layer?.shadowOffset = NSSize(width: 0, height: 2)
-        view.layer?.shadowRadius = 4
-        view.layer?.shadowOpacity = 1.0
+        // Add subtle shadow (will be animated on hover)
+        view.layer?.shadowColor = NSColor.black.cgColor
+        view.layer?.shadowOffset = NSSize(width: 0, height: 0)
+        view.layer?.shadowRadius = 0
+        view.layer?.shadowOpacity = 0.0
+
+        // Create content container that will be scaled
+        contentContainer = NSView()
+        contentContainer?.wantsLayer = true
+        contentContainer?.layer?.masksToBounds = false
+
+        view.addSubview(contentContainer!)
+        contentContainer?.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            contentContainer!.leadingAnchor.constraint(
+                equalTo: view.leadingAnchor
+            ),
+            contentContainer!.trailingAnchor.constraint(
+                equalTo: view.trailingAnchor
+            ),
+            contentContainer!.topAnchor.constraint(equalTo: view.topAnchor),
+            contentContainer!.bottomAnchor.constraint(
+                equalTo: view.bottomAnchor
+            ),
+        ])
+
+        (view as? HoverableCardView)?.onMouseEntered = { [weak self] in
+            self?.mouseEntered(with: NSEvent())
+        }
+        (view as? HoverableCardView)?.onMouseExited = { [weak self] in
+            self?.mouseExited(with: NSEvent())
+        }
 
         setupViews()
         setupConstraints()
         setupGestures()
+        setupScrollObserver()
+    }
+
+    private func setupScrollObserver() {
+        scrollObserver = NotificationCenter.default.addObserver(
+            forName: NSView.boundsDidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            if self.isHovering {
+                // Check if mouse is still over the view
+                if let window = self.view.window {
+                    let mouseLocation = window.mouseLocationOutsideOfEventStream
+                    let locationInView = self.view.convert(
+                        mouseLocation,
+                        from: nil
+                    )
+                    if !self.view.bounds.contains(locationInView) {
+                        self.mouseExited(with: NSEvent())
+                    }
+                }
+            }
+        }
+    }
+
+    override func viewDidLayout() {
+        super.viewDidLayout()
+
+        // Set anchor point to top-left (default is center)
+        if let layer = contentContainer?.layer {
+            layer.anchorPoint = CGPoint(x: 0.0, y: 0.0)
+            layer.position = CGPoint(x: 0, y: 0)
+        }
+
+        applyAsymmetricCorners()
+    }
+
+    private func applyAsymmetricCorners() {
+        let bounds = view.bounds
+        let path = NSBezierPath()
+
+        // Start from top-left, going clockwise
+        // Top-left corner (8px radius)
+        path.move(to: NSPoint(x: 8, y: 0))
+        path.line(to: NSPoint(x: bounds.width - 20, y: 0))
+
+        // Top-right corner (20px radius)
+        path.appendArc(
+            withCenter: NSPoint(x: bounds.width - 20, y: 20),
+            radius: 20,
+            startAngle: 270,
+            endAngle: 0,
+            clockwise: false
+        )
+
+        path.line(to: NSPoint(x: bounds.width, y: bounds.height - 20))
+
+        // Bottom-right corner (20px radius)
+        path.appendArc(
+            withCenter: NSPoint(x: bounds.width - 20, y: bounds.height - 20),
+            radius: 20,
+            startAngle: 0,
+            endAngle: 90,
+            clockwise: false
+        )
+
+        path.line(to: NSPoint(x: 8, y: bounds.height))
+
+        // Bottom-left corner (8px radius)
+        path.appendArc(
+            withCenter: NSPoint(x: 8, y: bounds.height - 8),
+            radius: 8,
+            startAngle: 90,
+            endAngle: 180,
+            clockwise: false
+        )
+
+        path.line(to: NSPoint(x: 0, y: 8))
+
+        // Top-left corner continued (8px radius)
+        path.appendArc(
+            withCenter: NSPoint(x: 8, y: 8),
+            radius: 8,
+            startAngle: 180,
+            endAngle: 270,
+            clockwise: false
+        )
+
+        path.close()
+
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.path = path.cgPath
+
+        // Remove old background layer if exists
+        backgroundLayer?.removeFromSuperlayer()
+
+        // Create saturated background layer
+        backgroundLayer = CAShapeLayer()
+        backgroundLayer?.path = path.cgPath
+        backgroundLayer?.strokeColor = nil
+        backgroundLayer?.zPosition = -1
+
+        // Set fill color if we have a background color already
+        if let bgColor = contentContainer?.layer?.backgroundColor {
+            let nsColor = NSColor(cgColor: bgColor) ?? NSColor.gray
+            let saturatedColor = AppTheme.saturatedColor(for: nsColor)
+            backgroundLayer?.fillColor = saturatedColor.cgColor
+        }
+
+        if let backgroundLayer = backgroundLayer {
+            view.layer?.insertSublayer(backgroundLayer, at: 0)
+        }
+
+        // Apply mask for clipping content container
+        let maskLayer = CAShapeLayer()
+        maskLayer.path = path.cgPath
+        contentContainer?.layer?.mask = maskLayer
+
+        // Update shadow path for better performance
+        view.layer?.shadowPath = path.cgPath
     }
 
     private func setupViews() {
         tagsContainer.spacing = 6
-        view.addSubview(tagsContainer)
+        contentContainer?.addSubview(tagsContainer)
 
         titleLabel.isEditable = false
         titleLabel.isBordered = false
@@ -220,8 +475,8 @@ class FileCardItem: NSCollectionViewItem {
                 .fontDescriptor
                 .addingAttributes([
                     .traits: [
-                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold,
-                    ],
+                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold
+                    ]
                 ]),
             size: 18
         )
@@ -230,7 +485,7 @@ class FileCardItem: NSCollectionViewItem {
         titleLabel.usesSingleLineMode = false
         titleLabel.cell?.wraps = true
         titleLabel.cell?.isScrollable = false
-        view.addSubview(titleLabel)
+        contentContainer?.addSubview(titleLabel)
 
         authorLabel.isEditable = false
         authorLabel.isBordered = false
@@ -239,10 +494,10 @@ class FileCardItem: NSCollectionViewItem {
         authorLabel.textColor = AppTheme.textSecondaryNSColor
         authorLabel.maximumNumberOfLines = 1
         authorLabel.lineBreakMode = .byTruncatingTail
-        view.addSubview(authorLabel)
+        contentContainer?.addSubview(authorLabel)
 
         bottomContainer.spacing = 6
-        view.addSubview(bottomContainer)
+        contentContainer?.addSubview(bottomContainer)
     }
 
     private func setupConstraints() {
@@ -251,35 +506,37 @@ class FileCardItem: NSCollectionViewItem {
         authorLabel.translatesAutoresizingMaskIntoConstraints = false
         bottomContainer.translatesAutoresizingMaskIntoConstraints = false
 
+        guard let container = contentContainer else { return }
+
         NSLayoutConstraint.activate([
             tagsContainer.leadingAnchor.constraint(
-                equalTo: view.leadingAnchor,
+                equalTo: container.leadingAnchor,
                 constant: 12
             ),
             tagsContainer.trailingAnchor.constraint(
-                lessThanOrEqualTo: view.trailingAnchor,
+                lessThanOrEqualTo: container.trailingAnchor,
                 constant: -12
             ),
             tagsContainer.topAnchor.constraint(
-                equalTo: view.topAnchor,
+                equalTo: container.topAnchor,
                 constant: 12
             ),
 
             titleLabel.leadingAnchor.constraint(
-                equalTo: view.leadingAnchor,
+                equalTo: container.leadingAnchor,
                 constant: 12
             ),
             titleLabel.trailingAnchor.constraint(
-                equalTo: view.trailingAnchor,
+                equalTo: container.trailingAnchor,
                 constant: -12
             ),
 
             authorLabel.leadingAnchor.constraint(
-                equalTo: view.leadingAnchor,
+                equalTo: container.leadingAnchor,
                 constant: 12
             ),
             authorLabel.trailingAnchor.constraint(
-                equalTo: view.trailingAnchor,
+                equalTo: container.trailingAnchor,
                 constant: -12
             ),
             authorLabel.topAnchor.constraint(
@@ -288,21 +545,27 @@ class FileCardItem: NSCollectionViewItem {
             ),
 
             bottomContainer.leadingAnchor.constraint(
-                equalTo: view.leadingAnchor,
+                equalTo: container.leadingAnchor,
                 constant: 12
             ),
             bottomContainer.trailingAnchor.constraint(
-                lessThanOrEqualTo: view.trailingAnchor,
+                lessThanOrEqualTo: container.trailingAnchor,
                 constant: -12
             ),
             bottomContainer.bottomAnchor.constraint(
-                equalTo: view.bottomAnchor,
+                equalTo: container.bottomAnchor,
                 constant: -12
             ),
         ])
 
-        titleToTagsConstraint = titleLabel.topAnchor.constraint(equalTo: tagsContainer.bottomAnchor, constant: 12)
-        titleToTopConstraint = titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 12)
+        titleToTagsConstraint = titleLabel.topAnchor.constraint(
+            equalTo: tagsContainer.bottomAnchor,
+            constant: 12
+        )
+        titleToTopConstraint = titleLabel.topAnchor.constraint(
+            equalTo: view.topAnchor,
+            constant: 12
+        )
         titleToTagsConstraint?.isActive = true
     }
 
@@ -316,6 +579,56 @@ class FileCardItem: NSCollectionViewItem {
 
     @objc private func handleClick() {
         onTapAction?()
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        super.mouseEntered(with: event)
+        isHovering = true
+        animateHover(isEntering: true)
+        NSCursor.pointingHand.push()
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        super.mouseExited(with: event)
+        isHovering = false
+        animateHover(isEntering: false)
+        NSCursor.pop()
+    }
+
+    private func animateHover(isEntering: Bool) {
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.3
+            context.timingFunction = CAMediaTimingFunction(
+                controlPoints: 0.34,
+                1.16,
+                0.64,
+                1.0
+            )
+            context.allowsImplicitAnimation = true
+
+            let scale: CGFloat = isEntering ? 0.98 : 1.0
+            let height = contentContainer?.bounds.height ?? 0
+
+            var transform = CATransform3DIdentity
+            // Move down to top edge
+            transform = CATransform3DTranslate(
+                transform,
+                0,
+                height * (1 - scale),
+                0
+            )
+            // Scale
+            transform = CATransform3DScale(transform, scale, scale, 1.0)
+
+            contentContainer?.layer?.transform = transform
+
+            view.layer?.shadowOpacity = isEntering ? 0.15 : 0.0
+            view.layer?.shadowRadius = isEntering ? 12 : 0
+            view.layer?.shadowOffset = NSSize(
+                width: 0,
+                height: isEntering ? -12 : 0
+            )
+        }
     }
 
     private func createMenu() -> NSMenu {
@@ -394,7 +707,11 @@ class FileCardItem: NSCollectionViewItem {
         self.createCategoryAction = createCategoryAction
 
         view.menu = createMenu()
-        view.layer?.backgroundColor = backgroundColor.cgColor
+        contentContainer?.layer?.backgroundColor = backgroundColor.cgColor
+
+        // Update background layer with saturated color from mapping
+        let saturatedColor = AppTheme.saturatedColor(for: backgroundColor)
+        backgroundLayer?.fillColor = saturatedColor.cgColor
 
         // Clear existing tags
         tagsContainer.subviews.forEach { $0.removeFromSuperview() }
@@ -453,7 +770,8 @@ class FileCardItem: NSCollectionViewItem {
     private func createPill(text: String, colorName: String?) -> NSView {
         let container = NSView()
         container.wantsLayer = true
-        container.layer?.backgroundColor = AppTheme.pillBackgroundNSColor.cgColor
+        container.layer?.backgroundColor =
+            AppTheme.pillBackgroundNSColor.cgColor
         container.layer?.cornerRadius = 4
         container.translatesAutoresizingMaskIntoConstraints = false
 
@@ -550,23 +868,34 @@ class ResizingContainerView: NSView {
         let maxWidth: CGFloat = 290
         let spacing: CGFloat = 16
 
-        var columns = max(1, Int(floor((availableWidth + spacing) / (minWidth + spacing))))
-        var itemWidth = (availableWidth - CGFloat(columns - 1) * spacing) / CGFloat(columns)
+        var columns = max(
+            1,
+            Int(floor((availableWidth + spacing) / (minWidth + spacing)))
+        )
+        var itemWidth =
+            (availableWidth - CGFloat(columns - 1) * spacing) / CGFloat(columns)
 
         while itemWidth > maxWidth, columns < 20 {
             columns += 1
-            itemWidth = (availableWidth - CGFloat(columns - 1) * spacing) / CGFloat(columns)
+            itemWidth =
+                (availableWidth - CGFloat(columns - 1) * spacing)
+                / CGFloat(columns)
         }
 
         while itemWidth < minWidth, columns > 1 {
             columns -= 1
-            itemWidth = (availableWidth - CGFloat(columns - 1) * spacing) / CGFloat(columns)
+            itemWidth =
+                (availableWidth - CGFloat(columns - 1) * spacing)
+                / CGFloat(columns)
         }
 
         itemWidth = max(minWidth, min(maxWidth, itemWidth))
 
-        let rows = numberOfItems == 0 ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
-        let contentHeight = rows == 0 ? 0 : CGFloat(rows) * 280 + CGFloat(rows - 1) * 16 + 16
+        let rows =
+            numberOfItems == 0
+            ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
+        let contentHeight =
+            rows == 0 ? 0 : CGFloat(rows) * 280 + CGFloat(rows - 1) * 16 + 16
         totalHeight = contentHeight
     }
 
@@ -598,7 +927,9 @@ class ResizingContainerView: NSView {
 
 // Left-aligned collection view flow layout
 class LeftAlignedFlowLayout: NSCollectionViewFlowLayout {
-    override func layoutAttributesForElements(in rect: NSRect) -> [NSCollectionViewLayoutAttributes] {
+    override func layoutAttributesForElements(in rect: NSRect)
+        -> [NSCollectionViewLayoutAttributes]
+    {
         let attributes = super.layoutAttributesForElements(in: rect)
 
         var leftMargin = sectionInset.left

@@ -84,20 +84,28 @@ struct FileCard: View {
                 topTrailingRadius: 24
             )
             .stroke(
-                AppTheme.dividerColor,
-                lineWidth: 2
+                isHovering ? AppTheme.textPrimary.opacity(0.3) : AppTheme.dividerColor,
+                lineWidth: isHovering ? 2.5 : 2
             )
         )
-        .scaleEffect(isHovering ? 1.02 : 1.0)
+        .shadow(
+            color: isHovering ? Color.black.opacity(0.15) : Color.clear,
+            radius: isHovering ? 12 : 0,
+            x: 0,
+            y: isHovering ? 6 : 0
+        )
+        .scaleEffect(isHovering ? 1.03 : 1.0)
+        .offset(y: isHovering ? -2 : 0)
         .onHover { hovering in
-            isHovering = hovering
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                isHovering = hovering
+            }
             if hovering {
                 NSCursor.pointingHand.push()
             } else {
                 NSCursor.pop()
             }
         }
-        .animation(.easeOut(duration: 0.12), value: isHovering)
         .onTapGesture(count: 2) {
             onTap()
         }
