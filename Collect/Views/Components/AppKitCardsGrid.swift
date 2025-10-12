@@ -13,6 +13,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
     let createCategoryAction: (UUID) -> Void
 
     func makeNSView(context: Context) -> NSView {
+        let containerView = ResizingContainerView()
         let collectionView = NSCollectionView()
         let layout = LeftAlignedFlowLayout()
         layout.minimumInteritemSpacing = 16
@@ -26,12 +27,24 @@ struct AppKitCardsGrid: NSViewRepresentable {
             FileCardItem.self,
             forItemWithIdentifier: NSUserInterfaceItemIdentifier("FileCardItem")
         )
+        
+        containerView.collectionView = collectionView
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(collectionView)
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+        ])
 
-        return collectionView
+        return containerView
     }
 
     func updateNSView(_ nsView: NSView, context: Context) {
-        guard let collectionView = nsView as? NSCollectionView else { return }
+        guard let containerView = nsView as? ResizingContainerView,
+              let collectionView = containerView.collectionView else { return }
         context.coordinator.files = files
         context.coordinator.metadata = metadata
         context.coordinator.categories = categories
@@ -120,8 +133,8 @@ struct AppKitCardsGrid: NSViewRepresentable {
             let availableWidth =
                 collectionView.bounds.width - layout.sectionInset.left
                 - layout.sectionInset.right
-            let minWidth: CGFloat = 190
-            let maxWidth: CGFloat = 250
+            let minWidth: CGFloat = 210
+            let maxWidth: CGFloat = 290
             let spacing: CGFloat = layout.minimumInteritemSpacing
 
             // Calculate number of columns that best fits the width
@@ -149,13 +162,8 @@ struct AppKitCardsGrid: NSViewRepresentable {
                     / CGFloat(columns)
             }
 
-            // Final calculation to fill available width exactly
-            itemWidth =
-                (availableWidth - (CGFloat(columns - 1) * spacing))
-                / CGFloat(columns)
-
-            // Only clamp to minimum, let it expand beyond maxWidth if needed to fill space
-            itemWidth = max(minWidth, itemWidth)
+            // Clamp to min and max to maintain consistent card sizes
+            itemWidth = max(minWidth, min(maxWidth, itemWidth))
 
             return NSSize(width: itemWidth, height: 280)
         }
@@ -520,50 +528,53 @@ class FileCardItem: NSCollectionViewItem {
     }
 }
 
+// Container view that observes size changes and invalidates layout
+class ResizingContainerView: NSView {
+    weak var collectionView: NSCollectionView?
+    private var resizeWorkItem: DispatchWorkItem?
+    
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        
+        // Cancel any pending layout invalidation
+        resizeWorkItem?.cancel()
+        
+        // Invalidate immediately for better responsiveness
+        collectionView?.collectionViewLayout?.invalidateLayout()
+        
+        // Schedule a final invalidation after resize settles
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.collectionView?.collectionViewLayout?.invalidateLayout()
+        }
+        resizeWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
+    }
+    
+    override func layout() {
+        super.layout()
+        collectionView?.collectionViewLayout?.invalidateLayout()
+    }
+}
+
 // Left-aligned collection view flow layout
 class LeftAlignedFlowLayout: NSCollectionViewFlowLayout {
-    override func layoutAttributesForElements(in rect: NSRect)
-        -> [NSCollectionViewLayoutAttributes]
-    {
-        guard let collectionView = collectionView else {
-            return super.layoutAttributesForElements(in: rect)
-        }
-
+    override func layoutAttributesForElements(in rect: NSRect) -> [NSCollectionViewLayoutAttributes] {
         let attributes = super.layoutAttributesForElements(in: rect)
-        let availableWidth =
-            collectionView.bounds.width - sectionInset.left - sectionInset.right
-
-        // Group attributes by row
-        var rows: [[NSCollectionViewLayoutAttributes]] = []
-        var currentRow: [NSCollectionViewLayoutAttributes] = []
-        var lastY: CGFloat = -1
-
-        for attribute in attributes {
-            if attribute.frame.origin.y != lastY && !currentRow.isEmpty {
-                rows.append(currentRow)
-                currentRow = []
+        
+        var leftMargin = sectionInset.left
+        var maxY: CGFloat = -1.0
+        
+        attributes.forEach { layoutAttribute in
+            if layoutAttribute.frame.origin.y >= maxY {
+                leftMargin = sectionInset.left
             }
-            currentRow.append(attribute)
-            lastY = attribute.frame.origin.y
+            
+            layoutAttribute.frame.origin.x = leftMargin
+            
+            leftMargin += layoutAttribute.frame.width + minimumInteritemSpacing
+            maxY = max(layoutAttribute.frame.maxY, maxY)
         }
-        if !currentRow.isEmpty {
-            rows.append(currentRow)
-        }
-
-        // Layout each row to fill available width
-        for row in rows {
-            let itemCount = CGFloat(row.count)
-            let totalSpacing = (itemCount - 1) * minimumInteritemSpacing
-            let itemWidth = (availableWidth - totalSpacing) / itemCount
-
-            var xPosition = sectionInset.left
-            for attribute in row {
-                attribute.frame.origin.x = xPosition
-                attribute.frame.size.width = itemWidth
-                xPosition += itemWidth + minimumInteritemSpacing
-            }
-        }
-
+        
         return attributes
     }
 }
