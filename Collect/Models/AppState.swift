@@ -165,4 +165,69 @@ class AppState: ObservableObject {
             print("Error deleting file: \(error)")
         }
     }
+
+    func renameCategory(from oldName: String, to newName: String, color: String) {
+        // Prevent renaming the "Uncategorized" category
+        guard oldName != "Uncategorized" else {
+            print("Cannot rename the Uncategorized category")
+            return
+        }
+        
+        // Prevent renaming to "Uncategorized"
+        guard newName != "Uncategorized" else {
+            print("Cannot rename a category to Uncategorized")
+            return
+        }
+        
+        // Update tagColors
+        tagColors.removeValue(forKey: oldName)
+        tagColors[newName] = color
+
+        // Update all metadata tags
+        for (fileID, var meta) in metadata {
+            if let index = meta.tags.firstIndex(of: oldName) {
+                meta.tags[index] = newName
+                metadata[fileID] = meta
+            }
+        }
+
+        // Update selected category if it was the renamed one
+        if selectedCategory == oldName {
+            selectedCategory = newName
+        }
+
+        // Save metadata and update categories
+        MetadataService.shared.tagColors = tagColors
+        MetadataService.shared.save(metadata: metadata)
+        updateCategories()
+    }
+    
+    func deleteCategory(_ categoryName: String) {
+        // Prevent deleting the "Uncategorized" category
+        guard categoryName != "Uncategorized" else {
+            print("Cannot delete the Uncategorized category")
+            return
+        }
+        
+        // Remove from tagColors
+        tagColors.removeValue(forKey: categoryName)
+        
+        // Remove category from all metadata tags
+        for (fileID, var meta) in metadata {
+            if let index = meta.tags.firstIndex(of: categoryName) {
+                meta.tags.remove(at: index)
+                metadata[fileID] = meta
+            }
+        }
+        
+        // Clear selected category if it was the deleted one
+        if selectedCategory == categoryName {
+            selectedCategory = nil
+        }
+        
+        // Save metadata and update categories
+        MetadataService.shared.tagColors = tagColors
+        MetadataService.shared.save(metadata: metadata)
+        updateCategories()
+    }
 }
