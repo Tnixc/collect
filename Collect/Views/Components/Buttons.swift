@@ -38,18 +38,74 @@ struct UIButton: View {
     }
 
     private var backgroundColor: Color {
-        if style == .ghost || style == .plain {
-            return isHovered ? AppTheme.backgroundTertiary.opacity(0.5) : .clear
-        } else if style == .destructive && isHovered {
-            return AppTheme.destructive.opacity(0.2)
-        } else if style == .primary {
-            return isHovered
-                ? AppTheme.accentPrimary.opacity(0.8) : AppTheme.accentPrimary
-        } else if isHovered {
-            return AppTheme.backgroundTertiary.opacity(1.5)
-        } else {
+        switch style {
+        case .ghost, .plain:
+            if isHovered {
+                return AppTheme.backgroundTertiary.opacity(0.5)
+            }
+            return .clear
+
+        case .destructive:
+            if isHovered {
+                return AppTheme.destructive.opacity(0.2)
+            }
             return AppTheme.backgroundTertiary
+
+        case .primary:
+            if isHovered {
+                return AppTheme.accentPrimary.opacity(0.8)
+            }
+            return AppTheme.accentPrimary
         }
+    }
+
+    private var foregroundColor: Color {
+        if style == .destructive && isHovered {
+            return AppTheme.destructive
+        }
+
+        if style == .primary {
+            return AppTheme.buttonTextLight
+        }
+
+        return AppTheme.textPrimary
+    }
+
+    private var borderWidth: CGFloat {
+        switch style {
+        case .plain, .destructive:
+            return 1
+        default:
+            return 0
+        }
+    }
+
+    private var borderColor: Color {
+        switch style {
+        case .plain:
+            return AppTheme.borderColor
+        case .destructive:
+            if isHovered {
+                return AppTheme.categoryRed
+            }
+            return AppTheme.borderColor
+        default:
+            return .clear
+        }
+    }
+
+    private var buttonHeight: CGFloat {
+        if let height = height {
+            return height
+        }
+        return 32
+    }
+
+    private var scaleEffect: CGFloat {
+        if isPressed {
+            return 0.95
+        }
+        return 1.0
     }
 
     var body: some View {
@@ -71,23 +127,11 @@ struct UIButton: View {
                 if let icon = icon {
                     Image(systemName: icon)
                         .font(.system(size: 16)).frame(width: 16)
-                        .foregroundColor(
-                            style == .destructive && isHovered
-                                ? AppTheme.destructive
-                                : (style == .primary
-                                    ? AppTheme.buttonTextLight
-                                    : AppTheme.textPrimary)
-                        )
+                        .foregroundColor(foregroundColor)
                 }
-                if label != nil {
-                    Text(label ?? "")
-                        .foregroundColor(
-                            style == .destructive && isHovered
-                                ? AppTheme.destructive
-                                : (style == .primary
-                                    ? AppTheme.buttonTextLight
-                                    : AppTheme.textPrimary)
-                        )
+                if let label = label {
+                    Text(label)
+                        .foregroundColor(foregroundColor)
                 }
                 if align == .leading {
                     Spacer()
@@ -95,18 +139,15 @@ struct UIButton: View {
             }
             .padding(8)
             .padding(.horizontal, 12)
-            .frame(width: width, height: height ?? 32)
+            .frame(width: width, height: buttonHeight)
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(
-                         AppTheme.borderColor,
-                        lineWidth: style == .plain ? 1 : 0
-                    )
+                    .stroke(borderColor, lineWidth: borderWidth)
             )
             .contentShape(RoundedRectangle(cornerRadius: 8))
-            .scaleEffect(isPressed ? 0.95 : 1.0)
+            .scaleEffect(scaleEffect)
         }
         .buttonStyle(.plain)
         .smartFocusRing()
