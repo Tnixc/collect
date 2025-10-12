@@ -59,7 +59,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
 
     func updateNSView(_ nsView: NSView, context: Context) {
         guard let containerView = nsView as? ResizingContainerView,
-              let collectionView = containerView.collectionView
+            let collectionView = containerView.collectionView
         else { return }
         context.coordinator.files = files
         context.coordinator.metadata = metadata
@@ -147,7 +147,9 @@ struct AppKitCardsGrid: NSViewRepresentable {
                     addToCategoryAction: { category in
                         self.addToCategoryAction(file.id, category)
                     },
-                    createCategoryAction: { self.createCategoryAction(file.id) },
+                    createCategoryAction: {
+                        self.createCategoryAction(file.id)
+                    },
                     deleteAction: { self.deleteAction(file.id) },
                     showInFinderAction: { self.showInFinderAction(file.id) }
                 )
@@ -163,7 +165,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
             let layout = collectionViewLayout as! NSCollectionViewFlowLayout
             let availableWidth =
                 collectionView.bounds.width - layout.sectionInset.left
-                    - layout.sectionInset.right
+                - layout.sectionInset.right
             let minWidth: CGFloat = 250
             let maxWidth: CGFloat = 330
             let spacing: CGFloat = layout.minimumInteritemSpacing
@@ -175,14 +177,14 @@ struct AppKitCardsGrid: NSViewRepresentable {
             )
             var itemWidth =
                 (availableWidth - (CGFloat(columns - 1) * spacing))
-                    / CGFloat(columns)
+                / CGFloat(columns)
 
             // If itemWidth > maxWidth, increase columns to reduce width
             while itemWidth > maxWidth && columns < 20 {
                 columns += 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                        / CGFloat(columns)
+                    / CGFloat(columns)
             }
 
             // If itemWidth < minWidth, decrease columns to increase width
@@ -190,7 +192,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
                 columns -= 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                        / CGFloat(columns)
+                    / CGFloat(columns)
             }
 
             // Clamp to min and max to maintain consistent card sizes
@@ -206,7 +208,7 @@ extension NSBezierPath {
         let path = CGMutablePath()
         var points = [CGPoint](repeating: .zero, count: 3)
 
-        for i in 0 ..< elementCount {
+        for i in 0..<elementCount {
             let type = element(at: i, associatedPoints: &points)
             switch type {
             case .moveTo:
@@ -490,8 +492,8 @@ class FileCardItem: NSCollectionViewItem {
                 .fontDescriptor
                 .addingAttributes([
                     .traits: [
-                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold,
-                    ],
+                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold
+                    ]
                 ]),
             size: 18
         )
@@ -622,15 +624,16 @@ class FileCardItem: NSCollectionViewItem {
             )
             context.allowsImplicitAnimation = true
 
-            let scale: CGFloat = isEntering ? 0.98 : 1.0
+            let scale: CGFloat = isEntering ? 0.95 : 1.0
             let height = contentContainer?.bounds.height ?? 0
+            let width = contentContainer?.bounds.width ?? 0
 
             var transform = CATransform3DIdentity
             // Move down to top edge
             transform = CATransform3DTranslate(
                 transform,
-                0,
-                height * (1 - scale),
+                width * 0.5 * (1 - scale),
+                height * 0.5 * (1 - scale),
                 0
             )
             // Scale
@@ -654,7 +657,10 @@ class FileCardItem: NSCollectionViewItem {
             action: #selector(openItem),
             keyEquivalent: ""
         )
-        openItem.image = NSImage(systemSymbolName: "doc", accessibilityDescription: nil)
+        openItem.image = NSImage(
+            systemSymbolName: "doc",
+            accessibilityDescription: nil
+        )
         openItem.target = self
         menu.addItem(openItem)
         let editItem = NSMenuItem(
@@ -662,7 +668,10 @@ class FileCardItem: NSCollectionViewItem {
             action: #selector(editItem),
             keyEquivalent: ""
         )
-        editItem.image = NSImage(systemSymbolName: "pencil", accessibilityDescription: nil)
+        editItem.image = NSImage(
+            systemSymbolName: "pencil",
+            accessibilityDescription: nil
+        )
         editItem.target = self
         menu.addItem(editItem)
         let deleteItem = NSMenuItem(
@@ -670,7 +679,10 @@ class FileCardItem: NSCollectionViewItem {
             action: #selector(deleteItem),
             keyEquivalent: ""
         )
-        deleteItem.image = NSImage(systemSymbolName: "trash", accessibilityDescription: nil)
+        deleteItem.image = NSImage(
+            systemSymbolName: "trash",
+            accessibilityDescription: nil
+        )
         deleteItem.target = self
         menu.addItem(deleteItem)
         let showItem = NSMenuItem(
@@ -678,7 +690,10 @@ class FileCardItem: NSCollectionViewItem {
             action: #selector(showInFinder),
             keyEquivalent: ""
         )
-        showItem.image = NSImage(systemSymbolName: "folder", accessibilityDescription: nil)
+        showItem.image = NSImage(
+            systemSymbolName: "folder",
+            accessibilityDescription: nil
+        )
         showItem.target = self
         menu.addItem(showItem)
         let categoryMenu = NSMenu()
@@ -696,7 +711,10 @@ class FileCardItem: NSCollectionViewItem {
             action: #selector(createCategory),
             keyEquivalent: ""
         )
-        createItem.image = NSImage(systemSymbolName: "plus", accessibilityDescription: nil)
+        createItem.image = NSImage(
+            systemSymbolName: "plus",
+            accessibilityDescription: nil
+        )
         createItem.target = self
         categoryMenu.addItem(createItem)
         let categoryItem = NSMenuItem(
@@ -704,7 +722,10 @@ class FileCardItem: NSCollectionViewItem {
             action: nil,
             keyEquivalent: ""
         )
-        categoryItem.image = NSImage(systemSymbolName: "tag", accessibilityDescription: nil)
+        categoryItem.image = NSImage(
+            systemSymbolName: "tag",
+            accessibilityDescription: nil
+        )
         categoryItem.submenu = categoryMenu
         menu.addItem(categoryItem)
         return menu
@@ -721,7 +742,8 @@ class FileCardItem: NSCollectionViewItem {
     @objc private func deleteItem() {
         let alert = NSAlert()
         alert.messageText = "Delete File"
-        alert.informativeText = "Are you sure you want to delete this file? This action cannot be undone."
+        alert.informativeText =
+            "Are you sure you want to delete this file? This action cannot be undone."
         alert.addButton(withTitle: "Delete")
         alert.addButton(withTitle: "Cancel")
         let response = alert.runModal()
@@ -936,21 +958,21 @@ class ResizingContainerView: NSView {
             columns += 1
             itemWidth =
                 (availableWidth - CGFloat(columns - 1) * spacing)
-                    / CGFloat(columns)
+                / CGFloat(columns)
         }
 
         while itemWidth < minWidth, columns > 1 {
             columns -= 1
             itemWidth =
                 (availableWidth - CGFloat(columns - 1) * spacing)
-                    / CGFloat(columns)
+                / CGFloat(columns)
         }
 
         itemWidth = max(minWidth, min(maxWidth, itemWidth))
 
         let rows =
             numberOfItems == 0
-                ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
+            ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
         let contentHeight =
             rows == 0 ? 0 : CGFloat(rows) * 280 + CGFloat(rows - 1) * 16 + 16
         totalHeight = contentHeight
