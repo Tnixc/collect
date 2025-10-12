@@ -27,11 +27,12 @@ struct DetailView: View {
                     // Header Section
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(alignment: .top) {
-                            Text(appState.selectedCategory ?? "All Items")
+                            Text(appState.showReadingList ? "Reading list" : (appState.selectedCategory ?? "All Items"))
                                 .font(Typography.largeTitle)
                                 .foregroundColor(AppTheme.textPrimary)
 
-                            if let categoryName = appState.selectedCategory,
+                            if !appState.showReadingList,
+                               let categoryName = appState.selectedCategory,
                                categoryName != "Uncategorized",
                                let category = appState.categories.first(where: { $0.name == categoryName })
                             {
@@ -60,41 +61,43 @@ struct DetailView: View {
                         .frame(height: 1)
                         .padding(.horizontal, 32)
 
-                    // Authors Section
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Authors")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(AppTheme.textTertiary)
-                            .padding(.top, 16)
+                    // Authors Section (hide for reading list)
+                    if !appState.showReadingList {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Authors")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(AppTheme.textTertiary)
+                                .padding(.top, 16)
 
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                ForEach(
-                                    appState.filteredAuthorCounts.sorted(by: {
-                                        $0.key < $1.key
-                                    }),
-                                    id: \.key
-                                ) { author, count in
-                                    AuthorChip(
-                                        name: author,
-                                        count: count,
-                                        isSelected: appState.selectedAuthor
-                                            == author
-                                    ) {
-                                        appState.selectedAuthor =
-                                            appState.selectedAuthor == author
-                                                ? nil : author
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    ForEach(
+                                        appState.filteredAuthorCounts.sorted(by: {
+                                            $0.key < $1.key
+                                        }),
+                                        id: \.key
+                                    ) { author, count in
+                                        AuthorChip(
+                                            name: author,
+                                            count: count,
+                                            isSelected: appState.selectedAuthor
+                                                == author
+                                        ) {
+                                            appState.selectedAuthor =
+                                                appState.selectedAuthor == author
+                                                    ? nil : author
+                                        }
                                     }
                                 }
                             }
                         }
+                        .padding(.horizontal, 32)
                     }
-                    .padding(.horizontal, 32)
 
                     // Items Grid Section
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("Items (\(appState.filteredFiles.count))")
+                            Text("Items (\(appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count))")
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundColor(AppTheme.textPrimary)
 
@@ -112,16 +115,16 @@ struct DetailView: View {
                         }
                         .padding(.top, 24)
 
-                        if appState.filteredFiles.isEmpty {
+                        if (appState.showReadingList && appState.readingListFiles.isEmpty) || (!appState.showReadingList && appState.filteredFiles.isEmpty) {
                             VStack(spacing: 16) {
-                                Image(systemName: "doc.text")
+                                Image(systemName: appState.showReadingList ? "book" : "doc.text")
                                     .font(.system(size: 48))
                                     .foregroundColor(AppTheme.textTertiary)
-                                Text("No PDFs found")
+                                Text(appState.showReadingList ? "No items in reading list" : "No PDFs found")
                                     .font(.title2)
                                     .foregroundColor(AppTheme.textPrimary)
                                 Text(
-                                    "Select a source directory in Settings to get started."
+                                    appState.showReadingList ? "Add items to your reading list from the context menu." : "Select a source directory in Settings to get started."
                                 )
                                 .font(.body)
                                 .foregroundColor(AppTheme.textSecondary)
@@ -132,7 +135,7 @@ struct DetailView: View {
                         } else {
                             // Grid of Cards
                             AppKitCardsGrid(
-                                files: appState.filteredFiles,
+                                files: appState.showReadingList ? appState.readingListFiles : appState.filteredFiles,
                                 metadata: appState.metadata,
                                 categories: appState.categories,
                                 cardColors: cardColors,
@@ -177,6 +180,12 @@ struct DetailView: View {
                                     if let file = appState.files.first(where: { $0.id == fileID }) {
                                         NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
                                     }
+                                },
+                                addToReadingListAction: { fileID in
+                                    appState.addToReadingList(fileID: fileID)
+                                },
+                                removeFromReadingListAction: { fileID in
+                                    appState.removeFromReadingList(fileID: fileID)
                                 }
                             ).zIndex(-1)
                         }

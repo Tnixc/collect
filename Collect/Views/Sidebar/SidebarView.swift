@@ -27,12 +27,19 @@ struct SidebarView: View {
                 SidebarItem(
                     title: "Reading list",
                     icon: "book",
-                    count: nil,
+                    count: appState.readingListCount > 0 ? appState.readingListCount : nil,
                     isHovered: hoveredItem == "Reading list",
-                    isSelected: false
+                    isSelected: appState.showReadingList
                 )
                 .onHover { isHovering in
                     hoveredItem = isHovering ? "Reading list" : nil
+                }
+                .onTapGesture {
+                    appState.showReadingList.toggle()
+                    if appState.showReadingList {
+                        appState.selectedCategory = nil
+                        appState.selectedAuthor = nil
+                    }
                 }
 
                 SidebarItem(
@@ -40,7 +47,7 @@ struct SidebarView: View {
                     icon: "tray.full",
                     count: nil,
                     isHovered: hoveredItem == "All Items",
-                    isSelected: appState.selectedCategory == nil
+                    isSelected: appState.selectedCategory == nil && !appState.showReadingList
                 )
                 .onHover { isHovering in
                     hoveredItem = isHovering ? "All Items" : nil
@@ -48,6 +55,7 @@ struct SidebarView: View {
                 .onTapGesture {
                     appState.selectedCategory = nil
                     appState.selectedAuthor = nil
+                    appState.showReadingList = false
                 }
             }
             .padding(.top, 12)
@@ -85,6 +93,7 @@ struct SidebarView: View {
                     }
                     .onTapGesture {
                         appState.selectedCategory = appState.selectedCategory == uncategorized.name ? nil : uncategorized.name
+                        appState.showReadingList = false
                     }
                 }
 
@@ -125,6 +134,7 @@ struct SidebarView: View {
                     }
                     .onTapGesture {
                         appState.selectedCategory = appState.selectedCategory == category.name ? nil : category.name
+                        appState.showReadingList = false
                     }
                 }
 

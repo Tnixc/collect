@@ -51,6 +51,8 @@ class AppState: ObservableObject {
         }
     }
 
+    @Published var showReadingList: Bool = false
+
     init() {
         // Load sort option from UserDefaults
         if let savedSortOption = UserDefaults.standard.string(forKey: "sortOption"),
@@ -173,7 +175,38 @@ class AppState: ObservableObject {
         return files.filter { $0.dateAdded > sevenDaysAgo }
     }
 
+    var readingListFiles: [FileItem] {
+        return files.filter { file in
+            metadata[file.id]?.isInReadingList == true
+        }
+    }
+
+    var readingListCount: Int {
+        return readingListFiles.count
+    }
+
     // Methods to update state
+    func addToReadingList(fileID: UUID) {
+        guard var meta = metadata[fileID] else { return }
+        meta.isInReadingList = true
+        updateMetadata(for: fileID, metadata: meta)
+    }
+
+    func removeFromReadingList(fileID: UUID) {
+        guard var meta = metadata[fileID] else { return }
+        meta.isInReadingList = false
+        updateMetadata(for: fileID, metadata: meta)
+    }
+
+    func toggleReadingList(fileID: UUID) {
+        guard let meta = metadata[fileID] else { return }
+        if meta.isInReadingList {
+            removeFromReadingList(fileID: fileID)
+        } else {
+            addToReadingList(fileID: fileID)
+        }
+    }
+
     func updateMetadata(for fileID: UUID, metadata: FileMetadata) {
         self.metadata[fileID] = metadata
         MetadataService.shared.tagColors = tagColors

@@ -10,8 +10,9 @@ struct FileMetadata: Codable, Identifiable {
     var lastOpened: Date?
     var pages: Int?
     var cardColor: String // Hex color string or name
+    var isInReadingList: Bool
 
-    init(id: UUID, title: String? = nil, authors: [String] = [], year: Int? = nil, tags: [String] = [], dateAdded: Date = Date(), lastOpened: Date? = nil, pages: Int? = nil, cardColor: String = "cardTan") {
+    init(id: UUID, title: String? = nil, authors: [String] = [], year: Int? = nil, tags: [String] = [], dateAdded: Date = Date(), lastOpened: Date? = nil, pages: Int? = nil, cardColor: String = "cardTan", isInReadingList: Bool = false) {
         self.id = id
         self.title = title
         self.authors = authors
@@ -21,5 +22,6 @@ struct FileMetadata: Codable, Identifiable {
         self.lastOpened = lastOpened
         self.pages = pages
         self.cardColor = cardColor
+        self.isInReadingList = isInReadingList
     }
 }

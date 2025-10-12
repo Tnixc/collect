@@ -14,6 +14,8 @@ struct AppKitCardsGrid: NSViewRepresentable {
     let createCategoryAction: (UUID) -> Void
     let deleteAction: (UUID) -> Void
     let showInFinderAction: (UUID) -> Void
+    let addToReadingListAction: (UUID) -> Void
+    let removeFromReadingListAction: (UUID) -> Void
 
     func makeNSView(context: Context) -> NSView {
         let containerView = ResizingContainerView()
@@ -94,7 +96,9 @@ struct AppKitCardsGrid: NSViewRepresentable {
             addToCategoryAction: addToCategoryAction,
             createCategoryAction: createCategoryAction,
             deleteAction: deleteAction,
-            showInFinderAction: showInFinderAction
+            showInFinderAction: showInFinderAction,
+            addToReadingListAction: addToReadingListAction,
+            removeFromReadingListAction: removeFromReadingListAction
         )
     }
 
@@ -110,8 +114,10 @@ struct AppKitCardsGrid: NSViewRepresentable {
         let editAction: (UUID) -> Void
         let addToCategoryAction: (UUID, String) -> Void
         let createCategoryAction: (UUID) -> Void
-        let deleteAction: (UUID) -> Void
-        let showInFinderAction: (UUID) -> Void
+        var deleteAction: (UUID) -> Void
+        var showInFinderAction: (UUID) -> Void
+        var addToReadingListAction: (UUID) -> Void
+        var removeFromReadingListAction: (UUID) -> Void
 
         init(
             disableHover: Bool,
@@ -120,8 +126,14 @@ struct AppKitCardsGrid: NSViewRepresentable {
             addToCategoryAction: @escaping (UUID, String) -> Void,
             createCategoryAction: @escaping (UUID) -> Void,
             deleteAction: @escaping (UUID) -> Void,
-            showInFinderAction: @escaping (UUID) -> Void
+            showInFinderAction: @escaping (UUID) -> Void,
+            addToReadingListAction: @escaping (UUID) -> Void,
+            removeFromReadingListAction: @escaping (UUID) -> Void
         ) {
+            files = []
+            metadata = [:]
+            categories = []
+            cardColors = []
             self.disableHover = disableHover
             self.onTap = onTap
             self.editAction = editAction
@@ -129,6 +141,8 @@ struct AppKitCardsGrid: NSViewRepresentable {
             self.createCategoryAction = createCategoryAction
             self.deleteAction = deleteAction
             self.showInFinderAction = showInFinderAction
+            self.addToReadingListAction = addToReadingListAction
+            self.removeFromReadingListAction = removeFromReadingListAction
         }
 
         func collectionView(
@@ -177,7 +191,9 @@ struct AppKitCardsGrid: NSViewRepresentable {
                         self.createCategoryAction(file.id)
                     },
                     deleteAction: { self.deleteAction(file.id) },
-                    showInFinderAction: { self.showInFinderAction(file.id) }
+                    showInFinderAction: { self.showInFinderAction(file.id) },
+                    addToReadingListAction: { self.addToReadingListAction(file.id) },
+                    removeFromReadingListAction: { self.removeFromReadingListAction(file.id) }
                 )
             }
             return item
@@ -326,7 +342,10 @@ class FileCardItem: NSCollectionViewItem {
     private var createCategoryAction: (() -> Void)?
     private var deleteAction: (() -> Void)?
     private var showInFinderAction: (() -> Void)?
+    private var addToReadingListAction: (() -> Void)?
+    private var removeFromReadingListAction: (() -> Void)?
     private var file: FileItem?
+    private var metadata: FileMetadata?
     private var titleToTopConstraint: NSLayoutConstraint?
     private var titleToTagsConstraint: NSLayoutConstraint?
     private var isHovering = false
@@ -705,6 +724,22 @@ class FileCardItem: NSCollectionViewItem {
         )
         editItem.target = self
         menu.addItem(editItem)
+
+        // Reading list item
+        let isInReadingList = metadata?.isInReadingList ?? false
+        let readingListItem = NSMenuItem(
+            title: isInReadingList ? "Remove from Reading List" : "Add to Reading List",
+            action: isInReadingList ? #selector(removeFromReadingList) : #selector(addToReadingList),
+            keyEquivalent: ""
+        )
+        readingListItem.image = NSImage(
+            systemSymbolName: isInReadingList ? "book.fill" : "book",
+            accessibilityDescription: nil
+        )
+        readingListItem.target = self
+        menu.addItem(readingListItem)
+
+        menu.addItem(NSMenuItem.separator())
         let deleteItem = NSMenuItem(
             title: "Delete",
             action: #selector(deleteItem),
@@ -799,6 +834,14 @@ class FileCardItem: NSCollectionViewItem {
         createCategoryAction?()
     }
 
+    @objc private func addToReadingList() {
+        addToReadingListAction?()
+    }
+
+    @objc private func removeFromReadingList() {
+        removeFromReadingListAction?()
+    }
+
     func configure(
         with file: FileItem,
         metadata: FileMetadata,
@@ -810,9 +853,12 @@ class FileCardItem: NSCollectionViewItem {
         addToCategoryAction: @escaping (String) -> Void,
         createCategoryAction: @escaping () -> Void,
         deleteAction: @escaping () -> Void,
-        showInFinderAction: @escaping () -> Void
+        showInFinderAction: @escaping () -> Void,
+        addToReadingListAction: @escaping () -> Void,
+        removeFromReadingListAction: @escaping () -> Void
     ) {
         self.file = file
+        self.metadata = metadata
         self.categories = categories
         onTapAction = onTap
         self.editAction = editAction
@@ -820,6 +866,8 @@ class FileCardItem: NSCollectionViewItem {
         self.createCategoryAction = createCategoryAction
         self.deleteAction = deleteAction
         self.showInFinderAction = showInFinderAction
+        self.addToReadingListAction = addToReadingListAction
+        self.removeFromReadingListAction = removeFromReadingListAction
         self.disableHover = disableHover
 
         view.menu = createMenu()
