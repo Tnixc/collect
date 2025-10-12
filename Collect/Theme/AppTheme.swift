@@ -135,6 +135,7 @@ enum AppTheme {
     static let dividerNSColor = NSColor(hex: "#d2d0ce")
     static let textPrimaryNSColor = NSColor(hex: "#5a5856")
     static let textSecondaryNSColor = NSColor(hex: "#878583")
+    static let textTertiaryNSColor = NSColor(hex: "#a5a3a1")
     static let shadowNSColor = NSColor.black.withAlphaComponent(0.06)
     static let pillBackgroundNSColor = NSColor(white: 1, alpha: 0.55)
 

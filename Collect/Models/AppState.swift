@@ -37,6 +37,20 @@ public enum SortOption: String, CaseIterable {
     }
 }
 
+public enum ViewMode: String, CaseIterable, Hashable {
+    case grid = "Grid"
+    case list = "List"
+    
+    var iconName: String {
+        switch self {
+        case .grid:
+            return "square.grid.2x2"
+        case .list:
+            return "list.bullet"
+        }
+    }
+}
+
 class AppState: ObservableObject {
     @Published var files: [FileItem] = []
     @Published var metadata: [UUID: FileMetadata] = [:]
@@ -50,8 +64,13 @@ class AppState: ObservableObject {
             UserDefaults.standard.set(sortOption.rawValue, forKey: "sortOption")
         }
     }
-
     @Published var showReadingList: Bool = false
+    @Published var showRecent: Bool = false
+    @Published var viewMode: ViewMode = .grid {
+        didSet {
+            UserDefaults.standard.set(viewMode.rawValue, forKey: "viewMode")
+        }
+    }
 
     init() {
         // Load sort option from UserDefaults
@@ -59,6 +78,13 @@ class AppState: ObservableObject {
            let option = SortOption(rawValue: savedSortOption)
         {
             sortOption = option
+        }
+        
+        // Load view mode from UserDefaults
+        if let savedViewMode = UserDefaults.standard.string(forKey: "viewMode"),
+           let mode = ViewMode(rawValue: savedViewMode)
+        {
+            viewMode = mode
         }
     }
 
@@ -173,6 +199,25 @@ class AppState: ObservableObject {
     var recentFiles: [FileItem] {
         let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
         return files.filter { $0.dateAdded > sevenDaysAgo }
+    }
+
+    var lastOpenedFiles: [FileItem] {
+        return files
+            .filter { metadata[$0.id]?.lastOpened != nil }
+            .sorted { lhs, rhs in
+                let lhsOpened = metadata[lhs.id]?.lastOpened ?? Date.distantPast
+                let rhsOpened = metadata[rhs.id]?.lastOpened ?? Date.distantPast
+                return lhsOpened > rhsOpened
+            }
+            .prefix(3)
+            .map { $0 }
+    }
+
+    var lastAddedFiles: [FileItem] {
+        return files
+            .sorted { $0.dateAdded > $1.dateAdded }
+            .prefix(3)
+            .map { $0 }
     }
 
     var readingListFiles: [FileItem] {

@@ -1,7 +1,7 @@
-# Reading List Feature Implementation
+# Reading List and Recent View Feature Implementation
 
 ## Overview
-This document describes the implementation of the Reading List feature in the Collect app. The reading list allows users to mark PDFs for later reading and access them through a dedicated sidebar section.
+This document describes the implementation of the Reading List and Recent view features in the Collect app. The reading list allows users to mark PDFs for later reading and access them through a dedicated sidebar section. The Recent view shows the last 3 files opened and the last 3 files added.
 
 ## Changes Made
 
@@ -16,9 +16,12 @@ This document describes the implementation of the Reading List feature in the Co
 
 #### AppState.swift
 - Added `@Published var showReadingList: Bool = false` to track when the reading list view is active
+- Added `@Published var showRecent: Bool = false` to track when the recent view is active
 - Added computed properties:
   - `readingListFiles: [FileItem]` - Returns files that are marked as in the reading list
   - `readingListCount: Int` - Returns the count of items in the reading list
+  - `lastOpenedFiles: [FileItem]` - Returns the last 3 files that were opened, sorted by lastOpened date
+  - `lastAddedFiles: [FileItem]` - Returns the last 3 files added, sorted by dateAdded date
 - Added methods:
   - `addToReadingList(fileID: UUID)` - Marks a file as being in the reading list
   - `removeFromReadingList(fileID: UUID)` - Removes a file from the reading list
@@ -28,23 +31,33 @@ This document describes the implementation of the Reading List feature in the Co
 
 #### SidebarView.swift
 - Made the "Reading list" sidebar item functional
-- Display the count of items in the reading list (when > 0)
-- Added selection state - the item appears selected when `showReadingList` is true
-- Added tap gesture to toggle the reading list view
-- When reading list is selected, it clears category and author filters
-- Updated other sidebar items to clear `showReadingList` when selected
+  - Display the count of items in the reading list (when > 0)
+  - Added selection state - the item appears selected when `showReadingList` is true
+  - Added tap gesture to toggle the reading list view
+  - When reading list is selected, it clears category and author filters
+- Made the "Recent" sidebar item functional
+  - Added selection state - the item appears selected when `showRecent` is true
+  - Added tap gesture to toggle the recent view
+  - When recent is selected, it clears category, author filters, and reading list
+- Added total item count to "All Items" sidebar item
+- Updated all sidebar items to properly clear `showReadingList` and `showRecent` when selected
 
 #### DetailView.swift
-- Updated header to show "Reading list" when in reading list mode
-- Hide the category edit button when viewing the reading list
-- Hide the authors section when viewing the reading list
-- Display appropriate empty state messages:
+- Updated header to show "Reading list" when in reading list mode, or "Recent" when in recent mode
+- Hide the category edit button when viewing the reading list or recent view
+- Hide the authors section when viewing the reading list or recent view
+- Added Recent view with two sections:
+  - **Recently Opened**: Shows last 3 files opened (sorted by lastOpened date)
+  - **Recently Added**: Shows last 3 files added (sorted by dateAdded date)
+  - Each section has its own grid with full card functionality
+  - Empty state messages for sections with no items
+- Display appropriate empty state messages for reading list:
   - "No items in reading list" with book icon
   - "Add items to your reading list from the context menu."
 - Updated the grid to show either `readingListFiles` or `filteredFiles` based on mode
 - Added support for reading list actions in the AppKitCardsGrid component
 
-#### AppKitCardsGrid.swift
+#### AppKitCardsGrid.swift and FileCard.swift
 - Added new action closures:
   - `addToReadingListAction: (UUID) -> Void`
   - `removeFromReadingListAction: (UUID) -> Void`
@@ -56,14 +69,24 @@ This document describes the implementation of the Reading List feature in the Co
   - "Add to Reading List" with book icon (when not in list)
   - "Remove from Reading List" with filled book icon (when in list)
 - Added separator before delete/show in finder actions for better organization
+- Filtered out "Uncategorized" from the "Add to Category" submenu (users cannot explicitly add to Uncategorized)
 
 ### 4. Context Menu Integration
 
-The reading list functionality is accessible through right-click context menus on file cards:
+The reading list and recent view functionality is accessible through the sidebar and context menus:
+
+**Reading List:**
+- Right-click on any PDF card to add/remove from reading list
 - **Add to Reading List**: Appears when file is not in the reading list
 - **Remove from Reading List**: Appears when file is already in the reading list
 - The menu item dynamically changes based on the current state
 - Uses appropriate SF Symbol icons (`book` and `book.fill`)
+
+**Recent View:**
+- Click "Recent" in the sidebar to view recent activity
+- Shows two sections with the most recently opened and added files
+- Each section displays up to 3 files
+- All standard card actions are available (open, edit, categorize, etc.)
 
 ## User Experience
 
@@ -84,6 +107,14 @@ The reading list functionality is accessible through right-click context menus o
 3. Select "Remove from Reading List"
 4. The item is removed from the reading list but remains in the library
 
+### Viewing Recent Files
+1. Click the "Recent" item in the sidebar
+2. The main view switches to show recent activity in two sections:
+   - **Recently Opened**: Last 3 files you opened
+   - **Recently Added**: Last 3 files you added to the library
+3. The header displays "Recent"
+4. Authors filter and sort dropdown are hidden (not applicable for recent view)
+
 ## Data Persistence
 
 The reading list state is automatically persisted through the existing metadata system:
@@ -91,22 +122,34 @@ The reading list state is automatically persisted through the existing metadata 
 - Changes are saved to `metadata.json` via `MetadataService`
 - Reading list state persists across app launches
 
+The recent view uses existing date fields that are already persisted:
+- `lastOpened` date in `FileMetadata` (updated when files are opened)
+- `dateAdded` date in `FileItem` (set when files are added to the library)
+
 ## Technical Notes
 
 - The reading list is independent of categories - items can be in both a category and the reading list
 - The reading list view shows all items marked for reading, regardless of their category
-- Sorting options remain available in reading list view
+- Sorting options remain available in reading list view (but hidden in recent view)
 - Search functionality works within the reading list view
 - File deletion removes the item from both the reading list and the library
+- The recent view dynamically updates based on user activity (opening and adding files)
+- Recent view sections show empty state messages when no files match the criteria
+- Cannot add files to "Uncategorized" category - this is a system category for untagged items
 - The implementation follows the existing patterns in the codebase for consistency
 
 ## Future Enhancements (Not Implemented)
 
-Possible future improvements:
+Possible future improvements for Reading List:
 - Batch operations (add multiple items at once)
 - Reading progress tracking
-- Recently removed items
 - Reading list export/import
 - Multiple reading lists
 - Drag and drop reordering
 - Reading list sharing
+
+Possible future improvements for Recent View:
+- Configurable number of items per section (currently fixed at 3)
+- Additional sections (recently modified, recently categorized, etc.)
+- Date range filters
+- "See all" links to expand sections

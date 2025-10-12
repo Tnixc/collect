@@ -62,7 +62,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
 
     func updateNSView(_ nsView: NSView, context: Context) {
         guard let containerView = nsView as? ResizingContainerView,
-              let collectionView = containerView.collectionView
+            let collectionView = containerView.collectionView
         else { return }
         context.coordinator.files = files
         context.coordinator.metadata = metadata
@@ -171,9 +171,10 @@ struct AppKitCardsGrid: NSViewRepresentable {
                     backgroundColor = NSColor(colorName)
                 } else {
                     // Fallback to hash-based color if cardColor is not found
-                    backgroundColor = cardColors[
-                        abs(file.id.hashValue) % cardColors.count
-                    ]
+                    backgroundColor =
+                        cardColors[
+                            abs(file.id.hashValue) % cardColors.count
+                        ]
                 }
 
                 item.configure(
@@ -192,8 +193,12 @@ struct AppKitCardsGrid: NSViewRepresentable {
                     },
                     deleteAction: { self.deleteAction(file.id) },
                     showInFinderAction: { self.showInFinderAction(file.id) },
-                    addToReadingListAction: { self.addToReadingListAction(file.id) },
-                    removeFromReadingListAction: { self.removeFromReadingListAction(file.id) }
+                    addToReadingListAction: {
+                        self.addToReadingListAction(file.id)
+                    },
+                    removeFromReadingListAction: {
+                        self.removeFromReadingListAction(file.id)
+                    }
                 )
             }
             return item
@@ -207,7 +212,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
             let layout = collectionViewLayout as! NSCollectionViewFlowLayout
             let availableWidth =
                 collectionView.bounds.width - layout.sectionInset.left
-                    - layout.sectionInset.right
+                - layout.sectionInset.right
             let minWidth: CGFloat = 250
             let maxWidth: CGFloat = 330
             let spacing: CGFloat = layout.minimumInteritemSpacing
@@ -219,14 +224,14 @@ struct AppKitCardsGrid: NSViewRepresentable {
             )
             var itemWidth =
                 (availableWidth - (CGFloat(columns - 1) * spacing))
-                    / CGFloat(columns)
+                / CGFloat(columns)
 
             // If itemWidth > maxWidth, increase columns to reduce width
             while itemWidth > maxWidth && columns < 20 {
                 columns += 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                        / CGFloat(columns)
+                    / CGFloat(columns)
             }
 
             // If itemWidth < minWidth, decrease columns to increase width
@@ -234,7 +239,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
                 columns -= 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                        / CGFloat(columns)
+                    / CGFloat(columns)
             }
 
             // Clamp to min and max to maintain consistent card sizes
@@ -250,7 +255,7 @@ extension NSBezierPath {
         let path = CGMutablePath()
         var points = [CGPoint](repeating: .zero, count: 3)
 
-        for i in 0 ..< elementCount {
+        for i in 0..<elementCount {
             let type = element(at: i, associatedPoints: &points)
             switch type {
             case .moveTo:
@@ -496,26 +501,6 @@ class FileCardItem: NSCollectionViewItem {
         let shapeLayer = CAShapeLayer()
         shapeLayer.path = path.cgPath
 
-        // Remove old background layer if exists
-        backgroundLayer?.removeFromSuperlayer()
-
-        // Create saturated background layer
-        backgroundLayer = CAShapeLayer()
-        backgroundLayer?.path = path.cgPath
-        backgroundLayer?.strokeColor = nil
-        backgroundLayer?.zPosition = -1
-
-        // Set fill color if we have a background color already
-        if let bgColor = contentContainer?.layer?.backgroundColor {
-            let nsColor = NSColor(cgColor: bgColor) ?? NSColor.gray
-            let saturatedColor = AppTheme.saturatedColor(for: nsColor)
-            backgroundLayer?.fillColor = saturatedColor.cgColor
-        }
-
-        if let backgroundLayer = backgroundLayer {
-            view.layer?.insertSublayer(backgroundLayer, at: 0)
-        }
-
         // Apply mask for clipping content container
         let maskLayer = CAShapeLayer()
         maskLayer.path = path.cgPath
@@ -538,8 +523,8 @@ class FileCardItem: NSCollectionViewItem {
                 .fontDescriptor
                 .addingAttributes([
                     .traits: [
-                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold,
-                    ],
+                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold
+                    ]
                 ]),
             size: 18
         )
@@ -674,7 +659,7 @@ class FileCardItem: NSCollectionViewItem {
             )
             context.allowsImplicitAnimation = true
 
-            let scale: CGFloat = isEntering ? 0.95 : 1.0
+            let scale: CGFloat = isEntering ? 0.98 : 1.0
             let height = contentContainer?.bounds.height ?? 0
             let width = contentContainer?.bounds.width ?? 0
 
@@ -691,11 +676,11 @@ class FileCardItem: NSCollectionViewItem {
 
             contentContainer?.layer?.transform = transform
 
-            view.layer?.shadowOpacity = isEntering ? 0.15 : 0.0
-            view.layer?.shadowRadius = isEntering ? 12 : 0
+            view.layer?.shadowOpacity = isEntering ? 0.05 : 0.0
+            view.layer?.shadowRadius = isEntering ? 22 : 0
             view.layer?.shadowOffset = NSSize(
                 width: 0,
-                height: isEntering ? -12 : 0
+                height: 0
             )
         }
     }
@@ -728,8 +713,11 @@ class FileCardItem: NSCollectionViewItem {
         // Reading list item
         let isInReadingList = metadata?.isInReadingList ?? false
         let readingListItem = NSMenuItem(
-            title: isInReadingList ? "Remove from Reading List" : "Add to Reading List",
-            action: isInReadingList ? #selector(removeFromReadingList) : #selector(addToReadingList),
+            title: isInReadingList
+                ? "Remove from Reading List" : "Add to Reading List",
+            action: isInReadingList
+                ? #selector(removeFromReadingList)
+                : #selector(addToReadingList),
             keyEquivalent: ""
         )
         readingListItem.image = NSImage(
@@ -763,7 +751,7 @@ class FileCardItem: NSCollectionViewItem {
         showItem.target = self
         menu.addItem(showItem)
         let categoryMenu = NSMenu()
-        for category in categories {
+        for category in categories where category.name != "Uncategorized" {
             let item = NSMenuItem(
                 title: category.name,
                 action: #selector(addToCategory(_:)),
@@ -1051,21 +1039,21 @@ class ResizingContainerView: NSView {
             columns += 1
             itemWidth =
                 (availableWidth - CGFloat(columns - 1) * spacing)
-                    / CGFloat(columns)
+                / CGFloat(columns)
         }
 
         while itemWidth < minWidth, columns > 1 {
             columns -= 1
             itemWidth =
                 (availableWidth - CGFloat(columns - 1) * spacing)
-                    / CGFloat(columns)
+                / CGFloat(columns)
         }
 
         itemWidth = max(minWidth, min(maxWidth, itemWidth))
 
         let rows =
             numberOfItems == 0
-                ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
+            ? 0 : Int(ceil(Double(numberOfItems) / Double(columns)))
         let contentHeight =
             rows == 0 ? 0 : CGFloat(rows) * 280 + CGFloat(rows - 1) * 16 + 16
         totalHeight = contentHeight

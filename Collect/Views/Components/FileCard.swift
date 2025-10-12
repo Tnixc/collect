@@ -117,7 +117,7 @@ struct FileCard: View {
                 Label("Edit Metadata", systemImage: "pencil")
             }
             Menu {
-                ForEach(categories, id: \.name) { category in
+                ForEach(categories.filter { $0.name != "Uncategorized" }, id: \.name) { category in
                     Button(action: {
                         addToCategoryAction(category.name)
                     }) {

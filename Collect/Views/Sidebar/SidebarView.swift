@@ -10,7 +10,7 @@ struct SidebarView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer().frame(height: 80)
+            Spacer().frame(height: 40)
             // Fixed Items
             VStack(alignment: .leading, spacing: 1) {
                 SidebarItem(
@@ -18,10 +18,18 @@ struct SidebarView: View {
                     icon: "clock",
                     count: nil,
                     isHovered: hoveredItem == "Recent",
-                    isSelected: false
+                    isSelected: appState.showRecent
                 )
                 .onHover { isHovering in
                     hoveredItem = isHovering ? "Recent" : nil
+                }
+                .onTapGesture {
+                    appState.showRecent.toggle()
+                    if appState.showRecent {
+                        appState.selectedCategory = nil
+                        appState.selectedAuthor = nil
+                        appState.showReadingList = false
+                    }
                 }
 
                 SidebarItem(
@@ -39,15 +47,16 @@ struct SidebarView: View {
                     if appState.showReadingList {
                         appState.selectedCategory = nil
                         appState.selectedAuthor = nil
+                        appState.showRecent = false
                     }
                 }
 
                 SidebarItem(
                     title: "All Items",
                     icon: "tray.full",
-                    count: nil,
+                    count: appState.files.count > 0 ? appState.files.count : nil,
                     isHovered: hoveredItem == "All Items",
-                    isSelected: appState.selectedCategory == nil && !appState.showReadingList
+                    isSelected: appState.selectedCategory == nil && !appState.showReadingList && !appState.showRecent
                 )
                 .onHover { isHovering in
                     hoveredItem = isHovering ? "All Items" : nil
@@ -56,6 +65,7 @@ struct SidebarView: View {
                     appState.selectedCategory = nil
                     appState.selectedAuthor = nil
                     appState.showReadingList = false
+                    appState.showRecent = false
                 }
             }
             .padding(.top, 12)
@@ -94,6 +104,7 @@ struct SidebarView: View {
                     .onTapGesture {
                         appState.selectedCategory = appState.selectedCategory == uncategorized.name ? nil : uncategorized.name
                         appState.showReadingList = false
+                        appState.showRecent = false
                     }
                 }
 
@@ -135,6 +146,7 @@ struct SidebarView: View {
                     .onTapGesture {
                         appState.selectedCategory = appState.selectedCategory == category.name ? nil : category.name
                         appState.showReadingList = false
+                        appState.showRecent = false
                     }
                 }
 
