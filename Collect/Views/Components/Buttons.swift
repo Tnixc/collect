@@ -70,12 +70,13 @@ struct UIButton: View {
                 }
                 if let icon = icon {
                     Image(systemName: icon)
-                        .font(.system(size: 15)).frame(width: 14)
+                        .font(.system(size: 16)).frame(width: 16)
                         .foregroundColor(
                             style == .destructive && isHovered
                                 ? AppTheme.destructive
                                 : (style == .primary
-                                    ? AppTheme.buttonTextLight : AppTheme.textPrimary)
+                                    ? AppTheme.buttonTextLight
+                                    : AppTheme.textPrimary)
                         )
                 }
                 if label != nil {
@@ -84,7 +85,8 @@ struct UIButton: View {
                             style == .destructive && isHovered
                                 ? AppTheme.destructive
                                 : (style == .primary
-                                    ? AppTheme.buttonTextLight : AppTheme.textPrimary)
+                                    ? AppTheme.buttonTextLight
+                                    : AppTheme.textPrimary)
                         )
                 }
                 if align == .leading {
@@ -92,13 +94,14 @@ struct UIButton: View {
                 }
             }
             .padding(8)
+            .padding(.horizontal, 12)
             .frame(width: width, height: height ?? 32)
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(
-                        style == .plain ? AppTheme.borderColor : Color.clear,
+                         AppTheme.borderColor,
                         lineWidth: style == .plain ? 1 : 0
                     )
             )

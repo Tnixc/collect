@@ -110,15 +110,26 @@ struct FileCard: View {
             onTap()
         }
         .contextMenu {
-            Button("Open", action: onTap)
-            Button("Edit Metadata", action: editAction)
-            Menu("Add to Category") {
+            Button(action: onTap) {
+                Label("Open", systemImage: "doc")
+            }
+            Button(action: editAction) {
+                Label("Edit Metadata", systemImage: "pencil")
+            }
+            Menu {
                 ForEach(categories, id: \.name) { category in
-                    Button(category.name) {
+                    Button(action: {
                         addToCategoryAction(category.name)
+                    }) {
+                        Label(category.name, systemImage: "tag")
                     }
                 }
-                Button("Create New Category", action: createCategoryAction)
+                Divider()
+                Button(action: createCategoryAction) {
+                    Label("Create New Category", systemImage: "plus")
+                }
+            } label: {
+                Label("Add to Category", systemImage: "folder")
             }
         }
     }

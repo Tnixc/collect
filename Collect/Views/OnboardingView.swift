@@ -177,7 +177,7 @@ struct DirectorySelectionSheet: View {
             }
             Spacer()
             HStack {
-                UIButton(action: { dismiss() }, style: .ghost, label: "Cancel")
+                UIButton(action: { dismiss() }, style: .plain, label: "Cancel")
                 Spacer()
                 UIButton(
                     action: {

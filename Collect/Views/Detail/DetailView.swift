@@ -12,6 +12,7 @@ struct DetailView: View {
     @State private var editingFileID: UUID?
     @State private var showingCreateCategory = false
     @State private var creatingForFileID: UUID?
+    @State private var editingCategory: Category?
 
     private let cardColors: [NSColor] = AppTheme.cardNSColors
 
@@ -29,16 +30,20 @@ struct DetailView: View {
                                 .font(Typography.largeTitle)
                                 .foregroundColor(AppTheme.textPrimary)
 
-                            UIButton(
-                                action: {
-                                    // TODO: rename
-                                },
-                                style: .ghost,
-                                icon: "pencil",
-                                width: 24,
-                                height: 24
-                            )
-                            .padding(.top, 8)
+                            if let categoryName = appState.selectedCategory,
+                               categoryName != "Uncategorized",
+                               let category = appState.categories.first(where: { $0.name == categoryName }) {
+                                UIButton(
+                                    action: {
+                                        editingCategory = category
+                                    },
+                                    style: .ghost,
+                                    icon: "pencil",
+                                    width: 24,
+                                    height: 24
+                                )
+                                .padding(.top, 8)
+                            }
 
                             Spacer()
                         }
@@ -204,6 +209,11 @@ struct DetailView: View {
                 }
             }
             .environmentObject(appState)
+        }
+        .sheet(item: $editingCategory) { category in
+            EditCategorySheet(category: category) { newName, newColor in
+                appState.renameCategory(from: category.name, to: newName, color: newColor)
+            }
         }
     }
 

@@ -123,11 +123,11 @@ struct EditCategorySheet: View {
 
             // Action Buttons
             HStack(spacing: 12) {
-                UIButton(action: { dismiss() }, style: .ghost, label: "Cancel")
+                UIButton(action: { dismiss() }, style: .plain, label: "Cancel")
                 
                 UIButton(
                     action: { showDeleteConfirmation = true },
-                    style: .ghost,
+                    style: .destructive,
                     label: "Delete",
                     icon: "trash"
                 )

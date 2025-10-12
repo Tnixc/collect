@@ -703,6 +703,10 @@ class FileCardItem: NSCollectionViewItem {
                 action: #selector(addToCategory(_:)),
                 keyEquivalent: ""
             )
+            item.image = NSImage(
+                systemSymbolName: "tag",
+                accessibilityDescription: nil
+            )
             item.target = self
             categoryMenu.addItem(item)
         }
@@ -851,7 +855,7 @@ class FileCardItem: NSCollectionViewItem {
         container.wantsLayer = true
         container.layer?.backgroundColor =
             AppTheme.pillBackgroundNSColor.cgColor
-        container.layer?.cornerRadius = 4
+        container.layer?.cornerRadius = 8
         container.translatesAutoresizingMaskIntoConstraints = false
 
         let stack = NSStackView()

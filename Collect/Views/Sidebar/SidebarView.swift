@@ -6,6 +6,7 @@ struct SidebarView: View {
     @Binding var showingCreateCategory: Bool
     @State private var hoveredItem: String? = nil
     @State private var editingCategory: Category? = nil
+    @State private var deletingCategory: Category? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -14,36 +15,41 @@ struct SidebarView: View {
             VStack(alignment: .leading, spacing: 1) {
                 SidebarItem(
                     title: "Recent",
-                    icon: nil,
+                    icon: "clock",
                     count: nil,
                     isHovered: hoveredItem == "Recent",
                     isSelected: false
                 )
-                .onHover { hoveredItem = $0 ? "Recent" : nil }
+                .onHover { isHovering in
+                    hoveredItem = isHovering ? "Recent" : nil
+                }
 
                 SidebarItem(
                     title: "Reading list",
-                    icon: nil,
+                    icon: "book",
                     count: nil,
                     isHovered: hoveredItem == "Reading list",
                     isSelected: false
                 )
-                .onHover { hoveredItem = $0 ? "Reading list" : nil }
+                .onHover { isHovering in
+                    hoveredItem = isHovering ? "Reading list" : nil
+                }
 
                 SidebarItem(
                     title: "All Items",
-                    icon: nil,
+                    icon: "tray.full",
                     count: nil,
                     isHovered: hoveredItem == "All Items",
                     isSelected: appState.selectedCategory == nil
                 )
-                .onHover { hoveredItem = $0 ? "All Items" : nil }
+                .onHover { isHovering in
+                    hoveredItem = isHovering ? "All Items" : nil
+                }
                 .onTapGesture {
                     appState.selectedCategory = nil
                     appState.selectedAuthor = nil
                 }
             }
-            .padding(.horizontal, 8)
             .padding(.top, 12)
 
             // Divider
@@ -72,13 +78,14 @@ struct SidebarView: View {
                         count: uncategorized.itemCount,
                         isSelected: appState.selectedCategory == uncategorized.name,
                         isHovered: hoveredItem == uncategorized.name,
-                        isUncategorized: true,
-                        editAction: {}
+                        isUncategorized: true
                     )
+                    .onHover { isHovering in
+                        hoveredItem = isHovering ? uncategorized.name : nil
+                    }
                     .onTapGesture {
                         appState.selectedCategory = appState.selectedCategory == uncategorized.name ? nil : uncategorized.name
                     }
-                    .onHover { hoveredItem = $0 ? uncategorized.name : nil }
                 }
 
                 // Divider between uncategorized and other categories
@@ -98,18 +105,34 @@ struct SidebarView: View {
                         count: category.itemCount,
                         isSelected: appState.selectedCategory == category.name,
                         isHovered: hoveredItem == category.name,
-                        isUncategorized: false,
-                        editAction: { editingCategory = category }
+                        isUncategorized: false
                     )
+                    .contextMenu {
+                        Button(action: {
+                            editingCategory = category
+                        }) {
+                            Label("Edit Category", systemImage: "pencil")
+                        }
+                        Divider()
+                        Button(role: .destructive, action: {
+                            deletingCategory = category
+                        }) {
+                            Label("Delete Category", systemImage: "trash")
+                        }
+                    }
+                    .onHover { isHovering in
+                        hoveredItem = isHovering ? category.name : nil
+                    }
                     .onTapGesture {
                         appState.selectedCategory = appState.selectedCategory == category.name ? nil : category.name
                     }
-                    .onHover { hoveredItem = $0 ? category.name : nil }
                 }
 
                 UIButton(action: { showingCreateCategory = true }, style: .ghost, label: "New category +", align: .leading)
                     .padding(.horizontal, 8)
-                    .onHover { hoveredItem = $0 ? "New category" : nil }
+                    .onHover { isHovering in
+                        hoveredItem = isHovering ? "New category" : nil
+                    }
             }
             .padding(.top, 4)
 
@@ -119,7 +142,9 @@ struct SidebarView: View {
             UIButton(action: { showingSettings = true }, style: .ghost, label: "Settings", icon: "gearshape", align: .leading)
                 .padding(.horizontal, 8)
                 .padding(.bottom, 16)
-                .onHover { hoveredItem = $0 ? "Settings" : nil }
+                .onHover { isHovering in
+                    hoveredItem = isHovering ? "Settings" : nil
+                }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppTheme.backgroundSecondary)
@@ -130,6 +155,20 @@ struct SidebarView: View {
             EditCategorySheet(category: category) { newName, newColor in
                 appState.renameCategory(from: category.name, to: newName, color: newColor)
             }
+        }
+        .alert("Delete Category", isPresented: .constant(deletingCategory != nil), presenting: deletingCategory) { category in
+            Button("Cancel", role: .cancel) {
+                deletingCategory = nil
+            }
+            Button("Delete", role: .destructive) {
+                appState.deleteCategory(category.name)
+                if appState.selectedCategory == category.name {
+                    appState.selectedCategory = nil
+                }
+                deletingCategory = nil
+            }
+        } message: { category in
+            Text("Are you sure you want to delete \"\(category.name)\"? Items in this category will become uncategorized.")
         }
         // Custom divider overlay removed; manual split controls spacing now
     }

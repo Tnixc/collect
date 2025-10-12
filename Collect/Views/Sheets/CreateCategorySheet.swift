@@ -92,7 +92,7 @@ struct CreateCategorySheet: View {
 
             // Action Buttons
             HStack(spacing: 12) {
-                UIButton(action: { dismiss() }, style: .ghost, label: "Cancel")
+                UIButton(action: { dismiss() }, style: .plain, label: "Cancel")
 
                 Spacer()
 

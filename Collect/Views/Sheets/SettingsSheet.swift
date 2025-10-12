@@ -69,7 +69,7 @@ struct SettingsSheet: View {
 
             // Bottom Buttons
             HStack {
-                UIButton(action: { dismiss() }, style: .ghost, label: "Cancel")
+                UIButton(action: { dismiss() }, style: .plain, label: "Cancel")
 
                 Spacer()
 
