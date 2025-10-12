@@ -12,7 +12,8 @@ enum AppTheme {
     static let textTertiary = Color(red: 0.7, green: 0.67, blue: 0.63)
 
     // Accent colors
-    static let accentPrimary = Color(red: 0.4, green: 0.38, blue: 0.35)
+    // rgba(0, 136, 223, 1)
+    static let accentPrimary = Color(red: 0, green: 0.53, blue: 0.87)
     static let accentSecondary = Color(red: 0.55, green: 0.52, blue: 0.48)
 
     // Card colors (pastels matching the reference)

@@ -77,7 +77,7 @@ struct SidebarView: View {
                     .onHover { hoveredItem = $0 ? category.name : nil }
                 }
 
-                UIButtonPlain(action: { showingCreateCategory = true }, label: "New category +", align: .leading)
+                UIButton(action: { showingCreateCategory = true }, style: .ghost, label: "New category +", align: .leading)
                     .padding(.horizontal, 8)
                     .onHover { hoveredItem = $0 ? "New category" : nil }
             }
@@ -86,7 +86,7 @@ struct SidebarView: View {
             Spacer()
 
             // Settings Button
-            UIButtonPlain(action: { showingSettings = true }, label: "Settings", icon: "gearshape", align: .leading)
+            UIButton(action: { showingSettings = true }, style: .ghost, label: "Settings", icon: "gearshape", align: .leading)
                 .padding(.horizontal, 8)
                 .padding(.bottom, 16)
                 .onHover { hoveredItem = $0 ? "Settings" : nil }

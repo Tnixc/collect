@@ -7,7 +7,11 @@ struct DetailView: View {
     @State private var showingCreateCategory = false
     @State private var creatingForFileID: UUID?
 
-    private let cardColors = [AppTheme.cardTan, AppTheme.cardYellow, AppTheme.cardGreen, AppTheme.cardBlue, AppTheme.cardPink, AppTheme.cardPurple, AppTheme.cardGray, AppTheme.cardPeach]
+    private let cardColors = [
+        AppTheme.cardTan, AppTheme.cardYellow, AppTheme.cardGreen,
+        AppTheme.cardBlue, AppTheme.cardPink, AppTheme.cardPurple,
+        AppTheme.cardGray, AppTheme.cardPeach,
+    ]
 
     var body: some View {
         ZStack {
@@ -23,10 +27,16 @@ struct DetailView: View {
                                 .font(Typography.largeTitle)
                                 .foregroundColor(AppTheme.textPrimary)
 
-                            UIButtonPlain(action: {
+                            UIButton(
+                                action: {
                                     // TODO: Edit category description
-                                }, icon: "pencil", width: 24, height: 24)
-                                .padding(.top, 8)
+                                },
+                                style: .ghost,
+                                icon: "pencil",
+                                width: 24,
+                                height: 24
+                            )
+                            .padding(.top, 8)
 
                             Spacer()
                         }
@@ -40,17 +50,6 @@ struct DetailView: View {
                     }
                     .padding(.horizontal, 32)
                     .padding(.top, 24)
-
-                    // Tab Bar
-                    HStack(spacing: 0) {
-                        TabButton(
-                            title: "Items",
-                            icon: "doc.text.fill",
-                            isSelected: true
-                        )
-                    }
-                    .padding(.horizontal, 32)
-                    .padding(.bottom, 16)
 
                     // Divider
                     Rectangle()
@@ -67,63 +66,27 @@ struct DetailView: View {
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
-                                ForEach(appState.authorCounts.sorted(by: { $0.key < $1.key }), id: \.key) { author, count in
-                                    AuthorChip(name: author, count: count, isSelected: appState.selectedAuthor == author) {
-                                        appState.selectedAuthor = appState.selectedAuthor == author ? nil : author
+                                ForEach(
+                                    appState.authorCounts.sorted(by: {
+                                        $0.key < $1.key
+                                    }),
+                                    id: \.key
+                                ) { author, count in
+                                    AuthorChip(
+                                        name: author,
+                                        count: count,
+                                        isSelected: appState.selectedAuthor
+                                            == author
+                                    ) {
+                                        appState.selectedAuthor =
+                                            appState.selectedAuthor == author
+                                            ? nil : author
                                     }
                                 }
                             }
                         }
                     }
                     .padding(.horizontal, 32)
-
-                    // New Items Section
-                    if !appState.recentFiles.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("New items (\(appState.recentFiles.count))")
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(AppTheme.textPrimary)
-                                .padding(.top, 24)
-
-                            ForEach(Array(appState.recentFiles.prefix(1))) { file in
-                                if let meta = appState.metadata[file.id] {
-                                    FileCard(
-                                        fileID: file.id,
-                                        title: meta.title ?? file.filename,
-                                        author: meta.authors.joined(separator: ", "),
-                                        year: meta.year.map(String.init) ?? "",
-                                        tags: meta.tags,
-                                        size: file.fileSize,
-                                        pages: meta.pages,
-                                        lastOpened: meta.lastOpened,
-                                        backgroundColor: cardColors[0], // First color for new items
-                                        categories: appState.categories,
-                                        onTap: {
-                                            NSWorkspace.shared.open(file.fileURL)
-                                            var updatedMeta = meta
-                                            updatedMeta.lastOpened = Date()
-                                            appState.updateMetadata(for: file.id, metadata: updatedMeta)
-                                        },
-                                        editAction: { editMetadata(for: file.id) },
-                                        addToCategoryAction: { categoryName in
-                                            if var meta = appState.metadata[file.id] {
-                                                if !meta.tags.contains(categoryName) {
-                                                    meta.tags.append(categoryName)
-                                                    appState.updateMetadata(for: file.id, metadata: meta)
-                                                }
-                                            }
-                                        },
-                                        createCategoryAction: {
-                                            creatingForFileID = file.id
-                                            showingCreateCategory = true
-                                        }
-                                    )
-                                    .frame(width: 280, height: 260)
-                                }
-                            }
-                        }
-                        .padding(.horizontal, 32)
-                    }
 
                     // Items Grid Section
                     VStack(alignment: .leading, spacing: 12) {
@@ -132,11 +95,14 @@ struct DetailView: View {
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundColor(AppTheme.textPrimary)
 
-                            UIButtonPlain(action: {}, label: "Add", icon: "plus")
-
                             Spacer()
 
-                            UIButtonPlain(action: {}, label: "Recently added", icon: "arrow.up.arrow.down")
+                            UIButton(
+                                action: {},
+                                style: .plain,
+                                label: "Recently added",
+                                icon: "arrow.up.arrow.down"
+                            )
                         }
                         .padding(.top, 24)
 
@@ -148,10 +114,12 @@ struct DetailView: View {
                                 Text("No PDFs found")
                                     .font(.title2)
                                     .foregroundColor(AppTheme.textPrimary)
-                                Text("Select a source directory in Settings to get started.")
-                                    .font(.body)
-                                    .foregroundColor(AppTheme.textSecondary)
-                                    .multilineTextAlignment(.center)
+                                Text(
+                                    "Select a source directory in Settings to get started."
+                                )
+                                .font(.body)
+                                .foregroundColor(AppTheme.textSecondary)
+                                .multilineTextAlignment(.center)
                             }
                             .frame(maxWidth: .infinity, minHeight: 200)
                             .padding(.vertical, 40)
@@ -162,35 +130,60 @@ struct DetailView: View {
                                     GridItem(
                                         .adaptive(minimum: 240, maximum: 320),
                                         spacing: 16
-                                    ),
+                                    )
                                 ],
                                 spacing: 16
                             ) {
-                                ForEach(Array(appState.filteredFiles.enumerated()), id: \.element.id) { index, file in
+                                ForEach(
+                                    Array(appState.filteredFiles.enumerated()),
+                                    id: \.element.id
+                                ) { index, file in
                                     if let meta = appState.metadata[file.id] {
                                         FileCard(
                                             fileID: file.id,
                                             title: meta.title ?? file.filename,
-                                            author: meta.authors.joined(separator: ", "),
-                                            year: meta.year.map(String.init) ?? "",
+                                            author: meta.authors.joined(
+                                                separator: ", "
+                                            ),
+                                            year: meta.year.map(String.init)
+                                                ?? "",
                                             tags: meta.tags,
                                             size: file.fileSize,
                                             pages: meta.pages,
                                             lastOpened: meta.lastOpened,
-                                            backgroundColor: cardColors[index % cardColors.count],
+                                            backgroundColor: cardColors[
+                                                index % cardColors.count
+                                            ],
                                             categories: appState.categories,
                                             onTap: {
-                                                NSWorkspace.shared.open(file.fileURL)
+                                                NSWorkspace.shared.open(
+                                                    file.fileURL
+                                                )
                                                 var updatedMeta = meta
                                                 updatedMeta.lastOpened = Date()
-                                                appState.updateMetadata(for: file.id, metadata: updatedMeta)
+                                                appState.updateMetadata(
+                                                    for: file.id,
+                                                    metadata: updatedMeta
+                                                )
                                             },
-                                            editAction: { editMetadata(for: file.id) },
-                                            addToCategoryAction: { categoryName in
-                                                if var meta = appState.metadata[file.id] {
-                                                    if !meta.tags.contains(categoryName) {
-                                                        meta.tags.append(categoryName)
-                                                        appState.updateMetadata(for: file.id, metadata: meta)
+                                            editAction: {
+                                                editMetadata(for: file.id)
+                                            },
+                                            addToCategoryAction: {
+                                                categoryName in
+                                                if var meta = appState.metadata[
+                                                    file.id
+                                                ] {
+                                                    if !meta.tags.contains(
+                                                        categoryName
+                                                    ) {
+                                                        meta.tags.append(
+                                                            categoryName
+                                                        )
+                                                        appState.updateMetadata(
+                                                            for: file.id,
+                                                            metadata: meta
+                                                        )
                                                     }
                                                 }
                                             },
@@ -215,7 +208,10 @@ struct DetailView: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(AppTheme.dividerColor, lineWidth: 2)
         )
-        .padding(8)
+        .padding(.horizontal, 8)
+        .padding(.bottom, 8)
+        .padding(.top, 1)
+        .shadow(color: AppTheme.borderColor.opacity(0.2), radius: 8, y: -4)
         .sheet(isPresented: $showingEditSheet) {
             if let fileID = editingFileID {
                 EditMetadataSheet(fileID: fileID)
@@ -224,7 +220,9 @@ struct DetailView: View {
         .sheet(isPresented: $showingCreateCategory) {
             CreateCategorySheet { name, color in
                 appState.tagColors[name] = color
-                if let fileID = creatingForFileID, var meta = appState.metadata[fileID] {
+                if let fileID = creatingForFileID,
+                    var meta = appState.metadata[fileID]
+                {
                     if !meta.tags.contains(name) {
                         meta.tags.append(name)
                         appState.updateMetadata(for: fileID, metadata: meta)
