@@ -41,12 +41,6 @@ struct SidebarCategoryItem: View {
     }
 
     var categoryColor: Color {
-        switch color {
-        case "blue": return Color(red: 0.4, green: 0.6, blue: 0.9)
-        case "orange": return Color(red: 0.95, green: 0.65, blue: 0.4)
-        case "pink": return Color(red: 0.95, green: 0.55, blue: 0.65)
-        case "gray": return Color(red: 0.7, green: 0.7, blue: 0.7)
-        default: return Color.gray
-        }
+        AppTheme.categoryColor(for: color)
     }
 }

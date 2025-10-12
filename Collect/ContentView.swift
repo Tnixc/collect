@@ -1,22 +1,6 @@
 import AppKit
 import SwiftUI
 
-extension ContentView {
-    private func colorFromName(_ name: String) -> Color {
-        switch name {
-        case "blue": return Color.blue
-        case "green": return Color.green
-        case "orange": return Color.orange
-        case "pink": return Color.pink
-        case "purple": return Color.purple
-        case "yellow": return Color.yellow
-        case "gray": return Color.gray
-        case "tan": return Color(red: 0.93, green: 0.88, blue: 0.82)
-        default: return Color.blue
-        }
-    }
-}
-
 struct ContentView: View {
     @StateObject private var appState = AppState()
     @State private var isSidebarVisible: Bool = true
@@ -91,7 +75,7 @@ struct ContentView: View {
                             }) {
                                 HStack(spacing: 4) {
                                     Circle()
-                                        .fill(colorFromName(category.color))
+                                        .fill(AppTheme.categoryColor(for: category.color))
                                         .frame(width: 8, height: 8)
                                     Text(category.name)
                                         .font(.system(size: 13))

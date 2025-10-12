@@ -1,6 +1,6 @@
+import AppKit
 import SwiftUI
 import UniformTypeIdentifiers
-import AppKit
 
 struct DetailView: View {
     @EnvironmentObject var appState: AppState

@@ -52,4 +52,34 @@ enum AppTheme {
     static func color(for name: String) -> Color {
         cardColors[name] ?? cardTan
     }
+
+    // Category color mapping - maps category color names to AppTheme colors
+    static func categoryColor(for name: String) -> Color {
+        switch name {
+        case "blue": return cardBlue
+        case "green": return cardGreen
+        case "orange", "peach": return cardPeach
+        case "pink": return cardPink
+        case "purple": return cardPurple
+        case "yellow": return cardYellow
+        case "gray": return cardGray
+        case "tan": return cardTan
+        default: return cardBlue
+        }
+    }
+
+    // Category color mapping for NSColor (AppKit)
+    static func categoryNSColor(for name: String) -> NSColor {
+        switch name {
+        case "blue": return NSColor(cardBlue)
+        case "green": return NSColor(cardGreen)
+        case "orange", "peach": return NSColor(cardPeach)
+        case "pink": return NSColor(cardPink)
+        case "purple": return NSColor(cardPurple)
+        case "yellow": return NSColor(cardYellow)
+        case "gray": return NSColor(cardGray)
+        case "tan": return NSColor(cardTan)
+        default: return NSColor(cardBlue)
+        }
+    }
 }

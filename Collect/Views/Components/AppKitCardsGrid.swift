@@ -27,16 +27,16 @@ struct AppKitCardsGrid: NSViewRepresentable {
             FileCardItem.self,
             forItemWithIdentifier: NSUserInterfaceItemIdentifier("FileCardItem")
         )
-        
+
         containerView.collectionView = collectionView
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(collectionView)
-        
+
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: containerView.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
         ])
 
         return containerView
@@ -87,8 +87,8 @@ struct AppKitCardsGrid: NSViewRepresentable {
         }
 
         func collectionView(
-            _ collectionView: NSCollectionView,
-            numberOfItemsInSection section: Int
+            _: NSCollectionView,
+            numberOfItemsInSection _: Int
         ) -> Int {
             return files.count
         }
@@ -127,12 +127,12 @@ struct AppKitCardsGrid: NSViewRepresentable {
         func collectionView(
             _ collectionView: NSCollectionView,
             layout collectionViewLayout: NSCollectionViewLayout,
-            sizeForItemAt indexPath: IndexPath
+            sizeForItemAt _: IndexPath
         ) -> NSSize {
             let layout = collectionViewLayout as! NSCollectionViewFlowLayout
             let availableWidth =
                 collectionView.bounds.width - layout.sectionInset.left
-                - layout.sectionInset.right
+                    - layout.sectionInset.right
             let minWidth: CGFloat = 210
             let maxWidth: CGFloat = 290
             let spacing: CGFloat = layout.minimumInteritemSpacing
@@ -144,14 +144,14 @@ struct AppKitCardsGrid: NSViewRepresentable {
             )
             var itemWidth =
                 (availableWidth - (CGFloat(columns - 1) * spacing))
-                / CGFloat(columns)
+                    / CGFloat(columns)
 
             // If itemWidth > maxWidth, increase columns to reduce width
             while itemWidth > maxWidth && columns < 20 {
                 columns += 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                    / CGFloat(columns)
+                        / CGFloat(columns)
             }
 
             // If itemWidth < minWidth, decrease columns to increase width
@@ -159,7 +159,7 @@ struct AppKitCardsGrid: NSViewRepresentable {
                 columns -= 1
                 itemWidth =
                     (availableWidth - (CGFloat(columns - 1) * spacing))
-                    / CGFloat(columns)
+                        / CGFloat(columns)
             }
 
             // Clamp to min and max to maintain consistent card sizes
@@ -214,8 +214,8 @@ class FileCardItem: NSCollectionViewItem {
                 .fontDescriptor
                 .addingAttributes([
                     .traits: [
-                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold
-                    ]
+                        NSFontDescriptor.TraitKey.weight: NSFont.Weight.semibold,
+                    ],
                 ]),
             size: 18
         )
@@ -387,7 +387,7 @@ class FileCardItem: NSCollectionViewItem {
         createCategoryAction: @escaping () -> Void
     ) {
         self.categories = categories
-        self.onTapAction = onTap
+        onTapAction = onTap
         self.editAction = editAction
         self.addToCategoryAction = addToCategoryAction
         self.createCategoryAction = createCategoryAction
@@ -514,17 +514,7 @@ class FileCardItem: NSCollectionViewItem {
     }
 
     private func colorFromName(_ name: String) -> NSColor {
-        switch name {
-        case "blue": return .blue
-        case "green": return .green
-        case "orange": return .orange
-        case "pink": return .systemPink
-        case "purple": return .purple
-        case "yellow": return .yellow
-        case "gray": return .gray
-        case "tan": return NSColor(red: 0.93, green: 0.88, blue: 0.82, alpha: 1)
-        default: return .blue
-        }
+        AppTheme.categoryNSColor(for: name)
     }
 }
 
@@ -532,16 +522,16 @@ class FileCardItem: NSCollectionViewItem {
 class ResizingContainerView: NSView {
     weak var collectionView: NSCollectionView?
     private var resizeWorkItem: DispatchWorkItem?
-    
+
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
-        
+
         // Cancel any pending layout invalidation
         resizeWorkItem?.cancel()
-        
+
         // Invalidate immediately for better responsiveness
         collectionView?.collectionViewLayout?.invalidateLayout()
-        
+
         // Schedule a final invalidation after resize settles
         let workItem = DispatchWorkItem { [weak self] in
             self?.collectionView?.collectionViewLayout?.invalidateLayout()
@@ -549,7 +539,7 @@ class ResizingContainerView: NSView {
         resizeWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: workItem)
     }
-    
+
     override func layout() {
         super.layout()
         collectionView?.collectionViewLayout?.invalidateLayout()
@@ -560,21 +550,21 @@ class ResizingContainerView: NSView {
 class LeftAlignedFlowLayout: NSCollectionViewFlowLayout {
     override func layoutAttributesForElements(in rect: NSRect) -> [NSCollectionViewLayoutAttributes] {
         let attributes = super.layoutAttributesForElements(in: rect)
-        
+
         var leftMargin = sectionInset.left
         var maxY: CGFloat = -1.0
-        
-        attributes.forEach { layoutAttribute in
+
+        for layoutAttribute in attributes {
             if layoutAttribute.frame.origin.y >= maxY {
                 leftMargin = sectionInset.left
             }
-            
+
             layoutAttribute.frame.origin.x = leftMargin
-            
+
             leftMargin += layoutAttribute.frame.width + minimumInteritemSpacing
             maxY = max(layoutAttribute.frame.maxY, maxY)
         }
-        
+
         return attributes
     }
 }
@@ -585,12 +575,12 @@ class WrappingFlowView: NSView {
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        self.translatesAutoresizingMaskIntoConstraints = false
+        translatesAutoresizingMaskIntoConstraints = false
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.translatesAutoresizingMaskIntoConstraints = false
+        translatesAutoresizingMaskIntoConstraints = false
     }
 
     override func layout() {
@@ -607,7 +597,7 @@ class WrappingFlowView: NSView {
             let size = subview.fittingSize
 
             // Check if we need to wrap to next line
-            if currentX + size.width > bounds.width && currentX > 0 {
+            if currentX + size.width > bounds.width, currentX > 0 {
                 currentX = 0
                 currentY += lineHeight + spacing
                 lineHeight = 0
