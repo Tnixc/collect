@@ -6,7 +6,7 @@ struct SidebarItem: View {
     let count: Int?
     let isHovered: Bool
     let isSelected: Bool
-    
+
     var body: some View {
         HStack(spacing: 8) {
             Text(title)
@@ -15,7 +15,7 @@ struct SidebarItem: View {
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            
+
             if let count = count {
                 Text("\(count)")
                     .font(.system(size: 11))

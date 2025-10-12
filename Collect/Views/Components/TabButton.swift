@@ -4,7 +4,7 @@ struct TabButton: View {
     let title: String
     let icon: String
     let isSelected: Bool
-    
+
     var body: some View {
         Button(action: {}) {
             HStack(spacing: 6) {

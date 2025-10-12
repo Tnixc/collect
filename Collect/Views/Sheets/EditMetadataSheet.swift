@@ -3,14 +3,14 @@ import SwiftUI
 struct EditMetadataSheet: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appState: AppState
-    
+
     let fileID: UUID
     @State private var title: String = ""
     @State private var authors: [String] = []
     @State private var year: String = ""
     @State private var tags: [String] = []
     @State private var cardColorName: String = "cardBlue"
-    
+
     private let cardColorNames = ["cardTan", "cardYellow", "cardGreen", "cardBlue", "cardPink", "cardPurple", "cardGray", "cardPeach"]
 
     private func colorFromName(_ name: String) -> Color {
@@ -26,13 +26,13 @@ struct EditMetadataSheet: View {
         default: return AppTheme.cardBlue
         }
     }
-    
+
     var body: some View {
         VStack(spacing: 20) {
             Text("Edit Metadata")
                 .font(.title)
                 .padding(.top)
-            
+
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     // Title
@@ -42,7 +42,7 @@ struct EditMetadataSheet: View {
                         TextField("Enter title", text: $title)
                             .textFieldStyle(.roundedBorder)
                     }
-                    
+
                     // Authors
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Authors")
@@ -53,7 +53,7 @@ struct EditMetadataSheet: View {
                         ))
                         .textFieldStyle(.roundedBorder)
                     }
-                    
+
                     // Year
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Year")
@@ -61,7 +61,7 @@ struct EditMetadataSheet: View {
                         TextField("Enter year", text: $year)
                             .textFieldStyle(.roundedBorder)
                     }
-                    
+
                     // Tags
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Tags/Categories")
@@ -72,14 +72,12 @@ struct EditMetadataSheet: View {
                         ))
                         .textFieldStyle(.roundedBorder)
                     }
-                    
 
-                    
                     // Card Color
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Card Color")
                             .font(.headline)
-                        
+
                         HStack(spacing: 12) {
                             ForEach(cardColorNames, id: \.self) { colorName in
                                 let color = colorFromName(colorName)
@@ -99,15 +97,15 @@ struct EditMetadataSheet: View {
                 }
                 .padding(.horizontal)
             }
-            
+
             HStack {
                 Button("Cancel") {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
-                
+
                 Spacer()
-                
+
                 Button("Save") {
                     saveMetadata()
                     dismiss()
@@ -122,7 +120,7 @@ struct EditMetadataSheet: View {
             loadMetadata()
         }
     }
-    
+
     private func loadMetadata() {
         if let metadata = appState.metadata[fileID] {
             title = metadata.title ?? ""
@@ -132,7 +130,7 @@ struct EditMetadataSheet: View {
             cardColorName = metadata.cardColor
         }
     }
-    
+
     private func saveMetadata() {
         let yearInt = Int(year)
         let metadata = FileMetadata(

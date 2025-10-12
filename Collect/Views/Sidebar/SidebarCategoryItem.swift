@@ -6,13 +6,13 @@ struct SidebarCategoryItem: View {
     let count: Int
     let isSelected: Bool
     let isHovered: Bool
-    
+
     var body: some View {
         HStack(spacing: 8) {
             Circle()
                 .fill(categoryColor)
                 .frame(width: 8, height: 8)
-            
+
             Text(title)
                 .font(.system(size: 13))
                 .foregroundColor(
@@ -21,9 +21,7 @@ struct SidebarCategoryItem: View {
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            
 
-            
             Text("\(count)")
                 .font(.system(size: 11))
                 .foregroundColor(AppTheme.textTertiary)
@@ -41,7 +39,7 @@ struct SidebarCategoryItem: View {
         .cornerRadius(5)
         .padding(.horizontal, 8)
     }
-    
+
     var categoryColor: Color {
         switch color {
         case "blue": return Color(red: 0.4, green: 0.6, blue: 0.9)

@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 extension ContentView {
@@ -21,15 +22,16 @@ struct ContentView: View {
     @State private var isSidebarVisible: Bool = true
     @State private var showingSettings = false
     @State private var showingAddURL = false
-    
+    @State private var showingCreateCategory = false
+
     var body: some View {
         HStack(spacing: 0) {
             // Custom Sidebar (fixed width, not user-resizable)
-            SidebarView(showingSettings: $showingSettings)
+            SidebarView(showingSettings: $showingSettings, showingCreateCategory: $showingCreateCategory)
                 .environmentObject(appState)
                 .frame(width: isSidebarVisible ? 240 : 0)
                 .clipped()
-            
+
             // Main Detail View
             DetailView()
                 .environmentObject(appState)
@@ -41,6 +43,11 @@ struct ContentView: View {
         .sheet(isPresented: $showingAddURL) {
             AddURLSheet()
         }
+        .sheet(isPresented: $showingCreateCategory) {
+            CreateCategorySheet { name, color in
+                appState.tagColors[name] = color
+            }
+        }
         .animation(.easeInOut(duration: 0.25), value: isSidebarVisible)
         .toolbar {
             ToolbarItem(placement: .navigation) {
@@ -51,20 +58,21 @@ struct ContentView: View {
                         .labelStyle(.iconOnly)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
+                .focusable(false)
                 .help("Toggle Sidebar")
             }
-            
+
             ToolbarItem(placement: .navigation) {
                 // Breadcrumb
                 HStack(spacing: 6) {
                     Text("My Library")
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textSecondary)
-                    
+
                     Text("/")
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textTertiary)
-                    
+
                     if let category = appState.categories.first(where: { $0.name == appState.selectedCategory }) {
                         HStack(spacing: 4) {
                             Circle()
@@ -81,15 +89,16 @@ struct ContentView: View {
                     }
                 }
             }
-            
+
             ToolbarItem(placement: .automatic) {
                 Button(action: { showingAddURL = true }) {
                     Label("Add items", systemImage: "plus")
                         .labelStyle(.iconOnly)
                 }
+                .focusable(false)
                 .help("Add items")
             }
-            
+
             ToolbarItem(placement: .automatic) {
                 HStack {
                     Image(systemName: "magnifyingglass")
@@ -98,18 +107,20 @@ struct ContentView: View {
                         .textFieldStyle(.plain)
                         .frame(width: 200)
                         .foregroundColor(AppTheme.textPrimary)
+                        .focusable(false)
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(6)
             }
-            
+
             ToolbarItem(placement: .automatic) {
                 Button(action: {}) {
                     Label("More options", systemImage: "ellipsis.circle")
                         .labelStyle(.iconOnly)
                 }
+                .focusable(false)
                 .help("More options")
             }
         }
@@ -126,18 +137,20 @@ struct ContentView: View {
                 }
             }
             loadData()
+            NSApp.keyWindow?.tabbingMode = .disallowed
         }
     }
-    
+
     private func toggleSidebar() {
         withAnimation(.easeInOut(duration: 0.25)) {
             isSidebarVisible.toggle()
         }
     }
-    
+
     private func loadData() {
         // Load metadata
         appState.metadata = MetadataService.shared.load()
+        appState.tagColors = MetadataService.shared.tagColors
 
         // Get source directory from settings
         if let sourceURL = SettingsSheet.getSourceDirectoryURL() {

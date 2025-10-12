@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 
 struct FileCard: View {
+    let fileID: UUID
     let title: String
     let author: String
     let year: String
@@ -10,28 +11,31 @@ struct FileCard: View {
     let pages: Int?
     let lastOpened: Date?
     let backgroundColor: Color
+    let categories: [Category]
     let onTap: () -> Void
     let editAction: () -> Void
+    let addToCategoryAction: (String) -> Void
+    let createCategoryAction: () -> Void
     @State private var isHovering = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Header: Title and author
-            VStack(alignment: .leading, spacing: 4) {
-
-                Menu {
-                    Button("Open", action: onTap)
-                    Button("Edit Metadata", action: editAction)
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 12))
-                        .foregroundColor(AppTheme.textSecondary)
+            HStack(spacing: 6) {
+                ForEach(tags, id: \.self) { tag in
+                    let color =
+                        categories.first(where: { $0.name == tag })?.color
+                            ?? "gray"
+                    pill(tag, color: color)
                 }
-                .colorMultiply(AppTheme.accentPrimary)
-                .menuStyle(.borderlessButton).foregroundStyle(
-                    AppTheme.textSecondary
-                )
-
+                if !year.isEmpty {
+                    pill(year, color: "gray")
+                }
+                Spacer()
+            }
+            .padding(.horizontal, 12)
+            .padding(.top, 6)
+            VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.system(size: 18, weight: .semibold, design: .serif))
                     .foregroundColor(AppTheme.textPrimary)
@@ -46,28 +50,19 @@ struct FileCard: View {
             .padding(.top, 12)
 
             // Top pills: tags and year
-            HStack(spacing: 6) {
-                ForEach(tags, id: \.self) { tag in
-                    pill(tag)
-                }
-                if !year.isEmpty {
-                    pill(year)
-                }
-                Spacer()
-            }
-            .padding(.horizontal, 12)
-            .padding(.top, 6)
 
             Spacer()
 
             // Bottom area: info pills and menu
-            HStack(spacing: 6) {
-                pill(formatFileSize(size))
+            WrappingHStack(spacing: 6) {
+                pill(formatFileSize(size), color: "gray")
                 if let p = pages {
-                    pill("\(p) pages")
+                    pill("\(p) pages", color: "gray")
                 }
-                pill(lastOpened.map { formatLastOpened($0) } ?? "Never opened")
-                Spacer()
+                pill(
+                    lastOpened.map { formatLastOpened($0) } ?? "Never opened",
+                    color: "gray"
+                )
             }
             .padding(.horizontal, 12)
             .padding(.bottom, 12)
@@ -107,6 +102,18 @@ struct FileCard: View {
         .onTapGesture(count: 2) {
             onTap()
         }
+        .contextMenu {
+            Button("Open", action: onTap)
+            Button("Edit Metadata", action: editAction)
+            Menu("Add to Category") {
+                ForEach(categories, id: \.name) { category in
+                    Button(category.name) {
+                        addToCategoryAction(category.name)
+                    }
+                }
+                Button("Create New Category", action: createCategoryAction)
+            }
+        }
     }
 
     private func formatFileSize(_ bytes: Int64) -> String {
@@ -123,16 +130,35 @@ struct FileCard: View {
             "Opened \(formatter.localizedString(for: date, relativeTo: Date()))"
     }
 
-    private func pill(_ text: String) -> some View {
-        Text(text)
-            .font(.system(size: 11, weight: .medium))
-            .foregroundColor(AppTheme.textSecondary)
-            .lineLimit(1)
-            .fixedSize(horizontal: true, vertical: false)
-            .layoutPriority(1)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(AppTheme.backgroundTertiary)
-            .clipShape(Capsule())
+    private func pill(_ text: String, color: String) -> some View {
+        HStack(spacing: 4) {
+            Circle()
+                .fill(colorFromName(color))
+                .frame(width: 6, height: 6)
+            Text(text)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(AppTheme.textSecondary)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+                .layoutPriority(1)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(Color.white.opacity(0.55))
+        .clipShape(Capsule())
+    }
+
+    private func colorFromName(_ name: String) -> Color {
+        switch name {
+        case "blue": return Color.blue
+        case "green": return Color.green
+        case "orange": return Color.orange
+        case "pink": return Color.pink
+        case "purple": return Color.purple
+        case "yellow": return Color.yellow
+        case "gray": return Color.gray
+        case "tan": return Color(red: 0.93, green: 0.88, blue: 0.82)
+        default: return Color.blue
+        }
     }
 }

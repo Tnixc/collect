@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 class AppState: ObservableObject {
     @Published var files: [FileItem] = []
@@ -8,11 +8,12 @@ class AppState: ObservableObject {
     @Published var selectedCategory: String? = nil
     @Published var selectedAuthor: String? = nil
     @Published var searchText: String = ""
-    
+    @Published var tagColors: [String: String] = [:]
+
     // Computed properties
     var filteredFiles: [FileItem] {
         var filtered = files
-        
+
         // Filter by category/tag
         if let category = selectedCategory {
             if category == "Uncategorized" {
@@ -27,7 +28,7 @@ class AppState: ObservableObject {
                 }
             }
         }
-        
+
         // Filter by author
         if let author = selectedAuthor {
             filtered = filtered.filter { file in
@@ -35,7 +36,7 @@ class AppState: ObservableObject {
                 return meta.authors.contains(author)
             }
         }
-        
+
         // Filter by search text
         if !searchText.isEmpty {
             filtered = filtered.filter { file in
@@ -46,10 +47,10 @@ class AppState: ObservableObject {
                 return titleMatch || authorMatch || filenameMatch
             }
         }
-        
+
         return filtered
     }
-    
+
     var allAuthors: [String] {
         var authors = Set<String>()
         for meta in metadata.values {
@@ -72,18 +73,20 @@ class AppState: ObservableObject {
         let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
         return files.filter { $0.dateAdded > sevenDaysAgo }
     }
-    
+
     // Methods to update state
     func updateMetadata(for fileID: UUID, metadata: FileMetadata) {
         self.metadata[fileID] = metadata
+        MetadataService.shared.tagColors = tagColors
+        MetadataService.shared.save(metadata: self.metadata)
         updateCategories()
     }
-    
+
     func deleteMetadata(for fileID: UUID) {
         metadata.removeValue(forKey: fileID)
         updateCategories()
     }
-    
+
     func updateCategories() {
         var tagCounts: [String: Int] = [:]
         var uncategorizedCount = 0
@@ -102,8 +105,8 @@ class AppState: ObservableObject {
         var colorIndex = 0
 
         categories = tagCounts.map { name, count in
-            let color = colors[colorIndex % colors.count]
-            colorIndex += 1
+            let color = tagColors[name] ?? colors[colorIndex % colors.count]
+            if tagColors[name] == nil { colorIndex += 1 }
             return Category(name: name, color: color, itemCount: count)
         }.sorted(by: { $0.name < $1.name })
 
@@ -111,7 +114,7 @@ class AppState: ObservableObject {
             categories.insert(Category(name: "Uncategorized", color: "gray", itemCount: uncategorizedCount), at: 0)
         }
     }
-    
+
     func setFiles(_ files: [FileItem]) {
         self.files = files
         updateCategories()

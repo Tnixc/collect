@@ -4,6 +4,8 @@ struct DetailView: View {
     @EnvironmentObject var appState: AppState
     @State private var showingEditSheet = false
     @State private var editingFileID: UUID?
+    @State private var showingCreateCategory = false
+    @State private var creatingForFileID: UUID?
 
     private let cardColors = [AppTheme.cardTan, AppTheme.cardYellow, AppTheme.cardGreen, AppTheme.cardBlue, AppTheme.cardPink, AppTheme.cardPurple, AppTheme.cardGray, AppTheme.cardPeach]
 
@@ -91,6 +93,7 @@ struct DetailView: View {
                             ForEach(Array(appState.recentFiles.prefix(1))) { file in
                                 if let meta = appState.metadata[file.id] {
                                     FileCard(
+                                        fileID: file.id,
                                         title: meta.title ?? file.filename,
                                         author: meta.authors.joined(separator: ", "),
                                         year: meta.year.map(String.init) ?? "",
@@ -99,13 +102,26 @@ struct DetailView: View {
                                         pages: meta.pages,
                                         lastOpened: meta.lastOpened,
                                         backgroundColor: cardColors[0], // First color for new items
+                                        categories: appState.categories,
                                         onTap: {
                                             NSWorkspace.shared.open(file.fileURL)
                                             var updatedMeta = meta
                                             updatedMeta.lastOpened = Date()
                                             appState.updateMetadata(for: file.id, metadata: updatedMeta)
                                         },
-                                        editAction: { editMetadata(for: file.id) }
+                                        editAction: { editMetadata(for: file.id) },
+                                        addToCategoryAction: { categoryName in
+                                            if var meta = appState.metadata[file.id] {
+                                                if !meta.tags.contains(categoryName) {
+                                                    meta.tags.append(categoryName)
+                                                    appState.updateMetadata(for: file.id, metadata: meta)
+                                                }
+                                            }
+                                        },
+                                        createCategoryAction: {
+                                            creatingForFileID = file.id
+                                            showingCreateCategory = true
+                                        }
                                     )
                                     .frame(width: 280, height: 260)
                                 }
@@ -169,13 +185,14 @@ struct DetailView: View {
                                     GridItem(
                                         .adaptive(minimum: 240, maximum: 320),
                                         spacing: 16
-                                    )
+                                    ),
                                 ],
                                 spacing: 16
                             ) {
                                 ForEach(Array(appState.filteredFiles.enumerated()), id: \.element.id) { index, file in
                                     if let meta = appState.metadata[file.id] {
                                         FileCard(
+                                            fileID: file.id,
                                             title: meta.title ?? file.filename,
                                             author: meta.authors.joined(separator: ", "),
                                             year: meta.year.map(String.init) ?? "",
@@ -184,13 +201,26 @@ struct DetailView: View {
                                             pages: meta.pages,
                                             lastOpened: meta.lastOpened,
                                             backgroundColor: cardColors[index % cardColors.count],
+                                            categories: appState.categories,
                                             onTap: {
                                                 NSWorkspace.shared.open(file.fileURL)
                                                 var updatedMeta = meta
                                                 updatedMeta.lastOpened = Date()
                                                 appState.updateMetadata(for: file.id, metadata: updatedMeta)
                                             },
-                                            editAction: { editMetadata(for: file.id) }
+                                            editAction: { editMetadata(for: file.id) },
+                                            addToCategoryAction: { categoryName in
+                                                if var meta = appState.metadata[file.id] {
+                                                    if !meta.tags.contains(categoryName) {
+                                                        meta.tags.append(categoryName)
+                                                        appState.updateMetadata(for: file.id, metadata: meta)
+                                                    }
+                                                }
+                                            },
+                                            createCategoryAction: {
+                                                creatingForFileID = file.id
+                                                showingCreateCategory = true
+                                            }
                                         )
                                         .frame(height: 260)
                                     }
@@ -212,6 +242,17 @@ struct DetailView: View {
         .sheet(isPresented: $showingEditSheet) {
             if let fileID = editingFileID {
                 EditMetadataSheet(fileID: fileID)
+            }
+        }
+        .sheet(isPresented: $showingCreateCategory) {
+            CreateCategorySheet { name, color in
+                appState.tagColors[name] = color
+                if let fileID = creatingForFileID, var meta = appState.metadata[fileID] {
+                    if !meta.tags.contains(name) {
+                        meta.tags.append(name)
+                        appState.updateMetadata(for: fileID, metadata: meta)
+                    }
+                }
             }
         }
     }

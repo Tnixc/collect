@@ -7,16 +7,16 @@ struct FileItem: Identifiable {
     let fileSize: Int64
     let dateAdded: Date
     let dateModified: Date
-    
+
     init(id: UUID, fileURL: URL, dateAdded: Date = Date()) {
         self.id = id
         self.fileURL = fileURL
-        self.filename = fileURL.lastPathComponent
+        filename = fileURL.lastPathComponent
         self.dateAdded = dateAdded
-        
+
         // Get file attributes
         let attributes = try? FileManager.default.attributesOfItem(atPath: fileURL.path)
-        self.fileSize = attributes?[.size] as? Int64 ?? 0
-        self.dateModified = attributes?[.modificationDate] as? Date ?? Date()
+        fileSize = attributes?[.size] as? Int64 ?? 0
+        dateModified = attributes?[.modificationDate] as? Date ?? Date()
     }
 }

@@ -10,7 +10,7 @@ struct FileMetadata: Codable, Identifiable {
     var lastOpened: Date?
     var pages: Int?
     var cardColor: String // Hex color string or name
-    
+
     init(id: UUID, title: String? = nil, authors: [String] = [], year: Int? = nil, tags: [String] = [], dateAdded: Date = Date(), lastOpened: Date? = nil, pages: Int? = nil, cardColor: String = "cardTan") {
         self.id = id
         self.title = title

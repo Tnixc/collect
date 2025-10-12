@@ -5,7 +5,7 @@ struct AuthorChip: View {
     let count: Int
     let isSelected: Bool
     let action: () -> Void
-    
+
     var body: some View {
         HStack(spacing: 4) {
             Text(name)
