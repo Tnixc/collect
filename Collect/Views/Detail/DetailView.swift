@@ -23,15 +23,10 @@ struct DetailView: View {
                                 .font(Typography.largeTitle)
                                 .foregroundColor(AppTheme.textPrimary)
 
-                            Button(action: {
-                                // TODO: Edit category description
-                            }) {
-                                Image(systemName: "pencil")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(AppTheme.textSecondary)
-                            }
-                            .buttonStyle(.plain)
-                            .padding(.top, 8)
+                            UIButtonPlain(action: {
+                                    // TODO: Edit category description
+                                }, icon: "pencil", width: 24, height: 24)
+                                .padding(.top, 8)
 
                             Spacer()
                         }
@@ -137,29 +132,11 @@ struct DetailView: View {
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundColor(AppTheme.textPrimary)
 
-                            Button(action: {}) {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "plus")
-                                        .font(.system(size: 11))
-                                    Text("Add")
-                                        .font(.system(size: 12))
-                                }
-                                .foregroundColor(AppTheme.textSecondary)
-                            }
-                            .buttonStyle(.plain)
+                            UIButtonPlain(action: {}, label: "Add", icon: "plus")
 
                             Spacer()
 
-                            Button(action: {}) {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "arrow.up.arrow.down")
-                                        .font(.system(size: 11))
-                                    Text("Recently added")
-                                        .font(.system(size: 12))
-                                }
-                                .foregroundColor(AppTheme.textSecondary)
-                            }
-                            .buttonStyle(.plain)
+                            UIButtonPlain(action: {}, label: "Recently added", icon: "arrow.up.arrow.down")
                         }
                         .padding(.top, 24)
 

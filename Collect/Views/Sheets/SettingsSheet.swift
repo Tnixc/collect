@@ -32,10 +32,7 @@ struct SettingsSheet: View {
 
                         Spacer()
 
-                        Button("Choose...") {
-                            selectDirectory()
-                        }
-                        .foregroundColor(AppTheme.textSecondary)
+                        UIButton(action: { selectDirectory() }, label: "Choose...")
                     }
                     .padding(8)
                     .background(AppTheme.backgroundSecondary.opacity(0.5))
@@ -46,21 +43,11 @@ struct SettingsSheet: View {
                 Spacer()
 
                 HStack {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .keyboardShortcut(.cancelAction)
-                    .foregroundColor(AppTheme.textSecondary)
+                    UIButton(action: { dismiss() }, label: "Cancel")
 
                     Spacer()
 
-                    Button("Save") {
-                        saveSettings()
-                        dismiss()
-                    }
-                    .keyboardShortcut(.defaultAction)
-                    .disabled(sourceDirectoryURL == nil)
-                    .foregroundColor(AppTheme.textPrimary)
+                    UIButton(action: { saveSettings(); dismiss() }, label: "Save")
                 }
                 .padding(.horizontal)
                 .padding(.bottom)

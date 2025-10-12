@@ -6,20 +6,20 @@ struct CreateCategorySheet: View {
     @State private var categoryName: String = ""
     @State private var selectedColor: String = "blue"
 
-    let predefinedColors = ["blue", "green", "orange", "pink", "purple", "yellow", "gray", "tan"]
+    let predefinedColors = [
+        "blue", "green", "orange", "pink", "purple", "yellow", "gray", "tan",
+    ]
 
     var onCreate: (String, String) -> Void
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(alignment: .leading, spacing: 20) {
             Text("Create New Category")
-                .font(.title2)
+                .font(Typography.title2)
                 .foregroundColor(AppTheme.textPrimary)
 
             TextField("Category Name", text: $categoryName)
                 .textFieldStyle(.roundedBorder)
-                .padding(.horizontal)
-                .focusable(false)
 
             Picker("Color", selection: $selectedColor) {
                 ForEach(predefinedColors, id: \.self) { colorName in
@@ -35,19 +35,18 @@ struct CreateCategorySheet: View {
             .pickerStyle(.menu)
 
             HStack {
-                Button("Cancel") {
-                    dismiss()
-                }
-                .buttonStyle(.bordered)
-                .focusable(false)
-
-                Button("Create") {
-                    onCreate(categoryName, selectedColor)
-                    dismiss()
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(categoryName.isEmpty)
-                .focusable(false)
+                UIButton(action: { dismiss() }, label: "Cancel")
+                Spacer()
+                UIButton(
+                    action: {
+                        if !categoryName.isEmpty {
+                            onCreate(categoryName, selectedColor)
+                            dismiss()
+                        }
+                    },
+                    label: "Create",
+                    icon: "plus",
+                )
             }
         }
         .padding()

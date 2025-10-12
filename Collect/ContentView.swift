@@ -27,10 +27,13 @@ struct ContentView: View {
     var body: some View {
         HStack(spacing: 0) {
             // Custom Sidebar (fixed width, not user-resizable)
-            SidebarView(showingSettings: $showingSettings, showingCreateCategory: $showingCreateCategory)
-                .environmentObject(appState)
-                .frame(width: isSidebarVisible ? 240 : 0)
-                .clipped()
+            SidebarView(
+                showingSettings: $showingSettings,
+                showingCreateCategory: $showingCreateCategory
+            )
+            .environmentObject(appState)
+            .frame(width: isSidebarVisible ? 240 : 0)
+            .clipped()
 
             // Main Detail View
             DetailView()
@@ -51,14 +54,12 @@ struct ContentView: View {
         .animation(.easeInOut(duration: 0.25), value: isSidebarVisible)
         .toolbar {
             ToolbarItem(placement: .navigation) {
-                Button(action: {
-                    toggleSidebar()
-                }) {
-                    Label("Toggle Sidebar", systemImage: "sidebar.left")
-                        .labelStyle(.iconOnly)
-                        .foregroundStyle(AppTheme.textSecondary)
-                }
-                .focusable(false)
+                UIButtonPlain(
+                    action: {
+                        toggleSidebar()
+                    },
+                    icon: "sidebar.left"
+                )
                 .help("Toggle Sidebar")
             }
 
@@ -73,7 +74,9 @@ struct ContentView: View {
                         .font(.system(size: 13))
                         .foregroundStyle(AppTheme.textTertiary)
 
-                    if let category = appState.categories.first(where: { $0.name == appState.selectedCategory }) {
+                    if let category = appState.categories.first(where: {
+                        $0.name == appState.selectedCategory
+                    }) {
                         HStack(spacing: 4) {
                             Circle()
                                 .fill(colorFromName(category.color))
@@ -91,12 +94,8 @@ struct ContentView: View {
             }
 
             ToolbarItem(placement: .automatic) {
-                Button(action: { showingAddURL = true }) {
-                    Label("Add items", systemImage: "plus")
-                        .labelStyle(.iconOnly)
-                }
-                .focusable(false)
-                .help("Add items")
+                UIButtonPlain(action: { showingAddURL = true }, icon: "plus")
+                    .help("Add items")
             }
 
             ToolbarItem(placement: .automatic) {
@@ -114,15 +113,6 @@ struct ContentView: View {
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(6)
             }
-
-            ToolbarItem(placement: .automatic) {
-                Button(action: {}) {
-                    Label("More options", systemImage: "ellipsis.circle")
-                        .labelStyle(.iconOnly)
-                }
-                .focusable(false)
-                .help("More options")
-            }
         }
         .toolbarBackground(AppTheme.backgroundSecondary, for: .windowToolbar)
         .toolbarBackgroundVisibility(.visible, for: .windowToolbar)
@@ -131,7 +121,9 @@ struct ContentView: View {
             // Set the background color for the window
             DispatchQueue.main.async {
                 if let window = NSApp.windows.first {
-                    window.backgroundColor = NSColor(AppTheme.backgroundSecondary)
+                    window.backgroundColor = NSColor(
+                        AppTheme.backgroundSecondary
+                    )
                     window.titlebarSeparatorStyle = .none
                     window.toolbar?.showsBaselineSeparator = false
                 }
@@ -166,9 +158,18 @@ struct ContentView: View {
             // Create default metadata for files without existing metadata
             for file in files {
                 if appState.metadata[file.id] == nil {
-                    let pages = FileSystemService.shared.getPageCount(for: file.fileURL)
-                    let defaultMetadata = MetadataService.shared.createMetadata(fileID: file.id, title: file.filename, pages: pages)
-                    appState.updateMetadata(for: file.id, metadata: defaultMetadata)
+                    let pages = FileSystemService.shared.getPageCount(
+                        for: file.fileURL
+                    )
+                    let defaultMetadata = MetadataService.shared.createMetadata(
+                        fileID: file.id,
+                        title: file.filename,
+                        pages: pages
+                    )
+                    appState.updateMetadata(
+                        for: file.id,
+                        metadata: defaultMetadata
+                    )
                 }
             }
 

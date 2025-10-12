@@ -41,19 +41,11 @@ struct AddURLSheet: View {
             }
 
             HStack {
-                Button("Cancel") {
-                    dismiss()
-                }
-                .keyboardShortcut(.cancelAction)
-                .disabled(isDownloading)
+                UIButton(action: { if !isDownloading { dismiss() } }, label: "Cancel")
 
                 Spacer()
 
-                Button("Download") {
-                    downloadFile()
-                }
-                .keyboardShortcut(.defaultAction)
-                .disabled(urlString.isEmpty || isDownloading)
+                UIButton(action: { if !urlString.isEmpty && !isDownloading { downloadFile() } }, label: "Download")
             }
             .padding(.horizontal)
             .padding(.bottom)

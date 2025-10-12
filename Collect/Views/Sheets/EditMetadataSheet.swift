@@ -99,18 +99,11 @@ struct EditMetadataSheet: View {
             }
 
             HStack {
-                Button("Cancel") {
-                    dismiss()
-                }
-                .keyboardShortcut(.cancelAction)
+                UIButton(action: { dismiss() }, label: "Cancel")
 
                 Spacer()
 
-                Button("Save") {
-                    saveMetadata()
-                    dismiss()
-                }
-                .keyboardShortcut(.defaultAction)
+                UIButton(action: { saveMetadata(); dismiss() }, label: "Save")
             }
             .padding(.horizontal)
             .padding(.bottom)

@@ -77,61 +77,19 @@ struct SidebarView: View {
                     .onHover { hoveredItem = $0 ? category.name : nil }
                 }
 
-                Button(action: { showingCreateCategory = true }) {
-                    HStack(spacing: 8) {
-                        Text("New category")
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                            .font(.system(size: 13))
-                        Text("+")
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                            .font(.system(size: 13, weight: .medium))
-                    }
-                    .foregroundColor(AppTheme.textSecondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                }
-                .buttonStyle(.plain)
-                .focusable(false)
-                .background(
-                    hoveredItem == "New category"
-                        ? AppTheme.sidebarItemHover : Color.clear
-                )
-                .cornerRadius(6)
-                .padding(.horizontal, 8)
-                .onHover { hoveredItem = $0 ? "New category" : nil }
+                UIButtonPlain(action: { showingCreateCategory = true }, label: "New category +", align: .leading)
+                    .padding(.horizontal, 8)
+                    .onHover { hoveredItem = $0 ? "New category" : nil }
             }
             .padding(.top, 4)
 
             Spacer()
 
             // Settings Button
-            Button(action: { showingSettings = true }) {
-                HStack(spacing: 8) {
-                    Image(systemName: "gearshape")
-                        .font(.system(size: 13))
-                    Text("Settings")
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                        .font(.system(size: 13))
-                }
-                .foregroundColor(AppTheme.textSecondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-            }
-            .buttonStyle(.plain)
-            .focusable(false)
-            .background(
-                hoveredItem == "Settings"
-                    ? AppTheme.sidebarItemHover : Color.clear
-            )
-            .cornerRadius(6)
-            .padding(.horizontal, 8)
-            .padding(.bottom, 16)
-            .onHover { hoveredItem = $0 ? "Settings" : nil }
+            UIButtonPlain(action: { showingSettings = true }, label: "Settings", icon: "gearshape", align: .leading)
+                .padding(.horizontal, 8)
+                .padding(.bottom, 16)
+                .onHover { hoveredItem = $0 ? "Settings" : nil }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppTheme.backgroundSecondary)
