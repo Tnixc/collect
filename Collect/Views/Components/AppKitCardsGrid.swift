@@ -11,6 +11,8 @@ struct AppKitCardsGrid: NSViewRepresentable {
     let editAction: (UUID) -> Void
     let addToCategoryAction: (UUID, String) -> Void
     let createCategoryAction: (UUID) -> Void
+    let deleteAction: (UUID) -> Void
+    let showInFinderAction: (UUID) -> Void
 
     func makeNSView(context: Context) -> NSView {
         let containerView = ResizingContainerView()
@@ -76,7 +78,9 @@ struct AppKitCardsGrid: NSViewRepresentable {
             onTap: onTap,
             editAction: editAction,
             addToCategoryAction: addToCategoryAction,
-            createCategoryAction: createCategoryAction
+            createCategoryAction: createCategoryAction,
+            deleteAction: deleteAction,
+            showInFinderAction: showInFinderAction
         )
     }
 
@@ -92,17 +96,23 @@ struct AppKitCardsGrid: NSViewRepresentable {
         let editAction: (UUID) -> Void
         let addToCategoryAction: (UUID, String) -> Void
         let createCategoryAction: (UUID) -> Void
+        let deleteAction: (UUID) -> Void
+        let showInFinderAction: (UUID) -> Void
 
         init(
             onTap: @escaping (UUID) -> Void,
             editAction: @escaping (UUID) -> Void,
             addToCategoryAction: @escaping (UUID, String) -> Void,
-            createCategoryAction: @escaping (UUID) -> Void
+            createCategoryAction: @escaping (UUID) -> Void,
+            deleteAction: @escaping (UUID) -> Void,
+            showInFinderAction: @escaping (UUID) -> Void
         ) {
             self.onTap = onTap
             self.editAction = editAction
             self.addToCategoryAction = addToCategoryAction
             self.createCategoryAction = createCategoryAction
+            self.deleteAction = deleteAction
+            self.showInFinderAction = showInFinderAction
         }
 
         func collectionView(
@@ -137,7 +147,9 @@ struct AppKitCardsGrid: NSViewRepresentable {
                     addToCategoryAction: { category in
                         self.addToCategoryAction(file.id, category)
                     },
-                    createCategoryAction: { self.createCategoryAction(file.id) }
+                    createCategoryAction: { self.createCategoryAction(file.id) },
+                    deleteAction: { self.deleteAction(file.id) },
+                    showInFinderAction: { self.showInFinderAction(file.id) }
                 )
             }
             return item
@@ -284,6 +296,9 @@ class FileCardItem: NSCollectionViewItem {
     private var editAction: (() -> Void)?
     private var addToCategoryAction: ((String) -> Void)?
     private var createCategoryAction: (() -> Void)?
+    private var deleteAction: (() -> Void)?
+    private var showInFinderAction: (() -> Void)?
+    private var file: FileItem?
     private var titleToTopConstraint: NSLayoutConstraint?
     private var titleToTagsConstraint: NSLayoutConstraint?
     private var isHovering = false
@@ -638,6 +653,7 @@ class FileCardItem: NSCollectionViewItem {
             action: #selector(openItem),
             keyEquivalent: ""
         )
+        openItem.image = NSImage(systemSymbolName: "doc", accessibilityDescription: nil)
         openItem.target = self
         menu.addItem(openItem)
         let editItem = NSMenuItem(
@@ -645,8 +661,25 @@ class FileCardItem: NSCollectionViewItem {
             action: #selector(editItem),
             keyEquivalent: ""
         )
+        editItem.image = NSImage(systemSymbolName: "pencil", accessibilityDescription: nil)
         editItem.target = self
         menu.addItem(editItem)
+        let deleteItem = NSMenuItem(
+            title: "Delete",
+            action: #selector(deleteItem),
+            keyEquivalent: ""
+        )
+        deleteItem.image = NSImage(systemSymbolName: "trash", accessibilityDescription: nil)
+        deleteItem.target = self
+        menu.addItem(deleteItem)
+        let showItem = NSMenuItem(
+            title: "Show in Finder",
+            action: #selector(showInFinder),
+            keyEquivalent: ""
+        )
+        showItem.image = NSImage(systemSymbolName: "folder", accessibilityDescription: nil)
+        showItem.target = self
+        menu.addItem(showItem)
         let categoryMenu = NSMenu()
         for category in categories {
             let item = NSMenuItem(
@@ -662,6 +695,7 @@ class FileCardItem: NSCollectionViewItem {
             action: #selector(createCategory),
             keyEquivalent: ""
         )
+        createItem.image = NSImage(systemSymbolName: "plus", accessibilityDescription: nil)
         createItem.target = self
         categoryMenu.addItem(createItem)
         let categoryItem = NSMenuItem(
@@ -669,6 +703,7 @@ class FileCardItem: NSCollectionViewItem {
             action: nil,
             keyEquivalent: ""
         )
+        categoryItem.image = NSImage(systemSymbolName: "tag", accessibilityDescription: nil)
         categoryItem.submenu = categoryMenu
         menu.addItem(categoryItem)
         return menu
@@ -680,6 +715,22 @@ class FileCardItem: NSCollectionViewItem {
 
     @objc private func editItem() {
         editAction?()
+    }
+
+    @objc private func deleteItem() {
+        let alert = NSAlert()
+        alert.messageText = "Delete File"
+        alert.informativeText = "Are you sure you want to delete this file? This action cannot be undone."
+        alert.addButton(withTitle: "Delete")
+        alert.addButton(withTitle: "Cancel")
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
+            deleteAction?()
+        }
+    }
+
+    @objc private func showInFinder() {
+        showInFinderAction?()
     }
 
     @objc private func addToCategory(_ sender: NSMenuItem) {
@@ -698,13 +749,18 @@ class FileCardItem: NSCollectionViewItem {
         onTap: @escaping () -> Void,
         editAction: @escaping () -> Void,
         addToCategoryAction: @escaping (String) -> Void,
-        createCategoryAction: @escaping () -> Void
+        createCategoryAction: @escaping () -> Void,
+        deleteAction: @escaping () -> Void,
+        showInFinderAction: @escaping () -> Void
     ) {
+        self.file = file
         self.categories = categories
         onTapAction = onTap
         self.editAction = editAction
         self.addToCategoryAction = addToCategoryAction
         self.createCategoryAction = createCategoryAction
+        self.deleteAction = deleteAction
+        self.showInFinderAction = showInFinderAction
 
         view.menu = createMenu()
         contentContainer?.layer?.backgroundColor = backgroundColor.cgColor

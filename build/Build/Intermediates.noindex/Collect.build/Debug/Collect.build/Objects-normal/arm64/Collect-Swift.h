@@ -279,6 +279,8 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #if __has_warning("-Watimport-in-framework-header")
 #pragma clang diagnostic ignored "-Watimport-in-framework-header"
 #endif
+@import AppKit;
+@import Foundation;
 #endif
 
 #endif
@@ -300,6 +302,54 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 
 #if defined(__OBJC__)
+
+@class NSEvent;
+@class NSBundle;
+@class NSCoder;
+SWIFT_CLASS("_TtC7Collect12FileCardItem")
+@interface FileCardItem : NSCollectionViewItem
+- (void)loadView;
+- (void)viewDidLayout;
+- (void)mouseEntered:(NSEvent * _Nonnull)event;
+- (void)mouseExited:(NSEvent * _Nonnull)event;
+- (nonnull instancetype)initWithNibName:(NSNibName _Nullable)nibNameOrNil bundle:(NSBundle * _Nullable)nibBundleOrNil OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+SWIFT_CLASS("_TtC7Collect17HoverableCardView")
+@interface HoverableCardView : NSView
+- (void)updateTrackingAreas;
+- (void)mouseEntered:(NSEvent * _Nonnull)event;
+- (void)mouseExited:(NSEvent * _Nonnull)event;
+- (void)viewDidEndLiveResize;
+- (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class NSCollectionViewLayoutAttributes;
+SWIFT_CLASS("_TtC7Collect21LeftAlignedFlowLayout")
+@interface LeftAlignedFlowLayout : NSCollectionViewFlowLayout
+- (NSArray<NSCollectionViewLayoutAttributes *> * _Nonnull)layoutAttributesForElementsInRect:(NSRect)rect SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+SWIFT_CLASS("_TtC7Collect21ResizingContainerView")
+@interface ResizingContainerView : NSView
+@property (nonatomic, readonly) NSSize intrinsicContentSize;
+- (void)setFrameSize:(NSSize)newSize;
+- (void)layout;
+- (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+SWIFT_CLASS("_TtC7Collect16WrappingFlowView")
+@interface WrappingFlowView : NSView
+- (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+- (void)layout;
+@property (nonatomic, readonly) NSSize intrinsicContentSize;
+@end
 
 #endif
 #if __has_attribute(external_source_symbol)

@@ -1,0 +1,30 @@
+{
+  "/Users/tnixc/Developer/collect/Collect/Models/AppState.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppState.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Models/Category.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Category.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Models/FileItem.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileItem.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Models/FileMetadata.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/FileMetadata.swiftdeps"
+  }
+}

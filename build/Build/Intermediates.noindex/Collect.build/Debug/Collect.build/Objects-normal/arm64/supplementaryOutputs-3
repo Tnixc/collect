@@ -1,0 +1,30 @@
+{
+  "/Users/tnixc/Developer/collect/Collect/Theme/Typography.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Typography.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Components/AppKitCardsGrid.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AppKitCardsGrid.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Components/AuthorChip.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/AuthorChip.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Components/Buttons.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/Buttons.swiftdeps"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "/Users/tnixc/Developer/collect/Collect/Views/OnboardingView.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/OnboardingView.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sidebar/SidebarItem.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarItem.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sidebar/SidebarView.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarView.swiftdeps"
+  }
+}

@@ -87,4 +87,23 @@ class FileSystemService {
         try FileManager.default.copyItem(at: sourceURL, to: finalDestinationURL)
         return finalDestinationURL
     }
+
+    // Rename file
+    func renameFile(at url: URL, to newName: String) throws -> URL {
+        let directory = url.deletingLastPathComponent()
+        let newURL = directory.appendingPathComponent(newName)
+
+        // If new name already exists, throw error
+        if FileManager.default.fileExists(atPath: newURL.path) {
+            throw NSError(domain: "FileSystemService", code: 1, userInfo: [NSLocalizedDescriptionKey: "A file with that name already exists."])
+        }
+
+        try FileManager.default.moveItem(at: url, to: newURL)
+        return newURL
+    }
+
+    // Delete file
+    func deleteFile(at url: URL) throws {
+        try FileManager.default.removeItem(at: url)
+    }
 }

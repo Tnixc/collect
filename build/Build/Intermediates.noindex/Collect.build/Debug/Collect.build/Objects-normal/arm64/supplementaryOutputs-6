@@ -1,0 +1,23 @@
+{
+  "/Users/tnixc/Developer/collect/Collect/Views/Sheets/EditMetadataSheet.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/EditMetadataSheet.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sheets/SettingsSheet.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SettingsSheet.swiftdeps"
+  },
+  "/Users/tnixc/Developer/collect/Collect/Views/Sidebar/SidebarCategoryItem.swift" : {
+    "const-values" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.swiftconstvalues",
+    "dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.d",
+    "diagnostics" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.dia",
+    "object" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.o",
+    "swift-dependencies" : "/Users/tnixc/Developer/collect/build/Build/Intermediates.noindex/Collect.build/Debug/Collect.build/Objects-normal/arm64/SidebarCategoryItem.swiftdeps"
+  }
+}

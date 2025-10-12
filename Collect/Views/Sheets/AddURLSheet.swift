@@ -135,6 +135,11 @@ struct AddURLSheet: View {
             return
         }
 
+        guard let sourceDirectory = SettingsSheet.getSourceDirectoryURL() else {
+            downloadError = "No source directory set"
+            return
+        }
+
         isDownloading = true
         downloadError = nil
 
@@ -143,7 +148,7 @@ struct AddURLSheet: View {
                 let downloadedURL = try await DownloadService.shared
                     .downloadFile(
                         from: url,
-                        to: SettingsSheet.getSourceDirectoryURL()!
+                        to: sourceDirectory
                     )
 
                 // Process the downloaded file

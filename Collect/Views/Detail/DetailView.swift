@@ -154,6 +154,14 @@ struct DetailView: View {
                                 createCategoryAction: { fileID in
                                     creatingForFileID = fileID
                                     showingCreateCategory = true
+                                },
+                                deleteAction: { fileID in
+                                    appState.deleteFile(fileID: fileID)
+                                },
+                                showInFinderAction: { fileID in
+                                    if let file = appState.files.first(where: { $0.id == fileID }) {
+                                        NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
+                                    }
                                 }
                             )
                         }
@@ -178,6 +186,7 @@ struct DetailView: View {
         .sheet(isPresented: $showingEditSheet) {
             if let fileID = editingFileID {
                 EditMetadataSheet(fileID: fileID)
+                    .environmentObject(appState)
             }
         }
         .sheet(isPresented: $showingCreateCategory) {
@@ -192,6 +201,7 @@ struct DetailView: View {
                     }
                 }
             }
+            .environmentObject(appState)
         }
     }
 

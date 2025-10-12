@@ -40,6 +40,7 @@ struct ContentView: View {
                 }
                 .sheet(isPresented: $showingAddURL) {
                     AddURLSheet()
+                        .environmentObject(appState)
                 }
                 .sheet(isPresented: $showingCreateCategory) {
                     CreateCategorySheet { name, color in

@@ -119,4 +119,33 @@ class AppState: ObservableObject {
         self.files = files
         updateCategories()
     }
+
+    func renameFile(fileID: UUID, newFilename: String) {
+        guard let index = files.firstIndex(where: { $0.id == fileID }) else { return }
+        let oldFile = files[index]
+        do {
+            let newURL = try FileSystemService.shared.renameFile(at: oldFile.fileURL, to: newFilename)
+            let newFileItem = FileItem(id: fileID, fileURL: newURL)
+            files[index] = newFileItem
+            // Update metadata title if it was the filename
+            if var meta = metadata[fileID], meta.title == oldFile.filename {
+                meta.title = newFilename
+                updateMetadata(for: fileID, metadata: meta)
+            }
+        } catch {
+            print("Error renaming file: \(error)")
+        }
+    }
+
+    func deleteFile(fileID: UUID) {
+        guard let index = files.firstIndex(where: { $0.id == fileID }) else { return }
+        let file = files[index]
+        do {
+            try FileSystemService.shared.deleteFile(at: file.fileURL)
+            files.remove(at: index)
+            deleteMetadata(for: fileID)
+        } catch {
+            print("Error deleting file: \(error)")
+        }
+    }
 }
