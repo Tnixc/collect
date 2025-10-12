@@ -1,5 +1,6 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import AppKit
 
 struct DetailView: View {
     @EnvironmentObject var appState: AppState
@@ -8,11 +9,24 @@ struct DetailView: View {
     @State private var showingCreateCategory = false
     @State private var creatingForFileID: UUID?
 
-    private let cardColors = [
-        AppTheme.cardTan, AppTheme.cardYellow, AppTheme.cardGreen,
-        AppTheme.cardBlue, AppTheme.cardPink, AppTheme.cardPurple,
-        AppTheme.cardGray, AppTheme.cardPeach,
+    private let cardColors: [NSColor] = [
+        NSColor(red: 0.93, green: 0.88, blue: 0.82, alpha: 1),
+        NSColor(red: 0.95, green: 0.94, blue: 0.78, alpha: 1),
+        NSColor(red: 0.85, green: 0.92, blue: 0.82, alpha: 1),
+        NSColor(red: 0.84, green: 0.89, blue: 0.92, alpha: 1),
+        NSColor(red: 0.95, green: 0.88, blue: 0.88, alpha: 1),
+        NSColor(red: 0.90, green: 0.87, blue: 0.93, alpha: 1),
+        NSColor(red: 0.91, green: 0.90, blue: 0.89, alpha: 1),
+        NSColor(red: 0.95, green: 0.90, blue: 0.85, alpha: 1),
     ]
+
+    private var gridHeight: CGFloat {
+        let itemHeight: CGFloat = 260
+        let spacing: CGFloat = 16
+        let columns = 3 // approximate
+        let rows = ceil(CGFloat(appState.filteredFiles.count) / CGFloat(columns))
+        return rows * itemHeight + (rows - 1) * spacing
+    }
 
     var body: some View {
         ZStack {
@@ -126,77 +140,41 @@ struct DetailView: View {
                             .padding(.vertical, 40)
                         } else {
                             // Grid of Cards
-                            LazyVGrid(
-                                columns: [
-                                    GridItem(
-                                        .adaptive(minimum: 240, maximum: 320),
-                                        spacing: 16
-                                    ),
-                                ],
-                                spacing: 16
-                            ) {
-                                ForEach(
-                                    Array(appState.filteredFiles.enumerated()),
-                                    id: \.element.id
-                                ) { index, file in
-                                    if let meta = appState.metadata[file.id] {
-                                        FileCard(
-                                            fileID: file.id,
-                                            title: meta.title ?? file.filename,
-                                            author: meta.authors.joined(
-                                                separator: ", "
-                                            ),
-                                            year: meta.year.map(String.init)
-                                                ?? "",
-                                            tags: meta.tags,
-                                            size: file.fileSize,
-                                            pages: meta.pages,
-                                            lastOpened: meta.lastOpened,
-                                            backgroundColor: cardColors[
-                                                index % cardColors.count
-                                            ],
-                                            categories: appState.categories,
-                                            onTap: {
-                                                NSWorkspace.shared.open(
-                                                    file.fileURL
-                                                )
-                                                var updatedMeta = meta
-                                                updatedMeta.lastOpened = Date()
-                                                appState.updateMetadata(
-                                                    for: file.id,
-                                                    metadata: updatedMeta
-                                                )
-                                            },
-                                            editAction: {
-                                                editMetadata(for: file.id)
-                                            },
-                                            addToCategoryAction: {
-                                                categoryName in
-                                                if var meta = appState.metadata[
-                                                    file.id
-                                                ] {
-                                                    if !meta.tags.contains(
-                                                        categoryName
-                                                    ) {
-                                                        meta.tags.append(
-                                                            categoryName
-                                                        )
-                                                        appState.updateMetadata(
-                                                            for: file.id,
-                                                            metadata: meta
-                                                        )
-                                                    }
-                                                }
-                                            },
-                                            createCategoryAction: {
-                                                creatingForFileID = file.id
-                                                showingCreateCategory = true
-                                            }
+                            AppKitCardsGrid(
+                                files: appState.filteredFiles,
+                                metadata: appState.metadata,
+                                categories: appState.categories,
+                                cardColors: cardColors,
+                                onTap: { fileID in
+                                    if let meta = appState.metadata[fileID] {
+                                        NSWorkspace.shared.open(
+                                            appState.files.first(where: { $0.id == fileID })!.fileURL
                                         )
-                                        .frame(height: 260)
+                                        var updatedMeta = meta
+                                        updatedMeta.lastOpened = Date()
+                                        appState.updateMetadata(
+                                            for: fileID,
+                                            metadata: updatedMeta
+                                        )
                                     }
+                                },
+                                editAction: { fileID in
+                                    editMetadata(for: fileID)
+                                },
+                                addToCategoryAction: { fileID, categoryName in
+                                    if var meta = appState.metadata[fileID] {
+                                        if !meta.tags.contains(categoryName) {
+                                            meta.tags.append(categoryName)
+                                            appState.updateMetadata(for: fileID, metadata: meta)
+                                        }
+                                    }
+                                },
+                                createCategoryAction: { fileID in
+                                    creatingForFileID = fileID
+                                    showingCreateCategory = true
                                 }
-                            }
+                            )
+                            .frame(height: gridHeight)
                         }
                     }
                     .padding(.horizontal, 32)
