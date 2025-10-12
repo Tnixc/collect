@@ -24,7 +24,6 @@ struct AddURLSheet: View {
                         .foregroundColor(AppTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
-                .focusable(false)
             }
             .padding(.horizontal, 24)
             .padding(.top, 24)
@@ -55,7 +54,6 @@ struct AddURLSheet: View {
                             .stroke(AppTheme.dividerColor, lineWidth: 1)
                     )
                     .disabled(isDownloading)
-                    .focusable(false)
 
                 UIButton(
                     action: {

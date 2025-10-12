@@ -24,7 +24,6 @@ struct SettingsSheet: View {
                         .foregroundColor(AppTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
-                .focusable(false)
             }
             .padding(.horizontal, 24)
             .padding(.top, 24)
@@ -42,7 +41,10 @@ struct SettingsSheet: View {
             HStack(spacing: 8) {
                 Text(sourceDirectoryURL?.path ?? "No directory selected")
                     .font(.system(size: 13))
-                    .foregroundColor(sourceDirectoryURL != nil ? AppTheme.textPrimary : AppTheme.textSecondary)
+                    .foregroundColor(
+                        sourceDirectoryURL != nil
+                            ? AppTheme.textPrimary : AppTheme.textSecondary
+                    )
                     .padding(.horizontal, 12)
                     .padding(.vertical, 10)
                     .background(AppTheme.backgroundTertiary)
@@ -71,7 +73,14 @@ struct SettingsSheet: View {
 
                 Spacer()
 
-                UIButton(action: { saveSettings(); dismiss() }, style: .primary, label: "Save")
+                UIButton(
+                    action: {
+                        saveSettings()
+                        dismiss()
+                    },
+                    style: .primary,
+                    label: "Save"
+                )
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
@@ -98,10 +107,17 @@ struct SettingsSheet: View {
     }
 
     private func loadSettings() {
-        if let bookmarkData = UserDefaults.standard.data(forKey: sourceDirectoryBookmarkKey) {
+        if let bookmarkData = UserDefaults.standard.data(
+            forKey: sourceDirectoryBookmarkKey
+        ) {
             do {
                 var isStale = false
-                let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+                let url = try URL(
+                    resolvingBookmarkData: bookmarkData,
+                    options: .withSecurityScope,
+                    relativeTo: nil,
+                    bookmarkDataIsStale: &isStale
+                )
                 if !isStale {
                     sourceDirectoryURL = url
                 }
@@ -115,8 +131,15 @@ struct SettingsSheet: View {
         guard let url = sourceDirectoryURL else { return }
 
         do {
-            let bookmarkData = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
-            UserDefaults.standard.set(bookmarkData, forKey: sourceDirectoryBookmarkKey)
+            let bookmarkData = try url.bookmarkData(
+                options: .withSecurityScope,
+                includingResourceValuesForKeys: nil,
+                relativeTo: nil
+            )
+            UserDefaults.standard.set(
+                bookmarkData,
+                forKey: sourceDirectoryBookmarkKey
+            )
         } catch {
             print("Error creating bookmark: \(error)")
         }
@@ -124,10 +147,17 @@ struct SettingsSheet: View {
 
     // Method to get the source directory URL with security scope
     static func getSourceDirectoryURL() -> URL? {
-        if let bookmarkData = UserDefaults.standard.data(forKey: "sourceDirectoryBookmark") {
+        if let bookmarkData = UserDefaults.standard.data(
+            forKey: "sourceDirectoryBookmark"
+        ) {
             do {
                 var isStale = false
-                let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+                let url = try URL(
+                    resolvingBookmarkData: bookmarkData,
+                    options: .withSecurityScope,
+                    relativeTo: nil,
+                    bookmarkDataIsStale: &isStale
+                )
                 if !isStale {
                     // Start accessing the security-scoped resource
                     if url.startAccessingSecurityScopedResource() {

@@ -66,7 +66,6 @@ struct UIDropdown<T: Hashable>: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
-        .focusable(false)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
                 .stroke(isButtonHovered ? AppTheme.dividerColor.opacity(1.5) : AppTheme.dividerColor, lineWidth: 1)
@@ -178,7 +177,6 @@ struct DropdownMenuItemView<T: Hashable>: View {
             .cornerRadius(8)
         }
         .buttonStyle(.borderless)
-        .focusable(false)
         .frame(height: itemHeight)
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.1)) {

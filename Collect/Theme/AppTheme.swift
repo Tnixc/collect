@@ -99,30 +99,31 @@ enum AppTheme {
     static func categoryNSColor(for name: String) -> NSColor {
         NSColor(categoryColor(for: name))
     }
-    
+
     // Card to Category color mapping (muted card -> saturated category)
     static let cardToCategoryMapping: [NSColor: NSColor] = [
-        NSColor(cardTan): NSColor(hex: "#878583"),  // Gray-ish
+        NSColor(cardTan): NSColor(hex: "#878583"), // Gray-ish
         NSColor(cardYellow): NSColor(categoryYellow),
         NSColor(cardGreen): NSColor(categoryGreen),
         NSColor(cardBlue): NSColor(categoryBlue),
         NSColor(cardPink): NSColor(categoryPink),
         NSColor(cardPurple): NSColor(categoryPurple),
-        NSColor(cardGray): NSColor(hex: "#5a5856"),  // Darker gray
+        NSColor(cardGray): NSColor(hex: "#5a5856"), // Darker gray
         NSColor(cardPeach): NSColor(categoryPeach),
         NSColor(cardRed): NSColor(categoryRed),
         NSColor(cardOrange): NSColor(categoryOrange),
         NSColor(cardTeal): NSColor(categoryTeal),
         NSColor(cardNavy): NSColor(categoryNavy),
     ]
-    
+
     // Get saturated category color for a given card color
     static func saturatedColor(for cardColor: NSColor) -> NSColor {
         // Try to find exact match in mapping
         for (card, category) in cardToCategoryMapping {
             if abs(card.redComponent - cardColor.redComponent) < 0.01 &&
-               abs(card.greenComponent - cardColor.greenComponent) < 0.01 &&
-               abs(card.blueComponent - cardColor.blueComponent) < 0.01 {
+                abs(card.greenComponent - cardColor.greenComponent) < 0.01 &&
+                abs(card.blueComponent - cardColor.blueComponent) < 0.01
+            {
                 return category
             }
         }

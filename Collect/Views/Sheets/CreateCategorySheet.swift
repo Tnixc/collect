@@ -26,7 +26,6 @@ struct CreateCategorySheet: View {
                         .foregroundColor(AppTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
-                .focusable(false)
             }
             .padding(.horizontal, 24)
             .padding(.top, 24)
@@ -58,7 +57,6 @@ struct CreateCategorySheet: View {
                         RoundedRectangle(cornerRadius: 6)
                             .stroke(AppTheme.dividerColor, lineWidth: 1)
                     )
-                    .focusable(false)
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 20)
@@ -85,7 +83,6 @@ struct CreateCategorySheet: View {
                                 )
                         }
                         .buttonStyle(.plain)
-                        .focusable(false)
                     }
                 }
             }
