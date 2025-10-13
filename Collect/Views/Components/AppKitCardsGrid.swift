@@ -1051,6 +1051,16 @@ class ResizingContainerView: NSView {
         super.layout()
         collectionView?.collectionViewLayout?.invalidateLayout()
     }
+
+    override func viewWillStartLiveResize() {
+        super.viewWillStartLiveResize()
+        collectionView?.isHidden = true
+    }
+
+    override func viewDidEndLiveResize() {
+        super.viewDidEndLiveResize()
+        collectionView?.isHidden = false
+    }
 }
 
 // Left-aligned collection view flow layout

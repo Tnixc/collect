@@ -305,7 +305,7 @@ struct DetailView: View {
                         .padding(.bottom, 32)
                     } else {
                         // Standard Items Grid Section
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 24) {
                             GeometryReader { geometry in
                                 if geometry.size.width < 600 {
                                     VStack(alignment: .leading, spacing: 8) {
@@ -531,7 +531,7 @@ struct DetailView: View {
                                     }
                                 }
                             }
-                            .padding(.top, 24)
+                            .frame(minHeight: 100)
 
                             if (appState.showReadingList
                                 && appState.readingListFiles.isEmpty)
