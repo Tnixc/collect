@@ -234,7 +234,7 @@ class FileListRowView: NSView {
         titleLabel.isEditable = false
         titleLabel.isBordered = false
         titleLabel.backgroundColor = .clear
-        titleLabel.font = NewYork.nsFont(size: 14, weight: .semibold, opticalSize: .medium) ?? NSFont.systemFont(ofSize: 14, weight: .semibold)
+        titleLabel.font = NewYork.nsFont(size: 18, weight: .semibold, opticalSize: .medium) ?? NSFont.systemFont(ofSize: 18, weight: .semibold)
         titleLabel.textColor = AppTheme.textPrimaryNSColor
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -254,7 +254,7 @@ class FileListRowView: NSView {
         authorLabel.isEditable = false
         authorLabel.isBordered = false
         authorLabel.backgroundColor = .clear
-        authorLabel.font = NewYork.nsFont(size: 12, weight: .regular, opticalSize: .small) ?? NSFont.systemFont(ofSize: 12)
+        authorLabel.font = NSFont.systemFont(ofSize: 12)
         authorLabel.textColor = AppTheme.textSecondaryNSColor
         authorLabel.lineBreakMode = .byTruncatingTail
         authorLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -490,12 +490,11 @@ class FileListRowView: NSView {
             backgroundColor = AppTheme.cardNSColors[abs(file.id.hashValue) % AppTheme.cardNSColors.count]
         }
         let saturatedColor = AppTheme.saturatedColor(for: backgroundColor)
-        backgroundLayer.fillColor = saturatedColor.cgColor
+        backgroundLayer.fillColor = backgroundColor.cgColor
 
         // Set icon
+        iconImageView.symbolTintColor = saturatedColor
         iconImageView.symbolName = "doc.text.fill"
-        iconImageView.symbolTintColor = .white
-        iconImageView.dotColor = saturatedColor
 
         // Set title
         if let title = metadata.title, !title.isEmpty {

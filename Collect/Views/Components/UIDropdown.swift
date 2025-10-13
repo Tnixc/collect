@@ -104,7 +104,7 @@ struct UIDropdown<T: Hashable>: View {
             }
         }
         .padding(4)
-        .background(.thickMaterial)
+        .background(AppTheme.backgroundPrimary)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
                 .stroke(AppTheme.dividerColor.opacity(0.2), lineWidth: 2)

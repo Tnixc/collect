@@ -5,20 +5,13 @@ import AppKit
 /// - Auto layout friendly: exposes intrinsicContentSize based on `size` (diameter).
 /// - Dynamically updates when properties change.
 public final class ColorDotIconView: NSView {
-    // MARK: - Public API
-
-    /// Background circle color.
-    public var dotColor: NSColor = AppTheme.categoryNSColor(for: "blue") {
-        didSet { updateBackground() }
-    }
-
     /// SF Symbol name (e.g., "person.fill", "doc.text.fill").
     public var symbolName: String = "doc.text.fill" {
         didSet { updateSymbolImage() }
     }
 
     /// Symbol point size used to render the SF Symbol image.
-    public var symbolPointSize: CGFloat = 12 {
+    public var symbolPointSize: CGFloat = 18 {
         didSet {
             updateSymbolImage()
             updateImageSizeConstraints()
@@ -36,22 +29,6 @@ public final class ColorDotIconView: NSView {
     }
 
     /// Diameter (in points) for the circular background.
-    public var size: CGFloat = 20 {
-        didSet {
-            invalidateIntrinsicContentSize()
-            needsLayout = true
-        }
-    }
-
-    /// Optional border color for the dot. Set to nil to hide.
-    public var borderColor: NSColor? {
-        didSet { updateBorder() }
-    }
-
-    /// Border width (in points). Only applied when `borderColor` is non-nil.
-    public var borderWidth: CGFloat = 1 {
-        didSet { updateBorder() }
-    }
 
     // MARK: - Private UI
 
@@ -61,19 +38,16 @@ public final class ColorDotIconView: NSView {
 
     // MARK: - Init
 
-    public convenience init(symbolName: String,
-                            categoryColorName: String? = nil,
-                            size: CGFloat = 20,
-                            symbolPointSize: CGFloat = 12,
-                            symbolWeight: NSFont.Weight = .semibold,
-                            symbolTintColor: NSColor = .white)
-    {
+    public convenience init(
+        symbolName: String,
+        categoryColorName _: String? = nil,
+        size _: CGFloat = 20,
+        symbolPointSize: CGFloat = 12,
+        symbolWeight: NSFont.Weight = .semibold,
+        symbolTintColor: NSColor = .white
+    ) {
         self.init(frame: .zero)
         self.symbolName = symbolName
-        if let categoryColorName {
-            dotColor = AppTheme.categoryNSColor(for: categoryColorName)
-        }
-        self.size = size
         self.symbolPointSize = symbolPointSize
         self.symbolWeight = symbolWeight
         self.symbolTintColor = symbolTintColor
@@ -112,8 +86,12 @@ public final class ColorDotIconView: NSView {
         ])
 
         // Size constraints for image; will be updated to `symbolPointSize`
-        let w = imageView.widthAnchor.constraint(equalToConstant: symbolPointSize)
-        let h = imageView.heightAnchor.constraint(equalToConstant: symbolPointSize)
+        let w = imageView.widthAnchor.constraint(
+            equalToConstant: symbolPointSize
+        )
+        let h = imageView.heightAnchor.constraint(
+            equalToConstant: symbolPointSize
+        )
         w.isActive = true
         h.isActive = true
         imageWidthConstraint = w
@@ -121,28 +99,11 @@ public final class ColorDotIconView: NSView {
     }
 
     private func applyInitial() {
-        updateBackground()
-        updateBorder()
         updateSymbolImage()
         imageView.contentTintColor = symbolTintColor
     }
 
     // MARK: - Updates
-
-    private func updateBackground() {
-        layer?.backgroundColor = dotColor.cgColor
-        needsDisplay = true
-    }
-
-    private func updateBorder() {
-        if let borderColor {
-            layer?.borderColor = borderColor.cgColor
-            layer?.borderWidth = borderWidth
-        } else {
-            layer?.borderWidth = 0
-            layer?.borderColor = nil
-        }
-    }
 
     private func updateImageSizeConstraints() {
         imageWidthConstraint?.constant = symbolPointSize
@@ -152,17 +113,21 @@ public final class ColorDotIconView: NSView {
     }
 
     private func updateSymbolImage() {
-        let config = NSImage.SymbolConfiguration(pointSize: symbolPointSize, weight: symbolWeight)
-        let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: nil)?
+        let config = NSImage.SymbolConfiguration(
+            pointSize: symbolPointSize,
+            weight: symbolWeight
+        )
+        let image = NSImage(
+            systemSymbolName: symbolName,
+            accessibilityDescription: nil
+        )?
             .withSymbolConfiguration(config)
-        imageView.image = image ?? NSImage(systemSymbolName: "questionmark", accessibilityDescription: nil)
-    }
-
-    // MARK: - Convenience
-
-    /// Sets the dot color using an AppTheme category color name (e.g., "blue", "green").
-    public func setCategoryColorName(_ name: String) {
-        dotColor = AppTheme.categoryNSColor(for: name)
+        imageView.image =
+            image
+                ?? NSImage(
+                    systemSymbolName: "questionmark",
+                    accessibilityDescription: nil
+                )
     }
 
     // MARK: - Layout & Sizing
@@ -170,9 +135,5 @@ public final class ColorDotIconView: NSView {
     override public func layout() {
         super.layout()
         layer?.cornerRadius = bounds.height / 2
-    }
-
-    override public var intrinsicContentSize: NSSize {
-        NSSize(width: size, height: size)
     }
 }

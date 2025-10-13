@@ -28,7 +28,12 @@ public final class PillView: NSView {
     }
 
     /// Content insets for the pill interior.
-    public var contentInsets: NSEdgeInsets = .init(top: 4, left: 8, bottom: 4, right: 8) {
+    public var contentInsets: NSEdgeInsets = .init(
+        top: 4,
+        left: 8,
+        bottom: 4,
+        right: 8
+    ) {
         didSet { updateInsets() }
     }
 
@@ -44,7 +49,11 @@ public final class PillView: NSView {
 
     // MARK: - Init
 
-    public convenience init(text: String, colorName: String? = nil, showsColorDot: Bool = true) {
+    public convenience init(
+        text: String,
+        colorName: String? = nil,
+        showsColorDot: Bool = true
+    ) {
         self.init(frame: .zero)
         self.text = text
         self.colorName = colorName
@@ -102,16 +111,31 @@ public final class PillView: NSView {
 
         // Layout
         NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: contentInsets.left),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -contentInsets.right),
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: contentInsets.top),
-            stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -contentInsets.bottom),
+            stack.leadingAnchor.constraint(
+                equalTo: leadingAnchor,
+                constant: contentInsets.left
+            ),
+            stack.trailingAnchor.constraint(
+                equalTo: trailingAnchor,
+                constant: -contentInsets.right
+            ),
+            stack.topAnchor.constraint(
+                equalTo: topAnchor,
+                constant: contentInsets.top
+            ),
+            stack.bottomAnchor.constraint(
+                equalTo: bottomAnchor,
+                constant: -contentInsets.bottom
+            ),
         ])
 
         // Content Hugging & Compression
         setContentHuggingPriority(.defaultHigh, for: .horizontal)
         setContentCompressionResistancePriority(.required, for: .horizontal)
-        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(
+            .required,
+            for: .horizontal
+        )
         label.setContentHuggingPriority(.defaultLow, for: .horizontal)
 
         // Add arranged subviews
@@ -129,18 +153,14 @@ public final class PillView: NSView {
     // MARK: - Appearance
 
     private func preferredPillFont() -> NSFont {
-        // Try New York Small if present, fall back to system
-        if let ny = NSFont(name: "New York Small", size: 11) {
-            // Adjust weight toward medium if available
-            return NSFontManager.shared.convert(ny, toHaveTrait: .boldFontMask) // slight weight bump
-        }
-        return NSFont.systemFont(ofSize: 11, weight: .medium)
+        return NSFont.systemFont(ofSize: 13, weight: .medium)
     }
 
     private func updateColorDot() {
         if let name = colorName, showsColorDot {
             dotView.isHidden = false
-            dotView.layer?.backgroundColor = AppTheme.categoryNSColor(for: name).cgColor
+            dotView.layer?.backgroundColor =
+                AppTheme.categoryNSColor(for: name).cgColor
         } else {
             dotView.isHidden = true
         }
@@ -149,15 +169,29 @@ public final class PillView: NSView {
     private func updateInsets() {
         // Update constraints to reflect new insets
         for c in constraints {
-            if c.firstItem as? NSView === stack || c.secondItem as? NSView === stack {
+            if c.firstItem as? NSView === stack
+                || c.secondItem as? NSView === stack
+            {
                 removeConstraint(c)
             }
         }
         NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: contentInsets.left),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -contentInsets.right),
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: contentInsets.top),
-            stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -contentInsets.bottom),
+            stack.leadingAnchor.constraint(
+                equalTo: leadingAnchor,
+                constant: contentInsets.left
+            ),
+            stack.trailingAnchor.constraint(
+                equalTo: trailingAnchor,
+                constant: -contentInsets.right
+            ),
+            stack.topAnchor.constraint(
+                equalTo: topAnchor,
+                constant: contentInsets.top
+            ),
+            stack.bottomAnchor.constraint(
+                equalTo: bottomAnchor,
+                constant: -contentInsets.bottom
+            ),
         ])
         invalidateIntrinsicContentSize()
     }
@@ -186,7 +220,10 @@ public final class PillView: NSView {
         // Size to fit content plus insets, with a minimum height that matches comfortable touch targets.
         let fitting = stack.fittingSize
         let width = fitting.width + contentInsets.left + contentInsets.right
-        let height = max(fitting.height + contentInsets.top + contentInsets.bottom, 18)
+        let height = max(
+            fitting.height + contentInsets.top + contentInsets.bottom,
+            18
+        )
         return NSSize(width: ceil(width), height: ceil(height))
     }
 

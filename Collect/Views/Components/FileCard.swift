@@ -37,13 +37,13 @@ struct FileCard: View {
             .padding(.top, 6)
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.system(size: 18, weight: .semibold, design: .serif))
-                    .foregroundColor(AppTheme.textPrimary)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(AppTheme.textPrimary)
                     .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(author)
                     .font(.system(size: 12))
-                    .foregroundColor(AppTheme.textSecondary)
+                    .foregroundStyle(AppTheme.textSecondary)
                     .lineLimit(1)
             }
             .padding(.horizontal, 12)
@@ -156,8 +156,8 @@ struct FileCard: View {
                     .frame(width: 6, height: 6)
             }
             Text(text)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundColor(AppTheme.textSecondary)
+                .font(.system(size: 11))
+                .foregroundStyle(AppTheme.textSecondary)
                 .lineLimit(1)
                 .fixedSize(horizontal: true, vertical: false)
                 .layoutPriority(1)

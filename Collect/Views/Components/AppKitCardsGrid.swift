@@ -517,7 +517,10 @@ class FileCardItem: NSCollectionViewItem {
         titleLabel.isEditable = false
         titleLabel.isBordered = false
         titleLabel.backgroundColor = .clear
-        titleLabel.font = NewYork.nsFont(size: 18, weight: .semibold, opticalSize: .medium) ?? NSFont.systemFont(ofSize: 18, weight: .semibold)
+        titleLabel.font =
+            NewYork.nsFont(size: 18, weight: .semibold, opticalSize: .medium)
+                ?? NSFont.systemFont(ofSize: 18, weight: .semibold)
+        titleLabel.textColor = AppTheme.textPrimaryNSColor
         titleLabel.maximumNumberOfLines = 3
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.usesSingleLineMode = false
@@ -528,7 +531,9 @@ class FileCardItem: NSCollectionViewItem {
         authorLabel.isEditable = false
         authorLabel.isBordered = false
         authorLabel.backgroundColor = .clear
-        authorLabel.font = NewYork.nsFont(size: 12, weight: .regular, opticalSize: .small) ?? NSFont.systemFont(ofSize: 12)
+        authorLabel.font =
+            NewYork.nsFont(size: 12, weight: .regular, opticalSize: .small)
+                ?? NSFont.systemFont(ofSize: 12)
         authorLabel.textColor = AppTheme.textSecondaryNSColor
         authorLabel.maximumNumberOfLines = 1
         authorLabel.lineBreakMode = .byTruncatingTail
