@@ -6,19 +6,21 @@ class DownloadService {
     private init() {}
 
     func downloadFile(from url: URL, to destinationDirectory: URL) async throws -> URL {
+        // Convert arXiv abstract URLs to PDF URLs
+        let downloadURL = convertArXivURL(url)
         // Check if curl is available
         guard isCurlAvailable() else {
             throw DownloadError.curlNotFound
         }
 
         // Create destination URL in the directory
-        let filename = url.lastPathComponent
+        let filename = downloadURL.lastPathComponent
         let destinationURL = destinationDirectory.appendingPathComponent(filename)
 
         // Run curl
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/curl")
-        process.arguments = ["-L", "-o", destinationURL.path, url.absoluteString]
+        process.arguments = ["-L", "-o", destinationURL.path, downloadURL.absoluteString]
 
         try process.run()
         process.waitUntilExit()
@@ -51,6 +53,22 @@ class DownloadService {
         } catch {
             return false
         }
+    }
+
+    private func convertArXivURL(_ url: URL) -> URL {
+        let urlString = url.absoluteString
+
+        // Check if it's an arXiv abstract URL (https://arxiv.org/abs/XXXX.XXXXX)
+        if urlString.contains("arxiv.org/abs/") {
+            // Extract the article ID
+            let articleID = url.lastPathComponent
+            // Convert to PDF URL
+            let pdfURLString = "https://arxiv.org/pdf/\(articleID).pdf"
+            return URL(string: pdfURLString) ?? url
+        }
+
+        // Return original URL if not an arXiv abstract URL
+        return url
     }
 
     enum DownloadError: Error {
