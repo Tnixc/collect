@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SidebarView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeManager: ThemeManager
     @Binding var showingSettings: Bool
     @Binding var showingCreateCategory: Bool
     @State private var hoveredItem: String? = nil
@@ -170,6 +171,7 @@ struct SidebarView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppTheme.backgroundSecondary)
+        .id(ThemeManager.shared.effectiveColorScheme)
         .ignoresSafeArea(.container, edges: .top)
         .environment(\.lineLimit, 1)
         .environment(\.truncationMode, .tail)

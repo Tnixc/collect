@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 
 struct UIDropdown<T: Hashable>: View {
+    @EnvironmentObject var themeManager: ThemeManager
     @Binding var selectedOption: T
     @Binding var isExpanded: Bool
     private let options: [T]
@@ -49,6 +50,7 @@ struct UIDropdown<T: Hashable>: View {
             }
         }
         .zIndex(isExpanded ? 999 : -10)
+        .id(themeManager.effectiveColorScheme)
         .onAppear {
             setupMouseEventMonitor()
         }
@@ -172,6 +174,7 @@ struct UIDropdown<T: Hashable>: View {
 }
 
 struct DropdownMenuItemView<T: Hashable>: View {
+    @EnvironmentObject var themeManager: ThemeManager
     let option: T
     let isSelected: Bool
     let optionToString: (T) -> String
@@ -214,6 +217,7 @@ struct DropdownMenuItemView<T: Hashable>: View {
         .buttonStyle(.borderless)
         .smartFocusRing()
         .frame(height: itemHeight)
+        .id(themeManager.effectiveColorScheme)
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.1)) {
                 isHovered = hovering

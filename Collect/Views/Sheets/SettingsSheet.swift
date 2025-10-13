@@ -160,6 +160,7 @@ struct SettingsSheet: View {
         .frame(width: 500)
         .background(AppTheme.backgroundPrimary)
         .cornerRadius(12)
+        .id(themeManager.effectiveColorScheme)
         .onAppear {
             loadSettings()
         }

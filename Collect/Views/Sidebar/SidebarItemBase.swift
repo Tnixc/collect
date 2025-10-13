@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Base component for sidebar items with consistent styling
 struct SidebarItemBase<Content: View>: View {
+    @EnvironmentObject var themeManager: ThemeManager
     let isSelected: Bool
     let isHovered: Bool
     let content: () -> Content
@@ -24,6 +25,7 @@ struct SidebarItemBase<Content: View>: View {
             .cornerRadius(6)
             .padding(.horizontal, 8)
             .padding(.vertical, 1)
+            .id(themeManager.effectiveColorScheme)
     }
 
     private var backgroundColor: Color {
@@ -39,6 +41,8 @@ struct SidebarItemBase<Content: View>: View {
 
 /// Icon view for sidebar items
 struct SidebarIcon: View {
+    @EnvironmentObject var themeManager: ThemeManager
+
     enum IconType {
         case systemIcon(String)
         case colorDot(Color)
@@ -64,5 +68,6 @@ struct SidebarIcon: View {
             }
         }
         .frame(width: 16, alignment: .center)
+        .id(themeManager.effectiveColorScheme)
     }
 }

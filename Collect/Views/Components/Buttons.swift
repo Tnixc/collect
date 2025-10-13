@@ -8,6 +8,7 @@ enum ButtonStyle {
 }
 
 struct UIButton: View {
+    @EnvironmentObject var themeManager: ThemeManager
     let action: () -> Void
     let label: String?
     let icon: String?
@@ -151,6 +152,7 @@ struct UIButton: View {
         }
         .buttonStyle(.plain)
         .smartFocusRing()
+        .id(themeManager.effectiveColorScheme)
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.15)) {
                 isHovered = hovering

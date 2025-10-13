@@ -3,6 +3,7 @@ import SwiftUI
 struct CreateCategorySheet: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var categoryName: String = ""
     @State private var selectedColor: String = "blue"
 
@@ -116,9 +117,10 @@ struct CreateCategorySheet: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
         }
-        .frame(width: 500)
+        .frame(width: 400)
         .background(AppTheme.backgroundPrimary)
         .cornerRadius(12)
+        .id(themeManager.effectiveColorScheme)
     }
 
     private func colorFromName(_ name: String) -> Color {

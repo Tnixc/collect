@@ -3,6 +3,7 @@ import SwiftUI
 struct EditCategorySheet: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var categoryName: String
     @State private var selectedColor: String
     @State private var showError: Bool = false
@@ -185,6 +186,7 @@ struct EditCategorySheet: View {
         .frame(width: 500)
         .background(AppTheme.backgroundPrimary)
         .cornerRadius(12)
+        .id(themeManager.effectiveColorScheme)
         .alert("Delete Category?", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {

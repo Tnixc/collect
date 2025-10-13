@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 struct AddURLSheet: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var urlString = ""
     @State private var isDownloading = false
     @State private var downloadError: String?
@@ -128,6 +129,7 @@ struct AddURLSheet: View {
         .frame(width: 600)
         .background(AppTheme.backgroundPrimary)
         .cornerRadius(12)
+        .id(themeManager.effectiveColorScheme)
     }
 
     private func downloadFile() {

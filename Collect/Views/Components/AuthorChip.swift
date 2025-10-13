@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct AuthorChip: View {
+    @EnvironmentObject var themeManager: ThemeManager
     let name: String
     let count: Int
     let isSelected: Bool
@@ -23,6 +24,7 @@ struct AuthorChip: View {
             isSelected ? AppTheme.pillBackground : AppTheme.backgroundSecondary
         )
         .cornerRadius(12)
+        .id(themeManager.effectiveColorScheme)
         .onTapGesture {
             action()
         }

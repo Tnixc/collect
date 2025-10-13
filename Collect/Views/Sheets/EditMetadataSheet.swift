@@ -3,6 +3,7 @@ import SwiftUI
 struct EditMetadataSheet: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeManager: ThemeManager
 
     let fileID: UUID
     @State private var title: String = ""
@@ -264,9 +265,10 @@ struct EditMetadataSheet: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
         }
-        .frame(width: 500)
+        .frame(width: 600)
         .background(AppTheme.backgroundPrimary)
         .cornerRadius(12)
+        .id(themeManager.effectiveColorScheme)
         .task {
             // Load metadata immediately when the view appears
             loadMetadata()

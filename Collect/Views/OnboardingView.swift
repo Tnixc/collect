@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var isSelectingDirectory = false
     @State private var selectedURL: URL?
     let onDirectorySelected: () -> Void
@@ -83,6 +84,7 @@ struct OnboardingView: View {
                 Spacer()
             }
         }
+        .id(themeManager.effectiveColorScheme)
         .sheet(isPresented: $isSelectingDirectory) {
             DirectorySelectionSheet(selectedURL: $selectedURL) { url in
                 saveSourceDirectory(url)
@@ -113,6 +115,7 @@ struct OnboardingView: View {
 }
 
 struct FeatureRow: View {
+    @EnvironmentObject var themeManager: ThemeManager
     let icon: String
     let title: String
     let description: String
@@ -136,11 +139,13 @@ struct FeatureRow: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .id(themeManager.effectiveColorScheme)
     }
 }
 
 struct DirectorySelectionSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var themeManager: ThemeManager
     @Binding var selectedURL: URL?
     let onComplete: (URL) -> Void
 
@@ -196,6 +201,7 @@ struct DirectorySelectionSheet: View {
             .padding(.bottom)
         }
         .frame(width: 450)
+        .id(themeManager.effectiveColorScheme)
         .onAppear {
             if selectedURL == nil {
                 selectDirectory()
