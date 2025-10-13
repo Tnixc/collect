@@ -70,9 +70,10 @@ class MetadataService {
     func createMetadata(fileID: UUID, title: String? = nil, pages: Int? = nil) -> FileMetadata {
         // Assign a random card color from the available palette
         let cardColorNames = [
-            "cardTan", "cardYellow", "cardGreen", "cardBlue", "cardPink",
-            "cardPurple", "cardGray", "cardPeach", "cardRed", "cardOrange",
-            "cardTeal", "cardNavy",
+            "cardPeach", "cardDarkRed", "cardPink", "cardPurple",
+            "cardRed", "cardSalmon", "cardYellow", "cardOrange",
+            "cardDarkGreen", "cardGreen", "cardTeal", "cardBlue",
+            "cardCyan", "cardNavy",
         ]
         let randomColor = cardColorNames[abs(fileID.hashValue) % cardColorNames.count]
         return FileMetadata(id: fileID, title: title, pages: pages, cardColor: randomColor)

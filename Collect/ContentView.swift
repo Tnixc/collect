@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var appState = AppState()
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var isSidebarVisible: Bool = true
     @State private var showingSettings = false
     @State private var showingAddURL = false
@@ -119,14 +120,7 @@ struct ContentView: View {
         .frame(minWidth: 900, minHeight: 600)
         .onAppear {
             // Set the background color for the window
-            DispatchQueue.main.async {
-                if let window = NSApp.windows.first {
-                    window.backgroundColor = NSColor(
-                        AppTheme.backgroundSecondary
-                    )
-                    window.titlebarSeparatorStyle = .none
-                }
-            }
+            updateWindowBackground()
             loadData()
             NSApp.keyWindow?.tabbingMode = .disallowed
 
@@ -138,6 +132,9 @@ struct ContentView: View {
             ) { _ in
                 refreshDataIfNeeded()
             }
+        }
+        .onChange(of: themeManager.effectiveColorScheme) {
+            updateWindowBackground()
         }
         .onDisappear {
             // Remove observer when view disappears
@@ -208,6 +205,17 @@ struct ContentView: View {
         // Refresh data when app becomes active (e.g., when returning from another app)
         if let sourceURL = SettingsSheet.getSourceDirectoryURL() {
             loadFilesFromDirectory(sourceURL)
+        }
+    }
+
+    private func updateWindowBackground() {
+        DispatchQueue.main.async {
+            if let window = NSApp.windows.first {
+                window.backgroundColor = NSColor(
+                    AppTheme.backgroundSecondary
+                )
+                window.titlebarSeparatorStyle = .none
+            }
         }
     }
 }

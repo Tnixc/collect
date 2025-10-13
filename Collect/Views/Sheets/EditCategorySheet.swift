@@ -10,7 +10,12 @@ struct EditCategorySheet: View {
     @State private var showDeleteConfirmation: Bool = false
 
     let category: Category
-    let predefinedColors = ["blue", "green", "orange", "pink", "purple", "yellow", "gray", "tan"]
+    let predefinedColors = [
+        "peach", "darkRed", "pink", "purple",
+        "red", "salmon", "yellow", "orange",
+        "darkGreen", "green", "teal", "blue",
+        "cyan", "navy",
+    ]
 
     var onEdit: (String, String) -> Void
 

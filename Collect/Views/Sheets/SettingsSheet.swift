@@ -3,6 +3,7 @@ import SwiftUI
 
 struct SettingsSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var themeManager = ThemeManager.shared
     @State private var sourceDirectoryURL: URL?
     @State private var isSelectingDirectory = false
 
@@ -30,12 +31,83 @@ struct SettingsSheet: View {
             .padding(.bottom, 12)
 
             // Description
-            Text("Select the directory where your PDF files are stored.")
+            Text("Configure your application preferences.")
                 .font(.system(size: 13))
                 .foregroundColor(AppTheme.textSecondary)
                 .lineSpacing(4)
                 .padding(.horizontal, 24)
                 .padding(.bottom, 20)
+
+            Divider()
+                .background(AppTheme.dividerColor)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 16)
+
+            // Theme Section
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Appearance")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(AppTheme.textPrimary)
+                    .padding(.horizontal, 24)
+
+                HStack(spacing: 8) {
+                    ForEach(ThemeMode.allCases, id: \.self) { mode in
+                        Button(action: {
+                            themeManager.themeMode = mode
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: mode.iconName)
+                                    .font(.system(size: 12))
+                                Text(mode.rawValue)
+                                    .font(.system(size: 13))
+                            }
+                            .foregroundColor(
+                                themeManager.themeMode == mode
+                                    ? AppTheme.buttonTextLight
+                                    : AppTheme.textPrimary
+                            )
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
+                            .background(
+                                themeManager.themeMode == mode
+                                    ? AppTheme.accentPrimary
+                                    : AppTheme.backgroundTertiary
+                            )
+                            .cornerRadius(6)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(
+                                        themeManager.themeMode == mode
+                                            ? AppTheme.accentPrimary
+                                            : AppTheme.dividerColor,
+                                        lineWidth: 1
+                                    )
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, 24)
+            }
+            .padding(.bottom, 20)
+
+            Divider()
+                .background(AppTheme.dividerColor)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 16)
+
+            // Source Directory Section
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Source Directory")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(AppTheme.textPrimary)
+                    .padding(.horizontal, 24)
+
+                Text("Select the directory where your PDF files are stored.")
+                    .font(.system(size: 12))
+                    .foregroundColor(AppTheme.textSecondary)
+                    .padding(.horizontal, 24)
+            }
 
             // Directory Selection
             HStack(spacing: 8) {

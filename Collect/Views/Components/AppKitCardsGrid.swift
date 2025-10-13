@@ -168,13 +168,13 @@ struct AppKitCardsGrid: NSViewRepresentable {
                 // Use metadata.cardColor to determine the background color
                 let backgroundColor: NSColor
                 if let colorName = AppTheme.cardColors[meta.cardColor] {
-                    backgroundColor = NSColor(colorName)
+                    backgroundColor = NSColor(colorName).withAlphaComponent(0.2)
                 } else {
                     // Fallback to hash-based color if cardColor is not found
                     backgroundColor =
                         cardColors[
                             abs(file.id.hashValue) % cardColors.count
-                        ]
+                        ].withAlphaComponent(0.2)
                 }
 
                 item.configure(
@@ -866,7 +866,7 @@ class FileCardItem: NSCollectionViewItem {
         // Add tags and year
         for tag in metadata.tags {
             let color =
-                categories.first(where: { $0.name == tag })?.color ?? "gray"
+                categories.first(where: { $0.name == tag })?.color ?? "blue"
             let pill = createPill(text: tag, colorName: color)
             tagsContainer.addSubview(pill)
         }

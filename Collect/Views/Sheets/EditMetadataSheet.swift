@@ -14,22 +14,14 @@ struct EditMetadataSheet: View {
     @State private var isLoaded: Bool = false
 
     private let cardColorNames = [
-        "cardTan", "cardYellow", "cardGreen", "cardBlue", "cardPink",
-        "cardPurple", "cardGray", "cardPeach",
+        "cardPeach", "cardDarkRed", "cardPink", "cardPurple",
+        "cardRed", "cardSalmon", "cardYellow", "cardOrange",
+        "cardDarkGreen", "cardGreen", "cardTeal", "cardBlue",
+        "cardCyan", "cardNavy",
     ]
 
     private func colorFromName(_ name: String) -> Color {
-        switch name {
-        case "cardTan": return AppTheme.cardTan
-        case "cardYellow": return AppTheme.cardYellow
-        case "cardGreen": return AppTheme.cardGreen
-        case "cardBlue": return AppTheme.cardBlue
-        case "cardPink": return AppTheme.cardPink
-        case "cardPurple": return AppTheme.cardPurple
-        case "cardGray": return AppTheme.cardGray
-        case "cardPeach": return AppTheme.cardPeach
-        default: return AppTheme.cardBlue
-        }
+        AppTheme.cardColor(for: name)
     }
 
     var body: some View {

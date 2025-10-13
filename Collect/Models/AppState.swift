@@ -274,7 +274,7 @@ class AppState: ObservableObject {
             }
         }
 
-        let colors = ["blue", "green", "orange", "pink", "purple", "yellow", "gray", "tan"]
+        let colors = ["peach", "darkRed", "pink", "purple", "red", "salmon", "yellow", "orange", "darkGreen", "green", "teal", "blue", "cyan", "navy"]
         var colorIndex = 0
 
         categories = tagCounts.map { name, count in
@@ -284,7 +284,7 @@ class AppState: ObservableObject {
         }.sorted(by: { $0.name < $1.name })
 
         if uncategorizedCount > 0 {
-            categories.insert(Category(name: "Uncategorized", color: "gray", itemCount: uncategorizedCount), at: 0)
+            categories.insert(Category(name: "Uncategorized", color: "blue", itemCount: uncategorizedCount), at: 0)
         }
     }
 

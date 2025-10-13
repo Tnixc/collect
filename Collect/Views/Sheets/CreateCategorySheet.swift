@@ -6,7 +6,12 @@ struct CreateCategorySheet: View {
     @State private var categoryName: String = ""
     @State private var selectedColor: String = "blue"
 
-    let predefinedColors = ["blue", "green", "orange", "pink", "purple", "yellow", "teal", "red"]
+    let predefinedColors = [
+        "peach", "darkRed", "pink", "purple",
+        "red", "salmon", "yellow", "orange",
+        "darkGreen", "green", "teal", "blue",
+        "cyan", "navy",
+    ]
 
     var onCreate: (String, String) -> Void
 

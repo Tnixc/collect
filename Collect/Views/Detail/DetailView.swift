@@ -630,7 +630,7 @@ struct DetailView: View {
         .padding(.horizontal, 8)
         .padding(.bottom, 8)
         .padding(.top, 1)
-        .shadow(color: AppTheme.borderColor.opacity(0.2), radius: 8, y: -4)
+        .shadow(color: AppTheme.backgroundTertiary.opacity(0.2), radius: 8, y: -4)
         .sheet(item: $editingFileID) { fileID in
             EditMetadataSheet(fileID: fileID)
                 .environmentObject(appState)

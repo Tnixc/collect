@@ -2,84 +2,230 @@ import AppKit
 import SwiftUI
 
 enum AppTheme {
-    // Background colors
-    static let backgroundPrimary = Color(hex: "#f0efed")
-    static let backgroundSecondary = Color(hex: "#e1e0de")
-    static let backgroundTertiary = Color(hex: "#ebeae8")
+    // MARK: - Category Colors (Saturated)
 
-    // Text colors
-    static let textPrimary = Color(hex: "#5a5856")
-    static let textSecondary = Color(hex: "#878583")
-    static let textTertiary = Color(hex: "#a5a3a1")
+    static let categoryPeach = Color(hex: "#C97D6E")
+    static let categoryDarkRed = Color(hex: "#C98A7D")
+    static let categoryPink = Color(hex: "#BC76C1")
+    static let categoryPurple = Color(hex: "#8C6FAA")
+    static let categoryRed = Color(hex: "#CB7676")
+    static let categorySalmon = Color(hex: "#CC8D82")
+    static let categoryYellow = Color(hex: "#CC8D70")
+    static let categoryOrange = Color(hex: "#DCA466")
+    static let categoryDarkGreen = Color(hex: "#4C8E72")
+    static let categoryGreen = Color(hex: "#80A665")
+    static let categoryTeal = Color(hex: "#5EA994")
+    static let categoryBlue = Color(hex: "#5D9AA9")
+    static let categoryCyan = Color(hex: "#6394BF")
+    static let categoryNavy = Color(hex: "#6872AB")
 
-    // Accent colors
-    static let accentPrimary = Color(hex: "#4b8ca0")
-    static let accentSecondary = Color(hex: "#878583")
+    // MARK: - Card Colors (Desaturated - Adaptive)
 
-    // Semantic colors for actions
-    static let destructive = Color(hex: "#b4463c")
-    static let buttonTextLight = Color.white
-    static let dropdownShadow = Color.black.opacity(0.1)
-    static let pillBackground = Color.white.opacity(0.35)
-    static let pillBackgroundFaint = Color.white.opacity(0.05)
+    static var cardPeach: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#B4A09C") : Color(hex: "#AC9793")
+    }
 
-    // Card colors (muted versions)
-    static let cardTan = Color(hex: "#d2d0ce")
-    static let cardYellow = Color(hex: "#d9cfb8")
-    static let cardGreen = Color(hex: "#c4d1ba")
-    static let cardBlue = Color(hex: "#c4d6dd")
-    static let cardPink = Color(hex: "#dcc9d4")
-    static let cardPurple = Color(hex: "#d4d2dd")
-    static let cardGray = Color(hex: "#dadad9")
-    static let cardPeach = Color(hex: "#e4d3cd")
-    static let cardRed = Color(hex: "#ddc7c4")
-    static let cardOrange = Color(hex: "#e8d9c8")
-    static let cardTeal = Color(hex: "#c4dbd9")
-    static let cardNavy = Color(hex: "#c9d2dd")
+    static var cardDarkRed: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#B9A9A5") : Color(hex: "#A38D88")
+    }
 
-    // Category colors (saturated originals)
-    static let categoryRed = Color(hex: "#b4463c")
-    static let categoryDarkRed = Color(hex: "#aa505a")
-    static let categoryPeach = Color(hex: "#d27d6e")
-    static let categorySalmon = Color(hex: "#cd735f")
-    static let categoryPink = Color(hex: "#be6e8c")
-    static let categoryPurple = Color(hex: "#a064aa")
-    static let categoryLavender = Color(hex: "#827db4")
-    static let categoryOrange = Color(hex: "#dc8246")
-    static let categoryYellow = Color(hex: "#be913c")
-    static let categoryGreen = Color(hex: "#698250")
-    static let categoryTeal = Color(hex: "#46877d")
-    static let categoryBlue = Color(hex: "#4b8ca0")
-    static let categoryCyan = Color(hex: "#508291")
-    static let categoryNavy = Color(hex: "#5a73a5")
+    static var cardPink: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#B09EB2") : Color(hex: "#A08C93")
+    }
 
-    // Card color palette
-    static let cardColors: [String: Color] = [
-        "cardTan": cardTan,
-        "cardYellow": cardYellow,
-        "cardGreen": cardGreen,
-        "cardBlue": cardBlue,
-        "cardPink": cardPink,
-        "cardPurple": cardPurple,
-        "cardGray": cardGray,
-        "cardPeach": cardPeach,
-        "cardRed": cardRed,
-        "cardOrange": cardOrange,
-        "cardTeal": cardTeal,
-        "cardNavy": cardNavy,
-    ]
+    static var cardPurple: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#9991A1") : Color(hex: "#8D7E8F")
+    }
 
-    // Category color palette
+    static var cardRed: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#B8A2A2") : Color(hex: "#876B69")
+    }
+
+    static var cardSalmon: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#BDADAA") : Color(hex: "#887174")
+    }
+
+    static var cardYellow: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#B6A69E") : Color(hex: "#A38D7E")
+    }
+
+    static var cardOrange: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#BDAE9E") : Color(hex: "#8D826C")
+    }
+
+    static var cardDarkGreen: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#6E847B") : Color(hex: "#696F62")
+    }
+
+    static var cardGreen: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#909A89") : Color(hex: "#5E6E6C")
+    }
+
+    static var cardTeal: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#869A94") : Color(hex: "#6A7B80")
+    }
+
+    static var cardBlue: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#859599") : Color(hex: "#687478")
+    }
+
+    static var cardCyan: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#919EA9") : Color(hex: "#767C88")
+    }
+
+    static var cardNavy: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#8D8F9F") : Color(hex: "#92919F")
+    }
+
+    // MARK: - Text Colors
+
+    static var textPrimary: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#D8D6C9") : Color(hex: "#5A5856")
+    }
+
+    static var textSecondary: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#B2B0A6") : Color(hex: "#696765")
+    }
+
+    static var textTertiary: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#999895") : Color(hex: "#787674")
+    }
+
+    static var textQuaternary: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#7F7F7C") : Color(hex: "#878583")
+    }
+
+    // MARK: - Background Colors
+
+    static var backgroundPrimary: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#121212") : Color(hex: "#EBEAE8")
+    }
+
+    static var backgroundSecondary: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#181818") : Color(hex: "#E1E0DE")
+    }
+
+    static var backgroundTertiary: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#1F1F1F") : Color(hex: "#D2D0CE")
+    }
+
+    // MARK: - Gray Scale
+
+    static var gray1: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#666666") : Color(hex: "#969492")
+    }
+
+    static var gray2: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#4C4C4C") : Color(hex: "#A5A3A1")
+    }
+
+    static var gray3: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#333333") : Color(hex: "#B4B2B0")
+    }
+
+    static var gray4: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#060606") : Color(hex: "#C3C1BF")
+    }
+
+    // MARK: - Semantic Colors
+
+    static var borderColor: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#333333") : Color(hex: "#C3C1BF")
+    }
+
+    static var dividerColor: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#333333") : Color(hex: "#D2D0CE")
+    }
+
+    static var destructive: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#CB7676") : Color(hex: "#B4463C")
+    }
+
+    static var accentPrimary: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#5D9AA9") : Color(hex: "#4B8CA0")
+    }
+
+    static var accentSecondary: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#999895") : Color(hex: "#878583")
+    }
+
+    static var dropdownShadow: Color {
+        Color.black.opacity(ThemeManager.shared.isDarkMode ? 0.3 : 0.1)
+    }
+
+    static var pillBackground: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color.white.opacity(0.1)
+            : Color.white.opacity(0.35)
+    }
+
+    static var pillBackgroundFaint: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color.white.opacity(0.05)
+            : Color.white.opacity(0.05)
+    }
+
+    static var sidebarItemActive: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#1F1F1F") : Color(hex: "#E1E0DE")
+    }
+
+    static var sidebarItemHover: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#181818") : Color(hex: "#EBEAE8")
+    }
+
+    static var selectionStroke: Color {
+        ThemeManager.shared.isDarkMode
+            ? Color(hex: "#666666") : Color(hex: "#A5A3A1")
+    }
+
+    static var buttonTextLight: Color {
+        ThemeManager.shared.isDarkMode ? Color(hex: "#D8D6C9") : Color.white
+    }
+
+    // MARK: - Color Palettes
+
     static let categoryColors: [String: Color] = [
-        "red": categoryRed,
-        "darkRed": categoryDarkRed,
         "peach": categoryPeach,
-        "salmon": categorySalmon,
+        "darkRed": categoryDarkRed,
         "pink": categoryPink,
         "purple": categoryPurple,
-        "lavender": categoryLavender,
-        "orange": categoryOrange,
+        "red": categoryRed,
+        "salmon": categorySalmon,
         "yellow": categoryYellow,
+        "orange": categoryOrange,
+        "darkGreen": categoryDarkGreen,
         "green": categoryGreen,
         "teal": categoryTeal,
         "blue": categoryBlue,
@@ -87,104 +233,165 @@ enum AppTheme {
         "navy": categoryNavy,
     ]
 
-    // Get color by name
-    static func color(for name: String) -> Color {
-        cardColors[name] ?? cardTan
+    static var cardColors: [String: Color] {
+        [
+            "cardPeach": cardPeach,
+            "cardDarkRed": cardDarkRed,
+            "cardPink": cardPink,
+            "cardPurple": cardPurple,
+            "cardRed": cardRed,
+            "cardSalmon": cardSalmon,
+            "cardYellow": cardYellow,
+            "cardOrange": cardOrange,
+            "cardDarkGreen": cardDarkGreen,
+            "cardGreen": cardGreen,
+            "cardTeal": cardTeal,
+            "cardBlue": cardBlue,
+            "cardCyan": cardCyan,
+            "cardNavy": cardNavy,
+        ]
     }
 
-    // Category color mapping
+    // MARK: - Helper Methods
+
     static func categoryColor(for name: String) -> Color {
         categoryColors[name] ?? categoryBlue
     }
 
-    // Category color mapping for NSColor (AppKit)
+    static func cardColor(for name: String) -> Color {
+        cardColors[name] ?? cardBlue
+    }
+
     static func categoryNSColor(for name: String) -> NSColor {
         NSColor(categoryColor(for: name))
     }
 
-    // Card to Category color mapping (muted card -> saturated category)
-    static let cardToCategoryMapping: [NSColor: NSColor] = [
-        NSColor(cardTan): NSColor(hex: "#878583"), // Gray-ish
-        NSColor(cardYellow): NSColor(categoryYellow),
-        NSColor(cardGreen): NSColor(categoryGreen),
-        NSColor(cardBlue): NSColor(categoryBlue),
-        NSColor(cardPink): NSColor(categoryPink),
-        NSColor(cardPurple): NSColor(categoryPurple),
-        NSColor(cardGray): NSColor(hex: "#5a5856"), // Darker gray
-        NSColor(cardPeach): NSColor(categoryPeach),
-        NSColor(cardRed): NSColor(categoryRed),
-        NSColor(cardOrange): NSColor(categoryOrange),
-        NSColor(cardTeal): NSColor(categoryTeal),
-        NSColor(cardNavy): NSColor(categoryNavy),
-    ]
+    // MARK: - NSColor Variants
 
-    // Get saturated category color for a given card color
-    static func saturatedColor(for cardColor: NSColor) -> NSColor {
-        // Try to find exact match in mapping
-        for (card, category) in cardToCategoryMapping {
-            if abs(card.redComponent - cardColor.redComponent) < 0.01
-                && abs(card.greenComponent - cardColor.greenComponent) < 0.01
-                && abs(card.blueComponent - cardColor.blueComponent) < 0.01
-            {
-                return category
-            }
-        }
-        // Fallback to same color if no mapping found
-        return cardColor
+    static var textPrimaryNSColor: NSColor {
+        ThemeManager.shared.isDarkMode
+            ? NSColor(hex: "#D8D6C9") : NSColor(hex: "#5A5856")
     }
 
-    // NSColor equivalents for AppKit
-    static let dividerNSColor = NSColor(hex: "#d2d0ce")
-    static let textPrimaryNSColor = NSColor(hex: "#5a5856")
-    static let textSecondaryNSColor = NSColor(hex: "#878583")
-    static let textTertiaryNSColor = NSColor(hex: "#a5a3a1")
-    static let shadowNSColor = NSColor.black.withAlphaComponent(0.06)
-    static let pillBackgroundNSColor = NSColor(white: 1, alpha: 0.55)
-    static let pillBackgroundFaintNSColor = NSColor(white: 1, alpha: 0.25)
+    static var textSecondaryNSColor: NSColor {
+        ThemeManager.shared.isDarkMode
+            ? NSColor(hex: "#B2B0A6") : NSColor(hex: "#696765")
+    }
 
-    // Semantic colors
-    static let borderColor = Color(hex: "#c3c1bf")
-    static let dividerColor = Color(hex: "#d2d0ce")
-    static let sidebarItemActive = Color(hex: "#e1e0de")
-    static let sidebarItemHover = Color(hex: "#ebeae8")
-    static let selectionStroke = Color(hex: "#a5a3a1")
+    static var textTertiaryNSColor: NSColor {
+        ThemeManager.shared.isDarkMode
+            ? NSColor(hex: "#999895") : NSColor(hex: "#787674")
+    }
 
-    // Card colors as NSColor array
-    static let cardNSColors: [NSColor] = [
-        NSColor(cardTan),
-        NSColor(cardYellow),
-        NSColor(cardGreen),
-        NSColor(cardBlue),
-        NSColor(cardPink),
-        NSColor(cardPurple),
-        NSColor(cardGray),
-        NSColor(cardPeach),
-        NSColor(cardRed),
-        NSColor(cardOrange),
-        NSColor(cardTeal),
-        NSColor(cardNavy),
-    ]
+    static var backgroundPrimaryNSColor: NSColor {
+        ThemeManager.shared.isDarkMode
+            ? NSColor(hex: "#121212") : NSColor(hex: "#EBEAE8")
+    }
 
-    // Category colors as NSColor array
+    static var backgroundSecondaryNSColor: NSColor {
+        ThemeManager.shared.isDarkMode
+            ? NSColor(hex: "#181818") : NSColor(hex: "#E1E0DE")
+    }
+
+    static var dividerNSColor: NSColor {
+        ThemeManager.shared.isDarkMode
+            ? NSColor(hex: "#333333") : NSColor(hex: "#D2D0CE")
+    }
+
+    static var shadowNSColor: NSColor {
+        NSColor.black.withAlphaComponent(
+            ThemeManager.shared.isDarkMode ? 0.4 : 0.06
+        )
+    }
+
+    static var pillBackgroundNSColor: NSColor {
+        ThemeManager.shared.isDarkMode
+            ? NSColor(white: 1, alpha: 0.1)
+            : NSColor(white: 1, alpha: 0.55)
+    }
+
+    static var pillBackgroundFaintNSColor: NSColor {
+        ThemeManager.shared.isDarkMode
+            ? NSColor(white: 1, alpha: 0.05)
+            : NSColor(white: 1, alpha: 0.25)
+    }
+
+    // MARK: - NSColor Arrays
+
     static let categoryNSColors: [NSColor] = [
-        NSColor(categoryRed),
-        NSColor(categoryDarkRed),
         NSColor(categoryPeach),
-        NSColor(categorySalmon),
+        NSColor(categoryDarkRed),
         NSColor(categoryPink),
         NSColor(categoryPurple),
-        NSColor(categoryLavender),
-        NSColor(categoryOrange),
+        NSColor(categoryRed),
+        NSColor(categorySalmon),
         NSColor(categoryYellow),
+        NSColor(categoryOrange),
+        NSColor(categoryDarkGreen),
         NSColor(categoryGreen),
         NSColor(categoryTeal),
         NSColor(categoryBlue),
         NSColor(categoryCyan),
         NSColor(categoryNavy),
     ]
+
+    static var cardNSColors: [NSColor] {
+        [
+            NSColor(cardPeach),
+            NSColor(cardDarkRed),
+            NSColor(cardPink),
+            NSColor(cardPurple),
+            NSColor(cardRed),
+            NSColor(cardSalmon),
+            NSColor(cardYellow),
+            NSColor(cardOrange),
+            NSColor(cardDarkGreen),
+            NSColor(cardGreen),
+            NSColor(cardTeal),
+            NSColor(cardBlue),
+            NSColor(cardCyan),
+            NSColor(cardNavy),
+        ]
+    }
+
+    // MARK: - Card to Category Mapping
+
+    static var cardToCategoryMapping: [(card: NSColor, category: NSColor)] {
+        [
+            (NSColor(cardPeach), NSColor(categoryPeach)),
+            (NSColor(cardDarkRed), NSColor(categoryDarkRed)),
+            (NSColor(cardPink), NSColor(categoryPink)),
+            (NSColor(cardPurple), NSColor(categoryPurple)),
+            (NSColor(cardRed), NSColor(categoryRed)),
+            (NSColor(cardSalmon), NSColor(categorySalmon)),
+            (NSColor(cardYellow), NSColor(categoryYellow)),
+            (NSColor(cardOrange), NSColor(categoryOrange)),
+            (NSColor(cardDarkGreen), NSColor(categoryDarkGreen)),
+            (NSColor(cardGreen), NSColor(categoryGreen)),
+            (NSColor(cardTeal), NSColor(categoryTeal)),
+            (NSColor(cardBlue), NSColor(categoryBlue)),
+            (NSColor(cardCyan), NSColor(categoryCyan)),
+            (NSColor(cardNavy), NSColor(categoryNavy)),
+        ]
+    }
+
+    static func saturatedColor(for cardColor: NSColor) -> NSColor {
+        for mapping in cardToCategoryMapping {
+            if abs(mapping.card.redComponent - cardColor.redComponent) < 0.01
+                && abs(mapping.card.greenComponent - cardColor.greenComponent)
+                < 0.01
+                && abs(mapping.card.blueComponent - cardColor.blueComponent)
+                < 0.01
+            {
+                return mapping.category
+            }
+        }
+        return cardColor
+    }
 }
 
-// Hex color extensions
+// MARK: - Hex Color Extensions
+
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(
@@ -196,7 +403,7 @@ extension Color {
         let g: UInt64
         let b: UInt64
         switch hex.count {
-        case 6: // RGB
+        case 6:
             (r, g, b) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
         default:
             (r, g, b) = (0, 0, 0)

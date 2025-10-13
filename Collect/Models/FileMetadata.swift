@@ -12,7 +12,7 @@ struct FileMetadata: Codable, Identifiable {
     var cardColor: String // Hex color string or name
     var isInReadingList: Bool
 
-    init(id: UUID, title: String? = nil, authors: [String] = [], year: Int? = nil, tags: [String] = [], dateAdded: Date = Date(), lastOpened: Date? = nil, pages: Int? = nil, cardColor: String = "cardTan", isInReadingList: Bool = false) {
+    init(id: UUID, title: String? = nil, authors: [String] = [], year: Int? = nil, tags: [String] = [], dateAdded: Date = Date(), lastOpened: Date? = nil, pages: Int? = nil, cardColor: String = "cardBlue", isInReadingList: Bool = false) {
         self.id = id
         self.title = title
         self.authors = authors

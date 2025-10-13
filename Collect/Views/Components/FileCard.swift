@@ -25,7 +25,7 @@ struct FileCard: View {
                 ForEach(tags, id: \.self) { tag in
                     let color =
                         categories.first(where: { $0.name == tag })?.color
-                            ?? "gray"
+                            ?? "blue"
                     pill(tag, color: color)
                 }
                 if !year.isEmpty {

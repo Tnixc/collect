@@ -469,9 +469,9 @@ class FileListRowView: NSView {
         // Get background color from metadata
         let backgroundColor: NSColor
         if let colorName = AppTheme.cardColors[metadata.cardColor] {
-            backgroundColor = NSColor(colorName).withAlphaComponent(0.5)
+            backgroundColor = NSColor(colorName).withAlphaComponent(0.2)
         } else {
-            backgroundColor = AppTheme.cardNSColors[abs(file.id.hashValue) % AppTheme.cardNSColors.count]
+            backgroundColor = AppTheme.cardNSColors[abs(file.id.hashValue) % AppTheme.cardNSColors.count].withAlphaComponent(0.2)
         }
         let saturatedColor = AppTheme.saturatedColor(for: backgroundColor)
         backgroundLayer.fillColor = backgroundColor.cgColor
