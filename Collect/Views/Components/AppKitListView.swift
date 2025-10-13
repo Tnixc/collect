@@ -51,7 +51,7 @@ struct AppKitListView: NSViewRepresentable {
         tableView.style = .plain
         tableView.backgroundColor = .clear
         tableView.rowSizeStyle = .custom
-        tableView.rowHeight = 72
+        tableView.rowHeight = 64
         tableView.intercellSpacing = NSSize(width: 0, height: 8)
         tableView.headerView = nil
         tableView.usesAlternatingRowBackgroundColors = false
@@ -223,7 +223,6 @@ class FileListRowView: NSView {
 
         // Background layer
         layer?.addSublayer(backgroundLayer)
-        backgroundLayer.cornerRadius = 8
 
         // Icon (PDF thumbnail or generic icon)
         // ColorDotIconView configured in configure()
@@ -263,30 +262,30 @@ class FileListRowView: NSView {
         // Right metadata pills container
         rightPillsContainer.orientation = .horizontal
         rightPillsContainer.alignment = .centerY
-        rightPillsContainer.spacing = 6
+        rightPillsContainer.spacing = 4
         rightPillsContainer.translatesAutoresizingMaskIntoConstraints = false
         addSubview(rightPillsContainer)
 
         NSLayoutConstraint.activate([
             // Icon constraints
-            iconImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            iconImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             iconImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
             iconImageView.widthAnchor.constraint(equalToConstant: 40),
             iconImageView.heightAnchor.constraint(equalToConstant: 40),
 
             // Title constraints - Line 1
-            titleLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 12),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            titleLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 8),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
 
             // Tags container - Line 1, right side
-            tagsContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            tagsContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6),
             tagsContainer.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            tagsContainer.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 12),
+            tagsContainer.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8),
             tagsContainer.heightAnchor.constraint(equalToConstant: 22),
 
             // Author icon - Line 2
-            authorIconView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 12),
-            authorIconView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            authorIconView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 8),
+            authorIconView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             authorIconView.widthAnchor.constraint(equalToConstant: 12),
             authorIconView.heightAnchor.constraint(equalToConstant: 12),
 
@@ -295,9 +294,9 @@ class FileListRowView: NSView {
             authorLabel.centerYAnchor.constraint(equalTo: authorIconView.centerYAnchor),
 
             // Metadata pills - Line 2, right side
-            rightPillsContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            rightPillsContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
             rightPillsContainer.centerYAnchor.constraint(equalTo: authorLabel.centerYAnchor),
-            rightPillsContainer.leadingAnchor.constraint(greaterThanOrEqualTo: authorLabel.trailingAnchor, constant: 12),
+            rightPillsContainer.leadingAnchor.constraint(greaterThanOrEqualTo: authorLabel.trailingAnchor, constant: 8),
         ])
     }
 
@@ -510,18 +509,24 @@ class FileListRowView: NSView {
             authorLabel.stringValue = metadata.authors.joined(separator: ", ")
         }
 
-        // Set metadata pills (file size, pages, last opened)
+        // Set metadata text (file size, pages, last opened)
         rightPillsContainer.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        let sizePill = PillView(text: formatFileSize(file.fileSize))
-        rightPillsContainer.addArrangedSubview(sizePill)
-
+        var metadataParts: [String] = []
+        metadataParts.append(formatFileSize(file.fileSize))
+        
         if let pages = metadata.pages {
-            rightPillsContainer.addArrangedSubview(PillView(text: "\(pages) pages"))
+            metadataParts.append("\(pages) pages")
         }
-
-        let openedText = metadata.lastOpened.map { "Opened " + formatLastOpened($0) } ?? "Never opened"
-        rightPillsContainer.addArrangedSubview(PillView(text: openedText))
+        
+        if let lastOpened = metadata.lastOpened {
+            metadataParts.append("Opened " + formatLastOpened(lastOpened))
+        }
+        
+        let metadataLabel = NSTextField(labelWithString: metadataParts.joined(separator: " • "))
+        metadataLabel.font = NSFont.systemFont(ofSize: 12)
+        metadataLabel.textColor = AppTheme.textTertiaryNSColor
+        rightPillsContainer.addArrangedSubview(metadataLabel)
 
         // Update tags
         updateTags(metadata.tags)
@@ -540,8 +545,8 @@ class FileListRowView: NSView {
         tagsContainer.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: tagsContainer.leadingAnchor),
-            stackView.trailingAnchor.constraint(lessThanOrEqualTo: tagsContainer.trailingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: tagsContainer.trailingAnchor),
+            stackView.leadingAnchor.constraint(greaterThanOrEqualTo: tagsContainer.leadingAnchor),
             stackView.centerYAnchor.constraint(equalTo: tagsContainer.centerYAnchor),
         ])
 
@@ -619,6 +624,6 @@ class FileListRowView: NSView {
     override func layout() {
         super.layout()
         backgroundLayer.frame = bounds
-        backgroundLayer.path = NSBezierPath(roundedRect: bounds, xRadius: 8, yRadius: 8).cgPath
+        backgroundLayer.path = NSBezierPath(roundedRect: bounds, xRadius: 12, yRadius: 12).cgPath
     }
 }
