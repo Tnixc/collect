@@ -46,21 +46,21 @@ struct OnboardingView: View {
                         icon: "tag.fill",
                         title: "Tag & Categorize",
                         description:
-                            "Add metadata, authors, and custom tags to your documents"
+                        "Add metadata, authors, and custom tags to your documents"
                     )
 
                     FeatureRow(
                         icon: "magnifyingglass",
                         title: "Quick Search & Filter",
                         description:
-                            "Find documents by title, author, or category instantly"
+                        "Find documents by title, author, or category instantly"
                     )
 
                     FeatureRow(
                         icon: "eye.fill",
                         title: "Preview & Open",
                         description:
-                            "Quick Look previews and seamless opening in your preferred app"
+                        "Quick Look previews and seamless opening in your preferred app"
                     )
                 }
                 .padding(.horizontal, 32)
