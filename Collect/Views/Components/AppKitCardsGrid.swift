@@ -484,7 +484,7 @@ class FileCardItem: NSCollectionViewItem {
 
         // Start from top-left, going clockwise
         // Top-left corner (8px radius)
-        path.move(to: NSPoint(x: 8, y: 0))
+        path.move(to: NSPoint(x: 12, y: 0))
         path.line(to: NSPoint(x: bounds.width - 20, y: 0))
 
         // Top-right corner (20px radius)
@@ -507,23 +507,23 @@ class FileCardItem: NSCollectionViewItem {
             clockwise: false
         )
 
-        path.line(to: NSPoint(x: 8, y: bounds.height))
+        path.line(to: NSPoint(x: 12, y: bounds.height))
 
         // Bottom-left corner (8px radius)
         path.appendArc(
-            withCenter: NSPoint(x: 8, y: bounds.height - 8),
-            radius: 8,
+            withCenter: NSPoint(x: 12, y: bounds.height - 12),
+            radius: 12,
             startAngle: 90,
             endAngle: 180,
             clockwise: false
         )
 
-        path.line(to: NSPoint(x: 0, y: 8))
+        path.line(to: NSPoint(x: 0, y: 12))
 
         // Top-left corner continued (8px radius)
         path.appendArc(
-            withCenter: NSPoint(x: 8, y: 8),
-            radius: 8,
+            withCenter: NSPoint(x: 12, y: 12),
+            radius: 12,
             startAngle: 180,
             endAngle: 270,
             clockwise: false
@@ -554,8 +554,6 @@ class FileCardItem: NSCollectionViewItem {
             NewYork.nsFont(size: 18, weight: .semibold, opticalSize: .medium)
                 ?? NSFont.systemFont(ofSize: 18, weight: .semibold)
         titleLabel.textColor = AppTheme.textPrimaryNSColor
-        titleLabel.maximumNumberOfLines = 3
-        titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.usesSingleLineMode = false
         titleLabel.cell?.wraps = true
         titleLabel.cell?.isScrollable = false
@@ -568,8 +566,6 @@ class FileCardItem: NSCollectionViewItem {
             NewYork.nsFont(size: 12, weight: .regular, opticalSize: .small)
                 ?? NSFont.systemFont(ofSize: 12)
         authorLabel.textColor = AppTheme.textSecondaryNSColor
-        authorLabel.maximumNumberOfLines = 1
-        authorLabel.lineBreakMode = .byTruncatingTail
         contentContainer?.addSubview(authorLabel)
 
         bottomContainer.spacing = 6
@@ -617,7 +613,7 @@ class FileCardItem: NSCollectionViewItem {
             ),
             authorLabel.topAnchor.constraint(
                 equalTo: titleLabel.bottomAnchor,
-                constant: 4
+                constant: 8
             ),
 
             bottomContainer.leadingAnchor.constraint(

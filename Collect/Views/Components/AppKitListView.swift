@@ -269,7 +269,7 @@ class FileListRowView: NSView {
                 equalTo: iconImageView.trailingAnchor,
                 constant: 8
             ),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12),
 
             // Tags container - Line 1, right side
             tagsContainer.trailingAnchor.constraint(
@@ -277,7 +277,8 @@ class FileListRowView: NSView {
                 constant: -6
             ),
             tagsContainer.centerYAnchor.constraint(
-                equalTo: titleLabel.centerYAnchor
+                equalTo: titleLabel.centerYAnchor,
+                constant: -4
             ),
             tagsContainer.leadingAnchor.constraint(
                 greaterThanOrEqualTo: titleLabel.trailingAnchor,
@@ -292,7 +293,7 @@ class FileListRowView: NSView {
             ),
             authorLabel.topAnchor.constraint(
                 equalTo: titleLabel.bottomAnchor,
-                constant: 10
+                constant: 6
             ),
 
             // Metadata pills - Line 2, right side
@@ -301,7 +302,8 @@ class FileListRowView: NSView {
                 constant: -6
             ),
             rightPillsContainer.centerYAnchor.constraint(
-                equalTo: authorLabel.centerYAnchor
+                equalTo: authorLabel.centerYAnchor,
+                constant: 0
             ),
             rightPillsContainer.leadingAnchor.constraint(
                 greaterThanOrEqualTo: authorLabel.trailingAnchor,

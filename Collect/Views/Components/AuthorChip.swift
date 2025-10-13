@@ -12,15 +12,15 @@ struct AuthorChip: View {
                 .font(.system(size: 12))
             Text("\(count)")
                 .font(.system(size: 11))
-                .foregroundColor(isSelected ? AppTheme.backgroundSecondary : AppTheme.textTertiary)
+                .foregroundColor(isSelected ? AppTheme.textPrimary : AppTheme.textTertiary)
         }
         .foregroundColor(
-            isSelected ? AppTheme.backgroundTertiary : AppTheme.textSecondary
+            isSelected ? AppTheme.textPrimary : AppTheme.textTertiary
         )
         .padding(.horizontal, 10)
         .padding(.vertical, 5)
         .background(
-            isSelected ? AppTheme.accentPrimary : AppTheme.backgroundTertiary
+            isSelected ? AppTheme.pillBackground : AppTheme.backgroundSecondary
         )
         .cornerRadius(12)
         .onTapGesture {

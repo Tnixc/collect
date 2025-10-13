@@ -104,7 +104,7 @@ struct EditCategorySheet: View {
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(AppTheme.textPrimary)
 
-                HStack(spacing: 12) {
+                WrappingHStack(spacing: 12) {
                     ForEach(predefinedColors, id: \.self) { colorName in
                         Button(action: { selectedColor = colorName }) {
                             Circle()
@@ -116,7 +116,7 @@ struct EditCategorySheet: View {
                                 )
                                 .overlay(
                                     Circle()
-                                        .stroke(AppTheme.dividerColor, lineWidth: 1)
+                                        .stroke(AppTheme.dividerColor, lineWidth: selectedColor == colorName ? 0 : 1)
                                 )
                         }
                         .buttonStyle(.plain)

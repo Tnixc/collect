@@ -72,7 +72,10 @@ struct EditMetadataSheet: View {
                                 .cornerRadius(6)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 6)
-                                        .stroke(AppTheme.dividerColor, lineWidth: 1)
+                                        .stroke(
+                                            AppTheme.dividerColor,
+                                            lineWidth: 1
+                                        )
                                 )
                                 .smartFocusRing()
                         }
@@ -93,7 +96,10 @@ struct EditMetadataSheet: View {
                                 .cornerRadius(6)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 6)
-                                        .stroke(AppTheme.dividerColor, lineWidth: 1)
+                                        .stroke(
+                                            AppTheme.dividerColor,
+                                            lineWidth: 1
+                                        )
                                 )
                                 .smartFocusRing()
                         }
@@ -110,7 +116,9 @@ struct EditMetadataSheet: View {
                                     get: { authors.joined(separator: ", ") },
                                     set: {
                                         authors = $0.split(separator: ",").map {
-                                            $0.trimmingCharacters(in: .whitespaces)
+                                            $0.trimmingCharacters(
+                                                in: .whitespaces
+                                            )
                                         }
                                     }
                                 )
@@ -145,7 +153,10 @@ struct EditMetadataSheet: View {
                                 .cornerRadius(6)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 6)
-                                        .stroke(AppTheme.dividerColor, lineWidth: 1)
+                                        .stroke(
+                                            AppTheme.dividerColor,
+                                            lineWidth: 1
+                                        )
                                 )
                                 .smartFocusRing()
                         }
@@ -162,7 +173,9 @@ struct EditMetadataSheet: View {
                                     get: { tags.joined(separator: ", ") },
                                     set: {
                                         tags = $0.split(separator: ",").map {
-                                            $0.trimmingCharacters(in: .whitespaces)
+                                            $0.trimmingCharacters(
+                                                in: .whitespaces
+                                            )
                                         }
                                     }
                                 )
@@ -187,10 +200,12 @@ struct EditMetadataSheet: View {
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundColor(AppTheme.textPrimary)
 
-                            HStack(spacing: 12) {
-                                ForEach(cardColorNames, id: \.self) { colorName in
+                            WrappingHStack(spacing: 12) {
+                                ForEach(cardColorNames, id: \.self) {
+                                    colorName in
                                     let color = colorFromName(colorName)
-                                    Button(action: { cardColorName = colorName }) {
+                                    Button(action: { cardColorName = colorName }
+                                    ) {
                                         Circle()
                                             .fill(color)
                                             .frame(width: 32, height: 32)
@@ -206,7 +221,8 @@ struct EditMetadataSheet: View {
                                                 Circle()
                                                     .stroke(
                                                         AppTheme.dividerColor,
-                                                        lineWidth: 1
+                                                        lineWidth: cardColorName
+                                                            == colorName ? 0 : 1
                                                     )
                                             )
                                     }
