@@ -20,7 +20,8 @@ enum AppTheme {
     static let destructive = Color(hex: "#b4463c")
     static let buttonTextLight = Color.white
     static let dropdownShadow = Color.black.opacity(0.1)
-    static let pillBackground = Color.white.opacity(0.55)
+    static let pillBackground = Color.white.opacity(0.35)
+    static let pillBackgroundFaint = Color.white.opacity(0.05)
 
     // Card colors (muted versions)
     static let cardTan = Color(hex: "#d2d0ce")
@@ -29,7 +30,7 @@ enum AppTheme {
     static let cardBlue = Color(hex: "#c4d6dd")
     static let cardPink = Color(hex: "#dcc9d4")
     static let cardPurple = Color(hex: "#d4d2dd")
-    static let cardGray = Color(hex: "#b4b2b0")
+    static let cardGray = Color(hex: "#dadad9")
     static let cardPeach = Color(hex: "#e4d3cd")
     static let cardRed = Color(hex: "#ddc7c4")
     static let cardOrange = Color(hex: "#e8d9c8")
@@ -103,13 +104,13 @@ enum AppTheme {
 
     // Card to Category color mapping (muted card -> saturated category)
     static let cardToCategoryMapping: [NSColor: NSColor] = [
-        NSColor(cardTan): NSColor(hex: "#878583"), // Gray-ish
+        NSColor(cardTan): NSColor(hex: "#878583"),  // Gray-ish
         NSColor(cardYellow): NSColor(categoryYellow),
         NSColor(cardGreen): NSColor(categoryGreen),
         NSColor(cardBlue): NSColor(categoryBlue),
         NSColor(cardPink): NSColor(categoryPink),
         NSColor(cardPurple): NSColor(categoryPurple),
-        NSColor(cardGray): NSColor(hex: "#5a5856"), // Darker gray
+        NSColor(cardGray): NSColor(hex: "#5a5856"),  // Darker gray
         NSColor(cardPeach): NSColor(categoryPeach),
         NSColor(cardRed): NSColor(categoryRed),
         NSColor(cardOrange): NSColor(categoryOrange),
@@ -121,9 +122,9 @@ enum AppTheme {
     static func saturatedColor(for cardColor: NSColor) -> NSColor {
         // Try to find exact match in mapping
         for (card, category) in cardToCategoryMapping {
-            if abs(card.redComponent - cardColor.redComponent) < 0.01 &&
-                abs(card.greenComponent - cardColor.greenComponent) < 0.01 &&
-                abs(card.blueComponent - cardColor.blueComponent) < 0.01
+            if abs(card.redComponent - cardColor.redComponent) < 0.01
+                && abs(card.greenComponent - cardColor.greenComponent) < 0.01
+                && abs(card.blueComponent - cardColor.blueComponent) < 0.01
             {
                 return category
             }
@@ -139,6 +140,7 @@ enum AppTheme {
     static let textTertiaryNSColor = NSColor(hex: "#a5a3a1")
     static let shadowNSColor = NSColor.black.withAlphaComponent(0.06)
     static let pillBackgroundNSColor = NSColor(white: 1, alpha: 0.55)
+    static let pillBackgroundFaintNSColor = NSColor(white: 1, alpha: 0.25)
 
     // Semantic colors
     static let borderColor = Color(hex: "#c3c1bf")
@@ -194,7 +196,7 @@ extension Color {
         let g: UInt64
         let b: UInt64
         switch hex.count {
-        case 6: // RGB
+        case 6:  // RGB
             (r, g, b) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
         default:
             (r, g, b) = (0, 0, 0)

@@ -424,6 +424,7 @@ struct DetailView: View {
                                             appState.removeFromReadingList(fileID: fileID)
                                         }
                                     )
+                                    .zIndex(-1)
                                     .frame(height: CGFloat(appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count) * 80)
                                 }
                             }

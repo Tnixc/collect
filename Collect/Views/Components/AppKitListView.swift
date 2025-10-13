@@ -189,8 +189,7 @@ class FileListRowView: NSView {
     private let backgroundLayer = CAShapeLayer()
     private let iconImageView = ColorDotIconView()
     private let titleLabel = NSTextField(labelWithString: "")
-    private let authorIconView = NSImageView()
-    private let authorLabel = NSTextField(labelWithString: "")
+    private let authorPillContainer = NSStackView()
     private let tagsContainer = NSView()
     private let rightPillsContainer = NSStackView()
 
@@ -243,21 +242,12 @@ class FileListRowView: NSView {
         tagsContainer.translatesAutoresizingMaskIntoConstraints = false
         addSubview(tagsContainer)
 
-        // Author icon
-        authorIconView.image = NSImage(systemSymbolName: "person.fill", accessibilityDescription: nil)
-        authorIconView.contentTintColor = AppTheme.textTertiaryNSColor
-        authorIconView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(authorIconView)
-
-        // Author label
-        authorLabel.isEditable = false
-        authorLabel.isBordered = false
-        authorLabel.backgroundColor = .clear
-        authorLabel.font = NSFont.systemFont(ofSize: 12)
-        authorLabel.textColor = AppTheme.textSecondaryNSColor
-        authorLabel.lineBreakMode = .byTruncatingTail
-        authorLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(authorLabel)
+        // Author pill container
+        authorPillContainer.orientation = .horizontal
+        authorPillContainer.alignment = .centerY
+        authorPillContainer.spacing = 4
+        authorPillContainer.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(authorPillContainer)
 
         // Right metadata pills container
         rightPillsContainer.orientation = .horizontal
@@ -283,20 +273,14 @@ class FileListRowView: NSView {
             tagsContainer.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8),
             tagsContainer.heightAnchor.constraint(equalToConstant: 22),
 
-            // Author icon - Line 2
-            authorIconView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 8),
-            authorIconView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
-            authorIconView.widthAnchor.constraint(equalToConstant: 12),
-            authorIconView.heightAnchor.constraint(equalToConstant: 12),
-
-            // Author label - Line 2
-            authorLabel.leadingAnchor.constraint(equalTo: authorIconView.trailingAnchor, constant: 4),
-            authorLabel.centerYAnchor.constraint(equalTo: authorIconView.centerYAnchor),
+            // Author pill container - Line 2
+            authorPillContainer.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 4),
+            authorPillContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
 
             // Metadata pills - Line 2, right side
-            rightPillsContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
-            rightPillsContainer.centerYAnchor.constraint(equalTo: authorLabel.centerYAnchor),
-            rightPillsContainer.leadingAnchor.constraint(greaterThanOrEqualTo: authorLabel.trailingAnchor, constant: 8),
+            rightPillsContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6),
+            rightPillsContainer.centerYAnchor.constraint(equalTo: authorPillContainer.centerYAnchor),
+            rightPillsContainer.leadingAnchor.constraint(greaterThanOrEqualTo: authorPillContainer.trailingAnchor, constant: 8),
         ])
     }
 
@@ -484,7 +468,7 @@ class FileListRowView: NSView {
         // Get background color from metadata
         let backgroundColor: NSColor
         if let colorName = AppTheme.cardColors[metadata.cardColor] {
-            backgroundColor = NSColor(colorName)
+            backgroundColor = NSColor(colorName).withAlphaComponent(0.5)
         } else {
             backgroundColor = AppTheme.cardNSColors[abs(file.id.hashValue) % AppTheme.cardNSColors.count]
         }
@@ -502,31 +486,32 @@ class FileListRowView: NSView {
             titleLabel.stringValue = file.filename
         }
 
-        // Set authors
-        if metadata.authors.isEmpty {
-            authorLabel.stringValue = "Unknown Author"
-        } else {
-            authorLabel.stringValue = metadata.authors.joined(separator: ", ")
-        }
+        // Set author pill with faint background
+        authorPillContainer.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        let authorText = metadata.authors.isEmpty ? "Unknown Author" : metadata.authors.joined(separator: ", ")
+        let authorPill = PillView(text: authorText, backgroundColor: AppTheme.pillBackgroundFaintNSColor)
+        authorPill.showsColorDot = false
+        authorPillContainer.addArrangedSubview(authorPill)
 
-        // Set metadata text (file size, pages, last opened)
+        // Set metadata pills with faint background (file size, pages, last opened)
         rightPillsContainer.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        var metadataParts: [String] = []
-        metadataParts.append(formatFileSize(file.fileSize))
+        let sizePill = PillView(text: formatFileSize(file.fileSize), backgroundColor: AppTheme.pillBackgroundFaintNSColor)
+        sizePill.showsColorDot = false
+        rightPillsContainer.addArrangedSubview(sizePill)
         
         if let pages = metadata.pages {
-            metadataParts.append("\(pages) pages")
+            let pagesPill = PillView(text: "\(pages) pages", backgroundColor: AppTheme.pillBackgroundFaintNSColor)
+            pagesPill.showsColorDot = false
+            rightPillsContainer.addArrangedSubview(pagesPill)
         }
         
         if let lastOpened = metadata.lastOpened {
-            metadataParts.append("Opened " + formatLastOpened(lastOpened))
+            let openedPill = PillView(text: "Opened " + formatLastOpened(lastOpened), backgroundColor: AppTheme.pillBackgroundFaintNSColor)
+            openedPill.showsColorDot = false
+            rightPillsContainer.addArrangedSubview(openedPill)
         }
-        
-        let metadataLabel = NSTextField(labelWithString: metadataParts.joined(separator: " • "))
-        metadataLabel.font = NSFont.systemFont(ofSize: 12)
-        metadataLabel.textColor = AppTheme.textTertiaryNSColor
-        rightPillsContainer.addArrangedSubview(metadataLabel)
 
         // Update tags
         updateTags(metadata.tags)

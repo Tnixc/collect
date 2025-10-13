@@ -27,6 +27,15 @@ public final class PillView: NSView {
         didSet { updateColorDot() }
     }
 
+    /// Background color for the pill. Defaults to AppTheme.pillBackgroundNSColor.
+    public var backgroundColor: NSColor = AppTheme.pillBackgroundNSColor {
+        didSet {
+            if let layer = layer {
+                layer.backgroundColor = backgroundColor.cgColor
+            }
+        }
+    }
+
     /// Content insets for the pill interior.
     public var contentInsets: NSEdgeInsets = .init(
         top: 4,
@@ -52,13 +61,18 @@ public final class PillView: NSView {
     public convenience init(
         text: String,
         colorName: String? = nil,
-        showsColorDot: Bool = true
+        showsColorDot: Bool = true,
+        backgroundColor: NSColor? = nil
     ) {
         self.init(frame: .zero)
         self.text = text
         self.colorName = colorName
         self.showsColorDot = showsColorDot
         label.stringValue = text
+        if let backgroundColor = backgroundColor {
+            self.backgroundColor = backgroundColor
+            layer?.backgroundColor = backgroundColor.cgColor
+        }
         updateColorDot()
     }
 
@@ -84,10 +98,9 @@ public final class PillView: NSView {
 
     private func setupView() {
         wantsLayer = true
-        layer = CALayer()
         layer?.masksToBounds = true
         layer?.cornerRadius = cornerRadius
-        layer?.backgroundColor = AppTheme.pillBackgroundNSColor.cgColor
+        layer?.backgroundColor = backgroundColor.cgColor
 
         // Stack
         stack.orientation = .horizontal
