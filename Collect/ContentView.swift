@@ -113,7 +113,7 @@ struct ContentView: View {
                         .help("Add items")
                     }
                 }
-                .toolbarBackground(Color.clear, for: .windowToolbar)
+                .toolbarBackground(AppTheme.backgroundSecondary, for: .windowToolbar)
                 .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
             }
         }
