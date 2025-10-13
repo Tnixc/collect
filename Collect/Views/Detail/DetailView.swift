@@ -129,7 +129,7 @@ struct DetailView: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(AppTheme.dividerColor, lineWidth: 2)
+                .stroke(AppTheme.dividerColor, lineWidth: 1)
         )
         .padding(.horizontal, 8)
         .padding(.bottom, 8)
