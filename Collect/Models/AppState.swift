@@ -56,7 +56,7 @@ class AppState: ObservableObject {
     @Published var metadata: [UUID: FileMetadata] = [:]
     @Published var categories: [Category] = []
     @Published var selectedCategory: String? = nil
-    @Published var selectedAuthor: String? = nil
+    @Published var selectedAuthors: Set<String> = []
     @Published var searchText: String = ""
     @Published var tagColors: [String: String] = [:]
     @Published var sortOption: SortOption = .recentlyOpened {
@@ -108,11 +108,11 @@ class AppState: ObservableObject {
             }
         }
 
-        // Filter by author
-        if let author = selectedAuthor {
+        // Filter by authors
+        if !selectedAuthors.isEmpty {
             filtered = filtered.filter { file in
                 guard let meta = metadata[file.id] else { return false }
-                return meta.authors.contains(author)
+                return !selectedAuthors.isDisjoint(with: meta.authors)
             }
         }
 
@@ -162,38 +162,35 @@ class AppState: ObservableObject {
         }
     }
 
-    var allAuthors: [String] {
-        var authors = Set<String>()
-        for meta in metadata.values {
-            authors.formUnion(meta.authors)
-        }
-        return Array(authors).sorted()
-    }
-
     var authorCounts: [String: Int] {
         var counts: [String: Int] = [:]
-        for meta in metadata.values {
-            for author in meta.authors {
-                counts[author, default: 0] += 1
+
+        // Get files that match the current category filter
+        var filesToCount = files
+
+        if let category = selectedCategory {
+            if category == "Uncategorized" {
+                filesToCount = files.filter { file in
+                    guard let meta = metadata[file.id] else { return true }
+                    return meta.tags.isEmpty
+                }
+            } else {
+                filesToCount = files.filter { file in
+                    guard let meta = metadata[file.id] else { return false }
+                    return meta.tags.contains(category)
+                }
             }
         }
-        return counts
-    }
-
-    var filteredAuthorCounts: [String: Int] {
-        var counts: [String: Int] = [:]
-
-        // Get the file IDs from filteredFiles (which are already filtered by category)
-        let filteredFileIDs = Set(filteredFiles.map { $0.id })
 
         // Count authors only from filtered files
-        for fileID in filteredFileIDs {
-            if let meta = metadata[fileID] {
+        for file in filesToCount {
+            if let meta = metadata[file.id] {
                 for author in meta.authors {
                     counts[author, default: 0] += 1
                 }
             }
         }
+
         return counts
     }
 
@@ -244,15 +241,6 @@ class AppState: ObservableObject {
         updateMetadata(for: fileID, metadata: meta)
     }
 
-    func toggleReadingList(fileID: UUID) {
-        guard let meta = metadata[fileID] else { return }
-        if meta.isInReadingList {
-            removeFromReadingList(fileID: fileID)
-        } else {
-            addToReadingList(fileID: fileID)
-        }
-    }
-
     func updateMetadata(for fileID: UUID, metadata: FileMetadata) {
         self.metadata[fileID] = metadata
         MetadataService.shared.tagColors = tagColors
@@ -276,6 +264,13 @@ class AppState: ObservableObject {
                 }
             } else {
                 uncategorizedCount += 1
+            }
+        }
+
+        // Add empty categories from tagColors that don't have any files yet
+        for (name, _) in tagColors {
+            if tagCounts[name] == nil {
+                tagCounts[name] = 0
             }
         }
 

@@ -14,6 +14,7 @@ struct DetailView: View {
     @State private var creatingForFileID: UUID?
     @State private var editingCategory: Category?
     @State private var isDropdownExpanded = false
+    @State private var hoveredViewMode: ViewMode? = nil
 
     private let cardColors: [NSColor] = AppTheme.cardNSColors
 
@@ -27,15 +28,23 @@ struct DetailView: View {
                     // Header Section
                     VStack(alignment: .leading, spacing: 8) {
                         HStack(alignment: .top) {
-                            Text(appState.showRecent ? "Recent" : appState.showReadingList ? "Reading list" : (appState.selectedCategory ?? "All Items"))
-                                .font(Typography.largeTitle)
-                                .foregroundColor(AppTheme.textPrimary)
+                            Text(
+                                appState.showRecent
+                                    ? "Recent"
+                                    : appState.showReadingList
+                                    ? "Reading list"
+                                    : (appState.selectedCategory
+                                        ?? "All Items")
+                            )
+                            .font(Typography.largeTitle)
+                            .foregroundColor(AppTheme.textPrimary)
 
                             if !appState.showReadingList,
                                !appState.showRecent,
                                let categoryName = appState.selectedCategory,
                                categoryName != "Uncategorized",
-                               let category = appState.categories.first(where: { $0.name == categoryName })
+                               let category = appState.categories.first(
+                                   where: { $0.name == categoryName })
                             {
                                 UIButton(
                                     action: {
@@ -73,20 +82,22 @@ struct DetailView: View {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 8) {
                                     ForEach(
-                                        appState.filteredAuthorCounts.sorted(by: {
-                                            $0.key < $1.key
-                                        }),
+                                        appState.authorCounts.sorted(
+                                            by: {
+                                                $0.key < $1.key
+                                            }),
                                         id: \.key
                                     ) { author, count in
                                         AuthorChip(
                                             name: author,
                                             count: count,
-                                            isSelected: appState.selectedAuthor
-                                                == author
+                                            isSelected: appState.selectedAuthors.contains(author)
                                         ) {
-                                            appState.selectedAuthor =
-                                                appState.selectedAuthor == author
-                                                    ? nil : author
+                                            if appState.selectedAuthors.contains(author) {
+                                                appState.selectedAuthors.remove(author)
+                                            } else {
+                                                appState.selectedAuthors.insert(author)
+                                            }
                                         }
                                     }
                                 }
@@ -110,7 +121,9 @@ struct DetailView: View {
                                     VStack(spacing: 8) {
                                         Text("No recently opened files")
                                             .font(.body)
-                                            .foregroundColor(AppTheme.textSecondary)
+                                            .foregroundColor(
+                                                AppTheme.textSecondary
+                                            )
                                     }
                                     .frame(maxWidth: .infinity, minHeight: 100)
                                     .padding(.vertical, 20)
@@ -122,11 +135,14 @@ struct DetailView: View {
                                         cardColors: cardColors,
                                         disableHover: isDropdownExpanded,
                                         onTap: { fileID in
-                                            if let meta = appState.metadata[fileID] {
+                                            if let meta = appState.metadata[
+                                                fileID
+                                            ] {
                                                 NSWorkspace.shared.open(
-                                                    appState.files.first(where: {
-                                                        $0.id == fileID
-                                                    })!.fileURL
+                                                    appState.files.first(
+                                                        where: {
+                                                            $0.id == fileID
+                                                        })!.fileURL
                                                 )
                                                 var updatedMeta = meta
                                                 updatedMeta.lastOpened = Date()
@@ -139,10 +155,18 @@ struct DetailView: View {
                                         editAction: { fileID in
                                             editMetadata(for: fileID)
                                         },
-                                        addToCategoryAction: { fileID, categoryName in
-                                            if var meta = appState.metadata[fileID] {
-                                                if !meta.tags.contains(categoryName) {
-                                                    meta.tags.append(categoryName)
+                                        addToCategoryAction: {
+                                            fileID,
+                                                categoryName in
+                                            if var meta = appState.metadata[
+                                                fileID
+                                            ] {
+                                                if !meta.tags.contains(
+                                                    categoryName
+                                                ) {
+                                                    meta.tags.append(
+                                                        categoryName
+                                                    )
                                                     appState.updateMetadata(
                                                         for: fileID,
                                                         metadata: meta
@@ -158,15 +182,24 @@ struct DetailView: View {
                                             appState.deleteFile(fileID: fileID)
                                         },
                                         showInFinderAction: { fileID in
-                                            if let file = appState.files.first(where: { $0.id == fileID }) {
-                                                NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
+                                            if let file = appState.files.first(
+                                                where: { $0.id == fileID })
+                                            {
+                                                NSWorkspace.shared.selectFile(
+                                                    file.fileURL.path,
+                                                    inFileViewerRootedAtPath: ""
+                                                )
                                             }
                                         },
                                         addToReadingListAction: { fileID in
-                                            appState.addToReadingList(fileID: fileID)
+                                            appState.addToReadingList(
+                                                fileID: fileID
+                                            )
                                         },
                                         removeFromReadingListAction: { fileID in
-                                            appState.removeFromReadingList(fileID: fileID)
+                                            appState.removeFromReadingList(
+                                                fileID: fileID
+                                            )
                                         }
                                     ).zIndex(-1)
                                 }
@@ -182,7 +215,9 @@ struct DetailView: View {
                                     VStack(spacing: 8) {
                                         Text("No recently added files")
                                             .font(.body)
-                                            .foregroundColor(AppTheme.textSecondary)
+                                            .foregroundColor(
+                                                AppTheme.textSecondary
+                                            )
                                     }
                                     .frame(maxWidth: .infinity, minHeight: 100)
                                     .padding(.vertical, 20)
@@ -194,11 +229,14 @@ struct DetailView: View {
                                         cardColors: cardColors,
                                         disableHover: isDropdownExpanded,
                                         onTap: { fileID in
-                                            if let meta = appState.metadata[fileID] {
+                                            if let meta = appState.metadata[
+                                                fileID
+                                            ] {
                                                 NSWorkspace.shared.open(
-                                                    appState.files.first(where: {
-                                                        $0.id == fileID
-                                                    })!.fileURL
+                                                    appState.files.first(
+                                                        where: {
+                                                            $0.id == fileID
+                                                        })!.fileURL
                                                 )
                                                 var updatedMeta = meta
                                                 updatedMeta.lastOpened = Date()
@@ -211,10 +249,18 @@ struct DetailView: View {
                                         editAction: { fileID in
                                             editMetadata(for: fileID)
                                         },
-                                        addToCategoryAction: { fileID, categoryName in
-                                            if var meta = appState.metadata[fileID] {
-                                                if !meta.tags.contains(categoryName) {
-                                                    meta.tags.append(categoryName)
+                                        addToCategoryAction: {
+                                            fileID,
+                                                categoryName in
+                                            if var meta = appState.metadata[
+                                                fileID
+                                            ] {
+                                                if !meta.tags.contains(
+                                                    categoryName
+                                                ) {
+                                                    meta.tags.append(
+                                                        categoryName
+                                                    )
                                                     appState.updateMetadata(
                                                         for: fileID,
                                                         metadata: meta
@@ -230,15 +276,24 @@ struct DetailView: View {
                                             appState.deleteFile(fileID: fileID)
                                         },
                                         showInFinderAction: { fileID in
-                                            if let file = appState.files.first(where: { $0.id == fileID }) {
-                                                NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
+                                            if let file = appState.files.first(
+                                                where: { $0.id == fileID })
+                                            {
+                                                NSWorkspace.shared.selectFile(
+                                                    file.fileURL.path,
+                                                    inFileViewerRootedAtPath: ""
+                                                )
                                             }
                                         },
                                         addToReadingListAction: { fileID in
-                                            appState.addToReadingList(fileID: fileID)
+                                            appState.addToReadingList(
+                                                fileID: fileID
+                                            )
                                         },
                                         removeFromReadingListAction: { fileID in
-                                            appState.removeFromReadingList(fileID: fileID)
+                                            appState.removeFromReadingList(
+                                                fileID: fileID
+                                            )
                                         }
                                     ).zIndex(-1)
                                 }
@@ -250,40 +305,81 @@ struct DetailView: View {
                         // Standard Items Grid Section
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
-                                Text("Items (\(appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count))")
-                                    .font(.system(size: 13, weight: .semibold))
-                                    .foregroundColor(AppTheme.textPrimary)
+                                Text(
+                                    "Items (\(appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count))"
+                                )
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundColor(AppTheme.textPrimary)
 
                                 Spacer()
 
                                 HStack(spacing: 8) {
                                     // View mode toggle
                                     HStack(spacing: 0) {
-                                        ForEach(ViewMode.allCases, id: \.self) { mode in
+                                        ForEach(ViewMode.allCases, id: \.self) {
+                                            mode in
                                             Button(action: {
                                                 appState.viewMode = mode
                                             }) {
-                                                Image(systemName: mode.iconName)
+                                                HStack(spacing: 4) {
+                                                    Image(
+                                                        systemName: mode
+                                                            .iconName
+                                                    )
                                                     .font(.system(size: 14))
-                                                    .foregroundColor(
-                                                        appState.viewMode == mode
-                                                            ? AppTheme.textPrimary
-                                                            : AppTheme.textSecondary
+                                                    Text(mode.rawValue)
+                                                        .font(
+                                                            .system(
+                                                                size: 12,
+                                                                weight: .medium
+                                                            )
+                                                        )
+                                                }
+                                                .foregroundColor(
+                                                    appState.viewMode == mode
+                                                        ? AppTheme.textPrimary
+                                                        : AppTheme.textSecondary
+                                                )
+                                                .frame(width: 60, height: 32)
+                                                .background(
+                                                    appState.viewMode == mode
+                                                        ? AppTheme
+                                                        .backgroundTertiary
+                                                        : Color.clear
+                                                )
+                                                .clipShape(
+                                                    RoundedRectangle(
+                                                        cornerRadius: 8
                                                     )
-                                                    .frame(width: 32, height: 32)
-                                                    .background(
-                                                        appState.viewMode == mode
-                                                            ? AppTheme.backgroundTertiary
-                                                            : Color.clear
+                                                )
+                                                .contentShape(
+                                                    RoundedRectangle(
+                                                        cornerRadius: 8
                                                     )
-                                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                                                )
                                             }
                                             .buttonStyle(.plain)
+                                            .onHover { hovering in
+                                                withAnimation(
+                                                    .easeInOut(duration: 0.15)
+                                                ) {
+                                                    self.hoveredViewMode =
+                                                        hovering ? mode : nil
+                                                }
+                                            }
                                         }
                                     }
                                     .background(AppTheme.backgroundSecondary)
-                                    .clipShape(RoundedRectangle(cornerRadius: 6))
-
+                                    .clipShape(
+                                        RoundedRectangle(cornerRadius: 8)
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(
+                                                AppTheme.dividerColor,
+                                                lineWidth: 1
+                                            )
+                                    )
                                     UIDropdown(
                                         selectedOption: $appState.sortOption,
                                         isExpanded: $isDropdownExpanded,
@@ -297,16 +393,29 @@ struct DetailView: View {
                             }
                             .padding(.top, 24)
 
-                            if (appState.showReadingList && appState.readingListFiles.isEmpty) || (!appState.showReadingList && appState.filteredFiles.isEmpty) {
+                            if (appState.showReadingList
+                                && appState.readingListFiles.isEmpty)
+                                || (!appState.showReadingList
+                                    && appState.filteredFiles.isEmpty)
+                            {
                                 VStack(spacing: 16) {
-                                    Image(systemName: appState.showReadingList ? "book" : "doc.text")
-                                        .font(.system(size: 48))
-                                        .foregroundColor(AppTheme.textTertiary)
-                                    Text(appState.showReadingList ? "No items in reading list" : "No PDFs found")
-                                        .font(.title2)
-                                        .foregroundColor(AppTheme.textPrimary)
+                                    Image(
+                                        systemName: appState.showReadingList
+                                            ? "book" : "doc.text"
+                                    )
+                                    .font(.system(size: 48))
+                                    .foregroundColor(AppTheme.textTertiary)
                                     Text(
-                                        appState.showReadingList ? "Add items to your reading list from the context menu." : "Select a source directory in Settings to get started."
+                                        appState.showReadingList
+                                            ? "No items in reading list"
+                                            : "No PDFs found"
+                                    )
+                                    .font(.title2)
+                                    .foregroundColor(AppTheme.textPrimary)
+                                    Text(
+                                        appState.showReadingList
+                                            ? "Add items to your reading list from the context menu."
+                                            : "Select a source directory in Settings to get started."
                                     )
                                     .font(.body)
                                     .foregroundColor(AppTheme.textSecondary)
@@ -318,17 +427,22 @@ struct DetailView: View {
                                 // Grid or List View
                                 if appState.viewMode == .grid {
                                     AppKitCardsGrid(
-                                        files: appState.showReadingList ? appState.readingListFiles : appState.filteredFiles,
+                                        files: appState.showReadingList
+                                            ? appState.readingListFiles
+                                            : appState.filteredFiles,
                                         metadata: appState.metadata,
                                         categories: appState.categories,
                                         cardColors: cardColors,
                                         disableHover: isDropdownExpanded,
                                         onTap: { fileID in
-                                            if let meta = appState.metadata[fileID] {
+                                            if let meta = appState.metadata[
+                                                fileID
+                                            ] {
                                                 NSWorkspace.shared.open(
-                                                    appState.files.first(where: {
-                                                        $0.id == fileID
-                                                    })!.fileURL
+                                                    appState.files.first(
+                                                        where: {
+                                                            $0.id == fileID
+                                                        })!.fileURL
                                                 )
                                                 var updatedMeta = meta
                                                 updatedMeta.lastOpened = Date()
@@ -341,10 +455,18 @@ struct DetailView: View {
                                         editAction: { fileID in
                                             editMetadata(for: fileID)
                                         },
-                                        addToCategoryAction: { fileID, categoryName in
-                                            if var meta = appState.metadata[fileID] {
-                                                if !meta.tags.contains(categoryName) {
-                                                    meta.tags.append(categoryName)
+                                        addToCategoryAction: {
+                                            fileID,
+                                                categoryName in
+                                            if var meta = appState.metadata[
+                                                fileID
+                                            ] {
+                                                if !meta.tags.contains(
+                                                    categoryName
+                                                ) {
+                                                    meta.tags.append(
+                                                        categoryName
+                                                    )
                                                     appState.updateMetadata(
                                                         for: fileID,
                                                         metadata: meta
@@ -360,28 +482,42 @@ struct DetailView: View {
                                             appState.deleteFile(fileID: fileID)
                                         },
                                         showInFinderAction: { fileID in
-                                            if let file = appState.files.first(where: { $0.id == fileID }) {
-                                                NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
+                                            if let file = appState.files.first(
+                                                where: { $0.id == fileID })
+                                            {
+                                                NSWorkspace.shared.selectFile(
+                                                    file.fileURL.path,
+                                                    inFileViewerRootedAtPath: ""
+                                                )
                                             }
                                         },
                                         addToReadingListAction: { fileID in
-                                            appState.addToReadingList(fileID: fileID)
+                                            appState.addToReadingList(
+                                                fileID: fileID
+                                            )
                                         },
                                         removeFromReadingListAction: { fileID in
-                                            appState.removeFromReadingList(fileID: fileID)
+                                            appState.removeFromReadingList(
+                                                fileID: fileID
+                                            )
                                         }
                                     ).zIndex(-1)
                                 } else {
                                     AppKitListView(
-                                        files: appState.showReadingList ? appState.readingListFiles : appState.filteredFiles,
+                                        files: appState.showReadingList
+                                            ? appState.readingListFiles
+                                            : appState.filteredFiles,
                                         metadata: appState.metadata,
                                         categories: appState.categories,
                                         onTap: { fileID in
-                                            if let meta = appState.metadata[fileID] {
+                                            if let meta = appState.metadata[
+                                                fileID
+                                            ] {
                                                 NSWorkspace.shared.open(
-                                                    appState.files.first(where: {
-                                                        $0.id == fileID
-                                                    })!.fileURL
+                                                    appState.files.first(
+                                                        where: {
+                                                            $0.id == fileID
+                                                        })!.fileURL
                                                 )
                                                 var updatedMeta = meta
                                                 updatedMeta.lastOpened = Date()
@@ -394,10 +530,18 @@ struct DetailView: View {
                                         editAction: { fileID in
                                             editMetadata(for: fileID)
                                         },
-                                        addToCategoryAction: { fileID, categoryName in
-                                            if var meta = appState.metadata[fileID] {
-                                                if !meta.tags.contains(categoryName) {
-                                                    meta.tags.append(categoryName)
+                                        addToCategoryAction: {
+                                            fileID,
+                                                categoryName in
+                                            if var meta = appState.metadata[
+                                                fileID
+                                            ] {
+                                                if !meta.tags.contains(
+                                                    categoryName
+                                                ) {
+                                                    meta.tags.append(
+                                                        categoryName
+                                                    )
                                                     appState.updateMetadata(
                                                         for: fileID,
                                                         metadata: meta
@@ -413,19 +557,35 @@ struct DetailView: View {
                                             appState.deleteFile(fileID: fileID)
                                         },
                                         showInFinderAction: { fileID in
-                                            if let file = appState.files.first(where: { $0.id == fileID }) {
-                                                NSWorkspace.shared.selectFile(file.fileURL.path, inFileViewerRootedAtPath: "")
+                                            if let file = appState.files.first(
+                                                where: { $0.id == fileID })
+                                            {
+                                                NSWorkspace.shared.selectFile(
+                                                    file.fileURL.path,
+                                                    inFileViewerRootedAtPath: ""
+                                                )
                                             }
                                         },
                                         addToReadingListAction: { fileID in
-                                            appState.addToReadingList(fileID: fileID)
+                                            appState.addToReadingList(
+                                                fileID: fileID
+                                            )
                                         },
                                         removeFromReadingListAction: { fileID in
-                                            appState.removeFromReadingList(fileID: fileID)
+                                            appState.removeFromReadingList(
+                                                fileID: fileID
+                                            )
                                         }
                                     )
                                     .zIndex(-1)
-                                    .frame(height: CGFloat(appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count) * 80)
+                                    .frame(
+                                        height: CGFloat(
+                                            appState.showReadingList
+                                                ? appState.readingListFiles
+                                                .count
+                                                : appState.filteredFiles.count
+                                        ) * 80
+                                    )
                                 }
                             }
                         }
@@ -467,7 +627,11 @@ struct DetailView: View {
         }
         .sheet(item: $editingCategory) { category in
             EditCategorySheet(category: category) { newName, newColor in
-                appState.renameCategory(from: category.name, to: newName, color: newColor)
+                appState.renameCategory(
+                    from: category.name,
+                    to: newName,
+                    color: newColor
+                )
             }
         }
     }

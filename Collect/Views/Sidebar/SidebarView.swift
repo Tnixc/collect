@@ -27,7 +27,7 @@ struct SidebarView: View {
                     appState.showRecent.toggle()
                     if appState.showRecent {
                         appState.selectedCategory = nil
-                        appState.selectedAuthor = nil
+                        appState.selectedAuthors.removeAll()
                         appState.showReadingList = false
                     }
                 }
@@ -46,7 +46,7 @@ struct SidebarView: View {
                     appState.showReadingList.toggle()
                     if appState.showReadingList {
                         appState.selectedCategory = nil
-                        appState.selectedAuthor = nil
+                        appState.selectedAuthors.removeAll()
                         appState.showRecent = false
                     }
                 }
@@ -63,7 +63,7 @@ struct SidebarView: View {
                 }
                 .onTapGesture {
                     appState.selectedCategory = nil
-                    appState.selectedAuthor = nil
+                    appState.selectedAuthors.removeAll()
                     appState.showReadingList = false
                     appState.showRecent = false
                 }

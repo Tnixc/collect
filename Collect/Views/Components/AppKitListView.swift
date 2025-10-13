@@ -286,6 +286,7 @@ class FileListRowView: NSView {
 
     private func setupGestures() {
         let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(handleClick))
+        clickGesture.numberOfClicksRequired = 2
         addGestureRecognizer(clickGesture)
 
         let rightClickGesture = NSClickGestureRecognizer(target: self, action: #selector(handleRightClick(_:)))
@@ -488,7 +489,7 @@ class FileListRowView: NSView {
 
         // Set author pill with faint background
         authorPillContainer.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        
+
         let authorText = metadata.authors.isEmpty ? "Unknown Author" : metadata.authors.joined(separator: ", ")
         let authorPill = PillView(text: authorText, backgroundColor: AppTheme.pillBackgroundFaintNSColor)
         authorPill.showsColorDot = false
@@ -500,13 +501,13 @@ class FileListRowView: NSView {
         let sizePill = PillView(text: formatFileSize(file.fileSize), backgroundColor: AppTheme.pillBackgroundFaintNSColor)
         sizePill.showsColorDot = false
         rightPillsContainer.addArrangedSubview(sizePill)
-        
+
         if let pages = metadata.pages {
             let pagesPill = PillView(text: "\(pages) pages", backgroundColor: AppTheme.pillBackgroundFaintNSColor)
             pagesPill.showsColorDot = false
             rightPillsContainer.addArrangedSubview(pagesPill)
         }
-        
+
         if let lastOpened = metadata.lastOpened {
             let openedPill = PillView(text: "Opened " + formatLastOpened(lastOpened), backgroundColor: AppTheme.pillBackgroundFaintNSColor)
             openedPill.showsColorDot = false

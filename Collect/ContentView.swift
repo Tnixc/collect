@@ -45,7 +45,11 @@ struct ContentView: View {
                 .sheet(isPresented: $showingCreateCategory) {
                     CreateCategorySheet { name, color in
                         appState.tagColors[name] = color
+                        MetadataService.shared.tagColors = appState.tagColors
+                        MetadataService.shared.save(metadata: appState.metadata)
+                        appState.updateCategories()
                     }
+                    .environmentObject(appState)
                 }
                 .animation(.snappy(), value: isSidebarVisible)
                 .toolbar {
@@ -122,7 +126,13 @@ struct ContentView: View {
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .background(AppTheme.backgroundTertiary)
-                        .cornerRadius(6)
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8).stroke(
+                                AppTheme.dividerColor,
+                                lineWidth: 1.0
+                            )
+                        )
                     }
                 }
                 .toolbarBackground(Color.clear, for: .windowToolbar)

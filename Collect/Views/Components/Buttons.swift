@@ -83,12 +83,12 @@ struct UIButton: View {
     private var borderColor: Color {
         switch style {
         case .plain:
-            return AppTheme.borderColor
+            return AppTheme.dividerColor
         case .destructive:
             if isHovered {
                 return AppTheme.categoryRed
             }
-            return AppTheme.borderColor
+            return AppTheme.dividerColor
         default:
             return .clear
         }

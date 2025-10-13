@@ -104,13 +104,13 @@ enum AppTheme {
 
     // Card to Category color mapping (muted card -> saturated category)
     static let cardToCategoryMapping: [NSColor: NSColor] = [
-        NSColor(cardTan): NSColor(hex: "#878583"),  // Gray-ish
+        NSColor(cardTan): NSColor(hex: "#878583"), // Gray-ish
         NSColor(cardYellow): NSColor(categoryYellow),
         NSColor(cardGreen): NSColor(categoryGreen),
         NSColor(cardBlue): NSColor(categoryBlue),
         NSColor(cardPink): NSColor(categoryPink),
         NSColor(cardPurple): NSColor(categoryPurple),
-        NSColor(cardGray): NSColor(hex: "#5a5856"),  // Darker gray
+        NSColor(cardGray): NSColor(hex: "#5a5856"), // Darker gray
         NSColor(cardPeach): NSColor(categoryPeach),
         NSColor(cardRed): NSColor(categoryRed),
         NSColor(cardOrange): NSColor(categoryOrange),
@@ -196,7 +196,7 @@ extension Color {
         let g: UInt64
         let b: UInt64
         switch hex.count {
-        case 6:  // RGB
+        case 6: // RGB
             (r, g, b) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
         default:
             (r, g, b) = (0, 0, 0)
