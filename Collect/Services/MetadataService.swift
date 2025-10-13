@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 
 struct SavedData: Codable {
@@ -10,8 +11,33 @@ class MetadataService {
 
     private let fileManager = FileManager.default
     private let metadataFilename = "metadata.json"
+    private let sourcesFolderName = "Sources"
 
     var tagColors: [String: String] = [:]
+
+    // Root folder for per-source data
+    private var sourcesRootDirectory: URL? {
+        applicationSupportDirectory?.appendingPathComponent(sourcesFolderName)
+    }
+
+    // Stable identifier for a source directory using SHA256 of its path
+    private func sourceIdentifier(for url: URL) -> String {
+        let key = url.standardizedFileURL.path
+        let digest = SHA256.hash(data: Data(key.utf8))
+        return digest.map { String(format: "%02x", $0) }.joined()
+    }
+
+    // Directory under Application Support specific to the selected source
+    private var perSourceDirectory: URL? {
+        guard let sourceURL = SettingsSheet.getSourceDirectoryURL() else { return nil }
+        let id = sourceIdentifier(for: sourceURL)
+        return sourcesRootDirectory?.appendingPathComponent(id, isDirectory: true)
+    }
+
+    // Where we actually store/load metadata for the current context
+    private var activeMetadataDirectory: URL? {
+        return perSourceDirectory ?? applicationSupportDirectory
+    }
 
     private var applicationSupportDirectory: URL? {
         try? fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -19,19 +45,32 @@ class MetadataService {
     }
 
     private var metadataURL: URL? {
-        applicationSupportDirectory?.appendingPathComponent(metadataFilename)
+        activeMetadataDirectory?.appendingPathComponent(metadataFilename)
     }
 
     private init() {
-        // Ensure directory exists
+        // Ensure base directory exists
         if let dir = applicationSupportDirectory {
             try? fileManager.createDirectory(at: dir, withIntermediateDirectories: true)
+        }
+        // Ensure Sources directory exists
+        if let sourcesDir = sourcesRootDirectory {
+            try? fileManager.createDirectory(at: sourcesDir, withIntermediateDirectories: true)
         }
     }
 
     // Load metadata from JSON file
     func load() -> [UUID: FileMetadata] {
         guard let url = metadataURL else { return [:] }
+
+        // Ensure metadata directory exists
+        try? fileManager.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+
+        // If no metadata exists for this source, return empty defaults
+        guard fileManager.fileExists(atPath: url.path) else {
+            tagColors = [:]
+            return [:]
+        }
 
         do {
             let data = try Data(contentsOf: url)
@@ -53,6 +92,9 @@ class MetadataService {
     // Save metadata to JSON file
     func save(metadata: [UUID: FileMetadata]) {
         guard let url = metadataURL else { return }
+
+        // Ensure metadata directory exists
+        try? fileManager.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
 
         do {
             let encoder = JSONEncoder()

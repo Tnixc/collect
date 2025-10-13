@@ -6,8 +6,12 @@ struct SettingsSheet: View {
     @StateObject private var themeManager = ThemeManager.shared
     @State private var sourceDirectoryURL: URL?
     @State private var isSelectingDirectory = false
+    @State private var savedSourceBookmarks: [Data] = []
+    @State private var selectedSavedIndex: Int? = nil
+    @State private var initialSourceDirectoryURL: URL? = nil
 
     private let sourceDirectoryBookmarkKey = "sourceDirectoryBookmark"
+    private let sourcesArrayKey = "sourceDirectoryBookmarks"
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -112,31 +116,65 @@ struct SettingsSheet: View {
             }
 
             // Directory Selection
-            HStack(spacing: 8) {
-                Text(sourceDirectoryURL?.path ?? "No directory selected")
-                    .font(.system(size: 13))
-                    .foregroundColor(
-                        sourceDirectoryURL != nil
-                            ? AppTheme.textPrimary : AppTheme.textSecondary
-                    )
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
-                    .background(AppTheme.backgroundTertiary)
-                    .cornerRadius(6)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(AppTheme.dividerColor, lineWidth: 1)
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
+            VStack(alignment: .leading, spacing: 8) {
+                if !savedSourceBookmarks.isEmpty {
+                    Picker("Saved Sources", selection: Binding(
+                        get: { selectedSavedIndex ?? -1 },
+                        set: { newValue in
+                            selectedSavedIndex = (newValue >= 0 ? newValue : nil)
+                            if let idx = selectedSavedIndex, idx < savedSourceBookmarks.count,
+                               let resolved = resolveBookmark(savedSourceBookmarks[idx])
+                            {
+                                sourceDirectoryURL = resolved
+                            }
+                        }
+                    )) {
+                        ForEach(Array(savedSourceBookmarks.enumerated()), id: \.offset) { index, data in
+                            Text(resolveBookmark(data)?.path ?? "Unknown").tag(index)
+                        }
+                    }
+                    .labelsHidden()
+                    .padding(.vertical, 16)
+                }
+                HStack(spacing: 8) {
+                    Text(sourceDirectoryURL?.path ?? "No directory selected")
+                        .font(.system(size: 13))
+                        .foregroundColor(
+                            sourceDirectoryURL != nil
+                                ? AppTheme.textPrimary : AppTheme.textSecondary
+                        )
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(AppTheme.backgroundTertiary)
+                        .cornerRadius(6)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(AppTheme.dividerColor, lineWidth: 1)
+                        )
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
 
-                UIButton(
-                    action: { selectDirectory() },
-                    style: .primary,
-                    label: "Choose...",
-                    height: 36
-                )
+                    UIButton(
+                        action: { selectDirectory() },
+                        style: .primary,
+                        label: "Choose...",
+                        height: 36
+                    )
+                    UIButton(
+                        action: {
+                            if let idx = selectedSavedIndex {
+                                savedSourceBookmarks.remove(at: idx)
+                                selectedSavedIndex = nil
+                                if sourceDirectoryURL != nil {
+                                    sourceDirectoryURL = nil
+                                }
+                            }
+                        },
+                        style: .plain,
+                        label: "Remove"
+                    )
+                }
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 24)
@@ -182,6 +220,10 @@ struct SettingsSheet: View {
     }
 
     private func loadSettings() {
+        // Load saved sources list
+        if let arr = UserDefaults.standard.array(forKey: sourcesArrayKey) as? [Data] {
+            savedSourceBookmarks = arr
+        }
         if let bookmarkData = UserDefaults.standard.data(
             forKey: sourceDirectoryBookmarkKey
         ) {
@@ -195,6 +237,10 @@ struct SettingsSheet: View {
                 )
                 if !isStale {
                     sourceDirectoryURL = url
+                    initialSourceDirectoryURL = url
+                    if let idx = savedSourceBookmarks.firstIndex(of: bookmarkData) {
+                        selectedSavedIndex = idx
+                    }
                 }
             } catch {
                 print("Error resolving bookmark: \(error)")
@@ -202,8 +248,26 @@ struct SettingsSheet: View {
         }
     }
 
+    private func resolveBookmark(_ data: Data) -> URL? {
+        do {
+            var isStale = false
+            let url = try URL(
+                resolvingBookmarkData: data,
+                options: .withSecurityScope,
+                relativeTo: nil,
+                bookmarkDataIsStale: &isStale
+            )
+            return isStale ? nil : url
+        } catch {
+            print("Error resolving bookmark: \(error)")
+            return nil
+        }
+    }
+
     private func saveSettings() {
         guard let url = sourceDirectoryURL else { return }
+
+        let oldURL = initialSourceDirectoryURL
 
         do {
             let bookmarkData = try url.bookmarkData(
@@ -215,6 +279,19 @@ struct SettingsSheet: View {
                 bookmarkData,
                 forKey: sourceDirectoryBookmarkKey
             )
+
+            if !savedSourceBookmarks.contains(bookmarkData) {
+                savedSourceBookmarks.append(bookmarkData)
+            }
+            UserDefaults.standard.set(savedSourceBookmarks, forKey: sourcesArrayKey)
+
+            NotificationCenter.default.post(
+                name: .sourceDirectoryDidChange,
+                object: nil,
+                userInfo: ["oldSourceURL": oldURL as Any, "newSourceURL": url]
+            )
+
+            initialSourceDirectoryURL = url
         } catch {
             print("Error creating bookmark: \(error)")
         }

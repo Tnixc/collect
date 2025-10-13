@@ -9,6 +9,7 @@ struct ContentView: View {
     @State private var showingAddURL = false
     @State private var showingCreateCategory = false
     @State private var needsOnboarding: Bool = true
+    @State private var currentSourceDirectoryURL: URL?
 
     var body: some View {
         Group {
@@ -132,15 +133,35 @@ struct ContentView: View {
             ) { _ in
                 refreshDataIfNeeded()
             }
+
+            // Observe source directory changes to refresh immediately
+            NotificationCenter.default.addObserver(
+                forName: .sourceDirectoryDidChange,
+                object: nil,
+                queue: .main
+            ) { note in
+                handleSourceDirectoryChanged(note)
+            }
         }
         .onChange(of: themeManager.effectiveColorScheme) {
             updateWindowBackground()
         }
+        .onChange(of: showingSettings) { isPresented in
+            // When Settings is dismissed, reload if the source changed
+            if !isPresented {
+                handleSettingsDismissed()
+            }
+        }
         .onDisappear {
-            // Remove observer when view disappears
+            // Remove observers when view disappears
             NotificationCenter.default.removeObserver(
                 self,
                 name: NSApplication.didBecomeActiveNotification,
+                object: nil
+            )
+            NotificationCenter.default.removeObserver(
+                self,
+                name: .sourceDirectoryDidChange,
                 object: nil
             )
         }
@@ -152,17 +173,85 @@ struct ContentView: View {
         }
     }
 
+    private func handleSettingsDismissed() {
+        let newURL = SettingsSheet.getSourceDirectoryURL()
+        let changed: Bool = {
+            switch (currentSourceDirectoryURL, newURL) {
+            case (nil, nil):
+                return false
+            case let (a?, b?):
+                return a.standardizedFileURL != b.standardizedFileURL
+            default:
+                return true
+            }
+        }()
+        if changed {
+            if let old = currentSourceDirectoryURL {
+                SettingsSheet.stopAccessingSourceDirectory(old)
+            }
+            currentSourceDirectoryURL = newURL
+            // Clear current in-memory state and reload per-source metadata/files
+            appState.files = []
+            appState.metadata = MetadataService.shared.load()
+            appState.tagColors = MetadataService.shared.tagColors
+            appState.selectedCategory = nil
+            appState.selectedAuthors = []
+            appState.searchText = ""
+            if let src = newURL {
+                needsOnboarding = false
+                loadFilesFromDirectory(src)
+            } else {
+                needsOnboarding = true
+            }
+        }
+    }
+
+    private func handleSourceDirectoryChanged(_ notification: Notification) {
+        let newURL = (notification.userInfo?[Notifications.Keys.newSourceURL] as? URL)
+        let changed: Bool = {
+            switch (currentSourceDirectoryURL, newURL) {
+            case (nil, nil):
+                return false
+            case let (a?, b?):
+                return a.standardizedFileURL != b.standardizedFileURL
+            default:
+                return true
+            }
+        }()
+        if changed {
+            if let old = currentSourceDirectoryURL {
+                SettingsSheet.stopAccessingSourceDirectory(old)
+            }
+            currentSourceDirectoryURL = newURL
+            // Clear current in-memory state and reload per-source metadata/files
+            appState.files = []
+            appState.metadata = MetadataService.shared.load()
+            appState.tagColors = MetadataService.shared.tagColors
+            appState.selectedCategory = nil
+            appState.selectedAuthors = []
+            appState.searchText = ""
+            if let src = newURL {
+                needsOnboarding = false
+                loadFilesFromDirectory(src)
+            } else {
+                needsOnboarding = true
+            }
+        }
+    }
+
     private func loadData() {
         // Load metadata
         appState.metadata = MetadataService.shared.load()
         appState.tagColors = MetadataService.shared.tagColors
 
         // Check if we have a source directory
-        needsOnboarding = SettingsSheet.getSourceDirectoryURL() == nil
+        let sourceURL = SettingsSheet.getSourceDirectoryURL()
+        needsOnboarding = sourceURL == nil
+        currentSourceDirectoryURL = sourceURL
 
         // Get source directory from settings
-        if let sourceURL = SettingsSheet.getSourceDirectoryURL() {
-            loadFilesFromDirectory(sourceURL)
+        if let src = sourceURL {
+            loadFilesFromDirectory(src)
         }
     }
 
