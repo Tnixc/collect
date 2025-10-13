@@ -227,6 +227,20 @@ public final class PillView: NSView {
         showsColorDot = shows
     }
 
+    /// Update appearance for theme changes
+    public func updateAppearance() {
+        // Update background color
+        layer?.backgroundColor = AppTheme.pillBackgroundNSColor.cgColor
+
+        // Update text color
+        label.textColor = AppTheme.textSecondaryNSColor
+
+        // Update dot color if present
+        if let name = colorName, showsColorDot {
+            dotView.layer?.backgroundColor = AppTheme.categoryNSColor(for: name).cgColor
+        }
+    }
+
     // MARK: - Sizing
 
     override public var intrinsicContentSize: NSSize {

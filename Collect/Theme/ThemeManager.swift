@@ -1,6 +1,11 @@
 import Combine
 import SwiftUI
 
+// Notification name for theme changes
+extension Notification.Name {
+    static let themeDidChange = Notification.Name("ThemeDidChange")
+}
+
 enum ThemeMode: String, CaseIterable {
     case system = "System"
     case light = "Light"
@@ -28,7 +33,12 @@ class ThemeManager: ObservableObject {
         }
     }
 
-    @Published var effectiveColorScheme: ColorScheme = .light
+    @Published var effectiveColorScheme: ColorScheme = .light {
+        didSet {
+            // Post notification when effective color scheme changes
+            NotificationCenter.default.post(name: .themeDidChange, object: nil)
+        }
+    }
 
     private var systemColorSchemeObserver: AnyCancellable?
 

@@ -9,6 +9,7 @@ extension UUID: Identifiable {
 
 struct DetailView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var editingFileID: UUID?
     @State private var showingCreateCategory = false
     @State private var creatingForFileID: UUID?

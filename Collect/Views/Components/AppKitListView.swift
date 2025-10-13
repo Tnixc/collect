@@ -2,30 +2,6 @@ import AppKit
 import CoreText
 import SwiftUI
 
-/*
- AppKitListView - Two-line list layout for PDF items
-
- Visual Layout:
- ┌────────────────────────────────────────────────────────────────────────────┐
- │  [📄]  Document Title Here...                      [Tag1] [Tag2] [+2]      │
- │  [👤]  Author Name(s)                              1.2 MB • Opened 2h ago  │
- ├────────────────────────────────────────────────────────────────────────────┤
- │  [📄]  Another Document                            [Research] [Work]       │
- │  [👤]  John Doe, Jane Smith                        856 KB • Opened 1d ago  │
- └────────────────────────────────────────────────────────────────────────────┘
-
- Row height: 72px (8px spacing between rows)
- Layout structure:
- - Line 1: Icon (40x40) | Title (14pt medium) | Category pills (right-aligned)
- - Line 2: Person icon (12x12) | Author(s) (12pt) | Metadata (11pt, right-aligned)
-
- Features:
- - Click to open PDF
- - Right-click for context menu (same as grid view)
- - Background colored based on file metadata
- - All actions supported: edit, categorize, reading list, delete, etc.
- */
-
 struct AppKitListView: NSViewRepresentable {
     let files: [FileItem]
     let metadata: [UUID: FileMetadata]
@@ -60,7 +36,9 @@ struct AppKitListView: NSViewRepresentable {
         tableView.allowsMultipleSelection = false
 
         // Add single column
-        let column = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("FileColumn"))
+        let column = NSTableColumn(
+            identifier: NSUserInterfaceItemIdentifier("FileColumn")
+        )
         column.resizingMask = .autoresizingMask
         tableView.addTableColumn(column)
 
@@ -73,7 +51,9 @@ struct AppKitListView: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSScrollView, context: Context) {
-        guard let tableView = nsView.documentView as? NSTableView else { return }
+        guard let tableView = nsView.documentView as? NSTableView else {
+            return
+        }
 
         context.coordinator.files = files
         context.coordinator.metadata = metadata
@@ -141,7 +121,9 @@ struct AppKitListView: NSViewRepresentable {
             return files.count
         }
 
-        func tableView(_: NSTableView, viewFor _: NSTableColumn?, row: Int) -> NSView? {
+        func tableView(_: NSTableView, viewFor _: NSTableColumn?, row: Int)
+            -> NSView?
+        {
             let file = files[row]
             let meta = metadata[file.id] ?? FileMetadata(id: file.id)
 
@@ -189,7 +171,7 @@ class FileListRowView: NSView {
     private let backgroundLayer = CAShapeLayer()
     private let iconImageView = ColorDotIconView()
     private let titleLabel = NSTextField(labelWithString: "")
-    private let authorPillContainer = NSStackView()
+    private let authorLabel = NSTextField(labelWithString: "")
     private let tagsContainer = NSView()
     private let rightPillsContainer = NSStackView()
 
@@ -204,17 +186,26 @@ class FileListRowView: NSView {
     private var showInFinderAction: (() -> Void)?
     private var addToReadingListAction: (() -> Void)?
     private var removeFromReadingListAction: (() -> Void)?
+    private var themeObserver: NSObjectProtocol?
+
+    deinit {
+        if let observer = themeObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         setupViews()
         setupGestures()
+        setupThemeObserver()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupViews()
         setupGestures()
+        setupThemeObserver()
     }
 
     private func setupViews() {
@@ -232,7 +223,9 @@ class FileListRowView: NSView {
         titleLabel.isEditable = false
         titleLabel.isBordered = false
         titleLabel.backgroundColor = .clear
-        titleLabel.font = NewYork.nsFont(size: 18, weight: .semibold, opticalSize: .medium) ?? NSFont.systemFont(ofSize: 18, weight: .semibold)
+        titleLabel.font =
+            NewYork.nsFont(size: 18, weight: .semibold, opticalSize: .medium)
+                ?? NSFont.systemFont(ofSize: 18, weight: .semibold)
         titleLabel.textColor = AppTheme.textPrimaryNSColor
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -242,12 +235,17 @@ class FileListRowView: NSView {
         tagsContainer.translatesAutoresizingMaskIntoConstraints = false
         addSubview(tagsContainer)
 
-        // Author pill container
-        authorPillContainer.orientation = .horizontal
-        authorPillContainer.alignment = .centerY
-        authorPillContainer.spacing = 4
-        authorPillContainer.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(authorPillContainer)
+        // Author label
+        authorLabel.isEditable = false
+        authorLabel.isBordered = false
+        authorLabel.backgroundColor = .clear
+        authorLabel.font =
+            NewYork.nsFont(size: 12, weight: .regular, opticalSize: .small)
+                ?? NSFont.systemFont(ofSize: 12)
+        authorLabel.textColor = AppTheme.textSecondaryNSColor
+        authorLabel.lineBreakMode = .byTruncatingTail
+        authorLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(authorLabel)
 
         // Right metadata pills container
         rightPillsContainer.orientation = .horizontal
@@ -258,40 +256,104 @@ class FileListRowView: NSView {
 
         NSLayoutConstraint.activate([
             // Icon constraints
-            iconImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            iconImageView.leadingAnchor.constraint(
+                equalTo: leadingAnchor,
+                constant: 12
+            ),
             iconImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
             iconImageView.widthAnchor.constraint(equalToConstant: 40),
             iconImageView.heightAnchor.constraint(equalToConstant: 40),
 
             // Title constraints - Line 1
-            titleLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(
+                equalTo: iconImageView.trailingAnchor,
+                constant: 8
+            ),
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
 
             // Tags container - Line 1, right side
-            tagsContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6),
-            tagsContainer.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            tagsContainer.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8),
+            tagsContainer.trailingAnchor.constraint(
+                equalTo: trailingAnchor,
+                constant: -6
+            ),
+            tagsContainer.centerYAnchor.constraint(
+                equalTo: titleLabel.centerYAnchor
+            ),
+            tagsContainer.leadingAnchor.constraint(
+                greaterThanOrEqualTo: titleLabel.trailingAnchor,
+                constant: 8
+            ),
             tagsContainer.heightAnchor.constraint(equalToConstant: 22),
 
-            // Author pill container - Line 2
-            authorPillContainer.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 4),
-            authorPillContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
+            // Author label - Line 2
+            authorLabel.leadingAnchor.constraint(
+                equalTo: iconImageView.trailingAnchor,
+                constant: 8
+            ),
+            authorLabel.topAnchor.constraint(
+                equalTo: titleLabel.bottomAnchor,
+                constant: 10
+            ),
 
             // Metadata pills - Line 2, right side
-            rightPillsContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6),
-            rightPillsContainer.centerYAnchor.constraint(equalTo: authorPillContainer.centerYAnchor),
-            rightPillsContainer.leadingAnchor.constraint(greaterThanOrEqualTo: authorPillContainer.trailingAnchor, constant: 8),
+            rightPillsContainer.trailingAnchor.constraint(
+                equalTo: trailingAnchor,
+                constant: -6
+            ),
+            rightPillsContainer.centerYAnchor.constraint(
+                equalTo: authorLabel.centerYAnchor
+            ),
+            rightPillsContainer.leadingAnchor.constraint(
+                greaterThanOrEqualTo: authorLabel.trailingAnchor,
+                constant: 8
+            ),
         ])
     }
 
     private func setupGestures() {
-        let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(handleClick))
+        let clickGesture = NSClickGestureRecognizer(
+            target: self,
+            action: #selector(handleClick)
+        )
         clickGesture.numberOfClicksRequired = 2
         addGestureRecognizer(clickGesture)
 
-        let rightClickGesture = NSClickGestureRecognizer(target: self, action: #selector(handleRightClick(_:)))
+        let rightClickGesture = NSClickGestureRecognizer(
+            target: self,
+            action: #selector(handleRightClick(_:))
+        )
         rightClickGesture.buttonMask = 0x2 // Right mouse button
         addGestureRecognizer(rightClickGesture)
+    }
+
+    private func setupThemeObserver() {
+        themeObserver = NotificationCenter.default.addObserver(
+            forName: .themeDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.updateThemeColors()
+        }
+    }
+
+    private func updateThemeColors() {
+        titleLabel.textColor = AppTheme.textPrimaryNSColor
+
+        authorLabel.textColor = AppTheme.textSecondaryNSColor
+
+        // Update all pills in tags container
+        for subview in tagsContainer.subviews {
+            if let pill = subview as? PillView {
+                pill.updateAppearance()
+            }
+        }
+
+        // Update all pills in right container
+        for subview in rightPillsContainer.arrangedSubviews {
+            if let pill = subview as? PillView {
+                pill.updateAppearance()
+            }
+        }
     }
 
     @objc private func handleClick() {
@@ -308,15 +370,29 @@ class FileListRowView: NSView {
         let menu = NSMenu()
 
         // Open
-        let openItem = NSMenuItem(title: "Open", action: #selector(openItem), keyEquivalent: "")
+        let openItem = NSMenuItem(
+            title: "Open",
+            action: #selector(openItem),
+            keyEquivalent: ""
+        )
         openItem.target = self
-        openItem.image = NSImage(systemSymbolName: "arrow.up.forward.app", accessibilityDescription: nil)
+        openItem.image = NSImage(
+            systemSymbolName: "arrow.up.forward.app",
+            accessibilityDescription: nil
+        )
         menu.addItem(openItem)
 
         // Edit Metadata
-        let editItem = NSMenuItem(title: "Edit Metadata", action: #selector(editItem), keyEquivalent: "")
+        let editItem = NSMenuItem(
+            title: "Edit Metadata",
+            action: #selector(editItem),
+            keyEquivalent: ""
+        )
         editItem.target = self
-        editItem.image = NSImage(systemSymbolName: "pencil", accessibilityDescription: nil)
+        editItem.image = NSImage(
+            systemSymbolName: "pencil",
+            accessibilityDescription: nil
+        )
         menu.addItem(editItem)
 
         menu.addItem(NSMenuItem.separator())
@@ -351,14 +427,27 @@ class FileListRowView: NSView {
         menu.addItem(NSMenuItem.separator())
 
         // Add to Category submenu
-        let addToCategoryItem = NSMenuItem(title: "Add to Category", action: nil, keyEquivalent: "")
-        addToCategoryItem.image = NSImage(systemSymbolName: "tag", accessibilityDescription: nil)
+        let addToCategoryItem = NSMenuItem(
+            title: "Add to Category",
+            action: nil,
+            keyEquivalent: ""
+        )
+        addToCategoryItem.image = NSImage(
+            systemSymbolName: "tag",
+            accessibilityDescription: nil
+        )
         let categorySubmenu = NSMenu()
 
-        let availableCategories = categories.filter { $0.name != "Uncategorized" }
+        let availableCategories = categories.filter {
+            $0.name != "Uncategorized"
+        }
 
         if availableCategories.isEmpty {
-            let noCategories = NSMenuItem(title: "No categories", action: nil, keyEquivalent: "")
+            let noCategories = NSMenuItem(
+                title: "No categories",
+                action: nil,
+                keyEquivalent: ""
+            )
             noCategories.isEnabled = false
             categorySubmenu.addItem(noCategories)
         } else {
@@ -395,13 +484,23 @@ class FileListRowView: NSView {
             keyEquivalent: ""
         )
         showInFinderItem.target = self
-        showInFinderItem.image = NSImage(systemSymbolName: "folder", accessibilityDescription: nil)
+        showInFinderItem.image = NSImage(
+            systemSymbolName: "folder",
+            accessibilityDescription: nil
+        )
         menu.addItem(showInFinderItem)
 
         // Delete
-        let deleteItem = NSMenuItem(title: "Delete", action: #selector(deleteItem), keyEquivalent: "")
+        let deleteItem = NSMenuItem(
+            title: "Delete",
+            action: #selector(deleteItem),
+            keyEquivalent: ""
+        )
         deleteItem.target = self
-        deleteItem.image = NSImage(systemSymbolName: "trash", accessibilityDescription: nil)
+        deleteItem.image = NSImage(
+            systemSymbolName: "trash",
+            accessibilityDescription: nil
+        )
         menu.addItem(deleteItem)
 
         return menu
@@ -471,7 +570,9 @@ class FileListRowView: NSView {
         if let colorName = AppTheme.cardColors[metadata.cardColor] {
             backgroundColor = NSColor(colorName).withAlphaComponent(0.2)
         } else {
-            backgroundColor = AppTheme.cardNSColors[abs(file.id.hashValue) % AppTheme.cardNSColors.count].withAlphaComponent(0.2)
+            backgroundColor = AppTheme.cardNSColors[
+                abs(file.id.hashValue) % AppTheme.cardNSColors.count
+            ].withAlphaComponent(0.2)
         }
         let saturatedColor = AppTheme.saturatedColor(for: backgroundColor)
         backgroundLayer.fillColor = backgroundColor.cgColor
@@ -487,29 +588,36 @@ class FileListRowView: NSView {
             titleLabel.stringValue = file.filename
         }
 
-        // Set author pill with faint background
-        authorPillContainer.arrangedSubviews.forEach { $0.removeFromSuperview() }
-
-        let authorText = metadata.authors.isEmpty ? "Unknown Author" : metadata.authors.joined(separator: ", ")
-        let authorPill = PillView(text: authorText, backgroundColor: AppTheme.pillBackgroundFaintNSColor)
-        authorPill.showsColorDot = false
-        authorPillContainer.addArrangedSubview(authorPill)
+        authorLabel.stringValue =
+            metadata.authors.isEmpty
+                ? "" : metadata.authors.joined(separator: ", ")
 
         // Set metadata pills with faint background (file size, pages, last opened)
-        rightPillsContainer.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        for arrangedSubview in rightPillsContainer.arrangedSubviews {
+            arrangedSubview.removeFromSuperview()
+        }
 
-        let sizePill = PillView(text: formatFileSize(file.fileSize), backgroundColor: AppTheme.pillBackgroundFaintNSColor)
+        let sizePill = PillView(
+            text: formatFileSize(file.fileSize),
+            backgroundColor: AppTheme.pillBackgroundFaintNSColor
+        )
         sizePill.showsColorDot = false
         rightPillsContainer.addArrangedSubview(sizePill)
 
         if let pages = metadata.pages {
-            let pagesPill = PillView(text: "\(pages) pages", backgroundColor: AppTheme.pillBackgroundFaintNSColor)
+            let pagesPill = PillView(
+                text: "\(pages) pages",
+                backgroundColor: AppTheme.pillBackgroundFaintNSColor
+            )
             pagesPill.showsColorDot = false
             rightPillsContainer.addArrangedSubview(pagesPill)
         }
 
         if let lastOpened = metadata.lastOpened {
-            let openedPill = PillView(text: "Opened " + formatLastOpened(lastOpened), backgroundColor: AppTheme.pillBackgroundFaintNSColor)
+            let openedPill = PillView(
+                text: "Opened " + formatLastOpened(lastOpened),
+                backgroundColor: AppTheme.pillBackgroundFaintNSColor
+            )
             openedPill.showsColorDot = false
             rightPillsContainer.addArrangedSubview(openedPill)
         }
@@ -531,9 +639,15 @@ class FileListRowView: NSView {
         tagsContainer.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            stackView.trailingAnchor.constraint(equalTo: tagsContainer.trailingAnchor),
-            stackView.leadingAnchor.constraint(greaterThanOrEqualTo: tagsContainer.leadingAnchor),
-            stackView.centerYAnchor.constraint(equalTo: tagsContainer.centerYAnchor),
+            stackView.trailingAnchor.constraint(
+                equalTo: tagsContainer.trailingAnchor
+            ),
+            stackView.leadingAnchor.constraint(
+                greaterThanOrEqualTo: tagsContainer.leadingAnchor
+            ),
+            stackView.centerYAnchor.constraint(
+                equalTo: tagsContainer.centerYAnchor
+            ),
         ])
 
         for tag in tags.prefix(3) {
@@ -549,46 +663,7 @@ class FileListRowView: NSView {
     }
 
     private func createPill(text: String, colorName: String?) -> NSView {
-        let container = NSView()
-        container.wantsLayer = true
-        container.layer?.backgroundColor = AppTheme.pillBackgroundNSColor.cgColor
-        container.layer?.cornerRadius = 4
-
-        let stack = NSStackView()
-        stack.orientation = .horizontal
-        stack.spacing = 4
-        stack.edgeInsets = NSEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(stack)
-
-        NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: container.topAnchor),
-            stack.bottomAnchor.constraint(equalTo: container.bottomAnchor),
-            stack.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-        ])
-
-        if let colorName = colorName {
-            let dot = NSView()
-            dot.wantsLayer = true
-            dot.layer?.backgroundColor = colorFromName(colorName).cgColor
-            dot.layer?.cornerRadius = 3
-            dot.translatesAutoresizingMaskIntoConstraints = false
-            stack.addArrangedSubview(dot)
-
-            NSLayoutConstraint.activate([
-                dot.widthAnchor.constraint(equalToConstant: 6),
-                dot.heightAnchor.constraint(equalToConstant: 6),
-            ])
-        }
-
-        let label = NSTextField(labelWithString: text)
-        label.font = NSFont.systemFont(ofSize: 11, weight: .medium)
-        label.textColor = AppTheme.textSecondaryNSColor
-        label.lineBreakMode = .byTruncatingTail
-        stack.addArrangedSubview(label)
-
-        return container
+        return PillView(text: text, colorName: colorName)
     }
 
     private func colorFromName(_ name: String) -> NSColor {
@@ -610,6 +685,7 @@ class FileListRowView: NSView {
     override func layout() {
         super.layout()
         backgroundLayer.frame = bounds
-        backgroundLayer.path = NSBezierPath(roundedRect: bounds, xRadius: 12, yRadius: 12).cgPath
+        backgroundLayer.path =
+            NSBezierPath(roundedRect: bounds, xRadius: 12, yRadius: 12).cgPath
     }
 }

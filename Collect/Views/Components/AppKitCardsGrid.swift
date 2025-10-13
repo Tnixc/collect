@@ -359,9 +359,13 @@ class FileCardItem: NSCollectionViewItem {
     private var backgroundLayer: CAShapeLayer?
     private var contentContainer: NSView?
     private var scrollObserver: NSObjectProtocol?
+    private var themeObserver: NSObjectProtocol?
 
     deinit {
         if let observer = scrollObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        if let observer = themeObserver {
             NotificationCenter.default.removeObserver(observer)
         }
     }
@@ -408,6 +412,7 @@ class FileCardItem: NSCollectionViewItem {
         setupConstraints()
         setupGestures()
         setupScrollObserver()
+        setupThemeObserver()
     }
 
     private func setupScrollObserver() {
@@ -429,6 +434,34 @@ class FileCardItem: NSCollectionViewItem {
                         self.mouseExited(with: NSEvent())
                     }
                 }
+            }
+        }
+    }
+
+    private func setupThemeObserver() {
+        themeObserver = NotificationCenter.default.addObserver(
+            forName: .themeDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.updateThemeColors()
+        }
+    }
+
+    private func updateThemeColors() {
+        titleLabel.textColor = AppTheme.textPrimaryNSColor
+        authorLabel.textColor = AppTheme.textSecondaryNSColor
+
+        // Update all pill colors
+        for subview in tagsContainer.subviews {
+            if let pill = subview as? PillView {
+                pill.updateAppearance()
+            }
+        }
+
+        for subview in bottomContainer.subviews {
+            if let pill = subview as? PillView {
+                pill.updateAppearance()
             }
         }
     }
