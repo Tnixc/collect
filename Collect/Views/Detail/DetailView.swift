@@ -15,6 +15,7 @@ struct DetailView: View {
     @State private var editingCategory: Category?
     @State private var isDropdownExpanded = false
     @State private var hoveredViewMode: ViewMode? = nil
+    @FocusState private var isSearchFocused: Bool
 
     private let cardColors: [NSColor] = AppTheme.cardNSColors
 
@@ -389,6 +390,29 @@ struct DetailView: View {
                                         width: 200,
                                         height: 32
                                     ).zIndex(999)
+
+                                    // Search bar
+                                    HStack {
+                                        Image(systemName: "magnifyingglass")
+                                            .foregroundColor(AppTheme.textSecondary)
+                                        TextField("Search", text: $appState.searchText)
+                                            .textFieldStyle(.plain)
+                                            .frame(width: 200)
+                                            .foregroundColor(AppTheme.textPrimary)
+                                            .padding(.vertical, 4)
+                                            .focused($isSearchFocused)
+                                            .smartFocusRing()
+                                    }
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(AppTheme.backgroundTertiary)
+                                    .cornerRadius(8)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8).stroke(
+                                            AppTheme.dividerColor,
+                                            lineWidth: 1.0
+                                        )
+                                    )
                                 }
                             }
                             .padding(.top, 24)
@@ -634,6 +658,15 @@ struct DetailView: View {
                 )
             }
         }
+        .overlay(
+            // Invisible button to capture Cmd+F
+            Button(action: {
+                isSearchFocused = true
+            }) {}
+                .keyboardShortcut("f", modifiers: .command)
+                .opacity(0)
+                .frame(width: 0, height: 0)
+        )
     }
 
     private func editMetadata(for fileID: UUID) {

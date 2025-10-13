@@ -111,29 +111,6 @@ struct ContentView: View {
                         )
                         .help("Add items")
                     }
-
-                    ToolbarItem(placement: .automatic) {
-                        HStack {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(AppTheme.textSecondary)
-                            TextField("Search", text: $appState.searchText)
-                                .textFieldStyle(.plain)
-                                .frame(width: 200)
-                                .foregroundColor(AppTheme.textPrimary)
-                                .padding(.vertical, 4)
-                                .smartFocusRing()
-                        }
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(AppTheme.backgroundTertiary)
-                        .cornerRadius(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8).stroke(
-                                AppTheme.dividerColor,
-                                lineWidth: 1.0
-                            )
-                        )
-                    }
                 }
                 .toolbarBackground(Color.clear, for: .windowToolbar)
                 .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
