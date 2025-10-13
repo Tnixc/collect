@@ -38,7 +38,7 @@ struct DetailView: View {
                                     : (appState.selectedCategory
                                         ?? "All Items")
                             )
-                            .font(Typography.largeTitle)
+                            .font(Font.system(size: 34, weight: .bold, design: .serif))
                             .foregroundColor(AppTheme.textPrimary)
 
                             if !appState.showReadingList,
@@ -306,115 +306,229 @@ struct DetailView: View {
                     } else {
                         // Standard Items Grid Section
                         VStack(alignment: .leading, spacing: 12) {
-                            HStack {
-                                Text(
-                                    "Items (\(appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count))"
-                                )
-                                .font(.system(size: 13, weight: .semibold))
-                                .foregroundColor(AppTheme.textPrimary)
+                            GeometryReader { geometry in
+                                if geometry.size.width < 600 {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text(
+                                            "Items (\(appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count))"
+                                        )
+                                        .font(.system(size: 13, weight: .semibold))
+                                        .foregroundColor(AppTheme.textPrimary)
 
-                                Spacer()
-
-                                HStack(spacing: 8) {
-                                    // View mode toggle
-                                    HStack(spacing: 0) {
-                                        ForEach(ViewMode.allCases, id: \.self) {
-                                            mode in
-                                            Button(action: {
-                                                appState.viewMode = mode
-                                            }) {
-                                                HStack(spacing: 4) {
-                                                    Image(
-                                                        systemName: mode
-                                                            .iconName
-                                                    )
-                                                    .font(.system(size: 14))
-                                                    Text(mode.rawValue)
-                                                        .font(
-                                                            .system(
-                                                                size: 12,
-                                                                weight: .medium
+                                        HStack(spacing: 8) {
+                                            // View mode toggle
+                                            HStack(spacing: 0) {
+                                                ForEach(ViewMode.allCases, id: \.self) {
+                                                    mode in
+                                                    Button(action: {
+                                                        appState.viewMode = mode
+                                                    }) {
+                                                        HStack(spacing: 4) {
+                                                            Image(
+                                                                systemName: mode
+                                                                    .iconName
+                                                            )
+                                                            .font(.system(size: 14))
+                                                            Text(mode.rawValue)
+                                                                .font(
+                                                                    .system(
+                                                                        size: 12,
+                                                                        weight: .medium
+                                                                    )
+                                                                )
+                                                        }
+                                                        .foregroundColor(
+                                                            appState.viewMode == mode
+                                                                ? AppTheme.textPrimary
+                                                                : AppTheme.textSecondary
+                                                        )
+                                                        .frame(width: 60, height: 32)
+                                                        .background(
+                                                            appState.viewMode == mode
+                                                                ? AppTheme
+                                                                .backgroundTertiary
+                                                                : Color.clear
+                                                        )
+                                                        .clipShape(
+                                                            RoundedRectangle(
+                                                                cornerRadius: 8
                                                             )
                                                         )
-                                                }
-                                                .foregroundColor(
-                                                    appState.viewMode == mode
-                                                        ? AppTheme.textPrimary
-                                                        : AppTheme.textSecondary
-                                                )
-                                                .frame(width: 60, height: 32)
-                                                .background(
-                                                    appState.viewMode == mode
-                                                        ? AppTheme
-                                                        .backgroundTertiary
-                                                        : Color.clear
-                                                )
-                                                .clipShape(
-                                                    RoundedRectangle(
-                                                        cornerRadius: 8
-                                                    )
-                                                )
-                                                .contentShape(
-                                                    RoundedRectangle(
-                                                        cornerRadius: 8
-                                                    )
-                                                )
-                                            }
-                                            .buttonStyle(.plain)
-                                            .smartFocusRing()
-                                            .onHover { hovering in
-                                                withAnimation(
-                                                    .easeInOut(duration: 0.15)
-                                                ) {
-                                                    self.hoveredViewMode =
-                                                        hovering ? mode : nil
+                                                        .contentShape(
+                                                            RoundedRectangle(
+                                                                cornerRadius: 8
+                                                            )
+                                                        )
+                                                    }
+                                                    .buttonStyle(.plain)
+                                                    .smartFocusRing()
+                                                    .onHover { hovering in
+                                                        withAnimation(
+                                                            .easeInOut(duration: 0.15)
+                                                        ) {
+                                                            self.hoveredViewMode =
+                                                                hovering ? mode : nil
+                                                        }
+                                                    }
                                                 }
                                             }
+                                            .background(AppTheme.backgroundSecondary)
+                                            .clipShape(
+                                                RoundedRectangle(cornerRadius: 8)
+                                            )
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .stroke(
+                                                        AppTheme.dividerColor,
+                                                        lineWidth: 1
+                                                    )
+                                            )
+                                            UIDropdown(
+                                                selectedOption: $appState.sortOption,
+                                                isExpanded: $isDropdownExpanded,
+                                                options: SortOption.allCases,
+                                                optionToString: { $0.rawValue },
+                                                optionToIcon: { $0.iconName },
+                                                width: 200,
+                                                height: 32
+                                            ).zIndex(999)
+
+                                            // Search bar
+                                            HStack {
+                                                Image(systemName: "magnifyingglass")
+                                                    .foregroundColor(AppTheme.textSecondary)
+                                                TextField("Search", text: $appState.searchText)
+                                                    .textFieldStyle(.plain)
+                                                    .frame(width: 200)
+                                                    .foregroundColor(AppTheme.textPrimary)
+                                                    .padding(.vertical, 4)
+                                                    .focused($isSearchFocused)
+                                                    .smartFocusRing()
+                                            }
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(AppTheme.backgroundTertiary)
+                                            .cornerRadius(8)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 8).stroke(
+                                                    AppTheme.dividerColor,
+                                                    lineWidth: 1.0
+                                                )
+                                            )
                                         }
                                     }
-                                    .background(AppTheme.backgroundSecondary)
-                                    .clipShape(
-                                        RoundedRectangle(cornerRadius: 8)
-                                    )
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(
-                                                AppTheme.dividerColor,
-                                                lineWidth: 1
-                                            )
-                                    )
-                                    UIDropdown(
-                                        selectedOption: $appState.sortOption,
-                                        isExpanded: $isDropdownExpanded,
-                                        options: SortOption.allCases,
-                                        optionToString: { $0.rawValue },
-                                        optionToIcon: { $0.iconName },
-                                        width: 200,
-                                        height: 32
-                                    ).zIndex(999)
-
-                                    // Search bar
+                                } else {
                                     HStack {
-                                        Image(systemName: "magnifyingglass")
-                                            .foregroundColor(AppTheme.textSecondary)
-                                        TextField("Search", text: $appState.searchText)
-                                            .textFieldStyle(.plain)
-                                            .frame(width: 200)
-                                            .foregroundColor(AppTheme.textPrimary)
-                                            .padding(.vertical, 4)
-                                            .focused($isSearchFocused)
-                                            .smartFocusRing()
-                                    }
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(AppTheme.backgroundTertiary)
-                                    .cornerRadius(8)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8).stroke(
-                                            AppTheme.dividerColor,
-                                            lineWidth: 1.0
+                                        Text(
+                                            "Items (\(appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count))"
                                         )
-                                    )
+                                        .font(.system(size: 13, weight: .semibold))
+                                        .foregroundColor(AppTheme.textPrimary)
+
+                                        Spacer()
+
+                                        HStack(spacing: 8) {
+                                            // View mode toggle
+                                            HStack(spacing: 0) {
+                                                ForEach(ViewMode.allCases, id: \.self) {
+                                                    mode in
+                                                    Button(action: {
+                                                        appState.viewMode = mode
+                                                    }) {
+                                                        HStack(spacing: 4) {
+                                                            Image(
+                                                                systemName: mode
+                                                                    .iconName
+                                                            )
+                                                            .font(.system(size: 14))
+                                                            Text(mode.rawValue)
+                                                                .font(
+                                                                    .system(
+                                                                        size: 12,
+                                                                        weight: .medium
+                                                                    )
+                                                                )
+                                                        }
+                                                        .foregroundColor(
+                                                            appState.viewMode == mode
+                                                                ? AppTheme.textPrimary
+                                                                : AppTheme.textSecondary
+                                                        )
+                                                        .frame(width: 60, height: 32)
+                                                        .background(
+                                                            appState.viewMode == mode
+                                                                ? AppTheme
+                                                                .backgroundTertiary
+                                                                : Color.clear
+                                                        )
+                                                        .clipShape(
+                                                            RoundedRectangle(
+                                                                cornerRadius: 8
+                                                            )
+                                                        )
+                                                        .contentShape(
+                                                            RoundedRectangle(
+                                                                cornerRadius: 8
+                                                            )
+                                                        )
+                                                    }
+                                                    .buttonStyle(.plain)
+                                                    .smartFocusRing()
+                                                    .onHover { hovering in
+                                                        withAnimation(
+                                                            .easeInOut(duration: 0.15)
+                                                        ) {
+                                                            self.hoveredViewMode =
+                                                                hovering ? mode : nil
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            .background(AppTheme.backgroundSecondary)
+                                            .clipShape(
+                                                RoundedRectangle(cornerRadius: 8)
+                                            )
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .stroke(
+                                                        AppTheme.dividerColor,
+                                                        lineWidth: 1
+                                                    )
+                                            )
+                                            UIDropdown(
+                                                selectedOption: $appState.sortOption,
+                                                isExpanded: $isDropdownExpanded,
+                                                options: SortOption.allCases,
+                                                optionToString: { $0.rawValue },
+                                                optionToIcon: { $0.iconName },
+                                                width: 200,
+                                                height: 32
+                                            ).zIndex(999)
+
+                                            // Search bar
+                                            HStack {
+                                                Image(systemName: "magnifyingglass")
+                                                    .foregroundColor(AppTheme.textSecondary)
+                                                TextField("Search", text: $appState.searchText)
+                                                    .textFieldStyle(.plain)
+                                                    .frame(width: 200)
+                                                    .foregroundColor(AppTheme.textPrimary)
+                                                    .padding(.vertical, 4)
+                                                    .focused($isSearchFocused)
+                                                    .smartFocusRing()
+                                            }
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(AppTheme.backgroundTertiary)
+                                            .cornerRadius(8)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 8).stroke(
+                                                    AppTheme.dividerColor,
+                                                    lineWidth: 1.0
+                                                )
+                                            )
+                                        }
+                                    }
                                 }
                             }
                             .padding(.top, 24)
@@ -621,6 +735,7 @@ struct DetailView: View {
                 }
             }
         }
+        
         .onDrop(of: [.fileURL], isTargeted: nil) { providers in
             handleFileDrop(providers: providers)
         }
