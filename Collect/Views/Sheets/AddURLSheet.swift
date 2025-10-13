@@ -25,6 +25,7 @@ struct AddURLSheet: View {
                         .foregroundColor(AppTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
+                .smartFocusRing()
             }
             .padding(.horizontal, 24)
             .padding(.top, 24)

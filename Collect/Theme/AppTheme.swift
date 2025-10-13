@@ -171,7 +171,7 @@ enum AppTheme {
 
     static var accentPrimary: Color {
         ThemeManager.shared.isDarkMode
-            ? Color(hex: "#5D9AA9") : Color(hex: "#4B8CA0")
+            ? Color(hex: "#4B8CA0") : Color(hex: "#4B8CA0")
     }
 
     static var accentSecondary: Color {

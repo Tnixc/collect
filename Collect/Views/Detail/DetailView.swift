@@ -361,6 +361,7 @@ struct DetailView: View {
                                                 )
                                             }
                                             .buttonStyle(.plain)
+                                            .smartFocusRing()
                                             .onHover { hovering in
                                                 withAnimation(
                                                     .easeInOut(duration: 0.15)

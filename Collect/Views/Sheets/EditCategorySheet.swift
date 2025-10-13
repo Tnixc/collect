@@ -43,6 +43,7 @@ struct EditCategorySheet: View {
                         .foregroundColor(AppTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
+                .smartFocusRing()
             }
             .padding(.horizontal, 24)
             .padding(.top, 24)
@@ -121,6 +122,7 @@ struct EditCategorySheet: View {
                                 )
                         }
                         .buttonStyle(.plain)
+                        .smartFocusRing()
                     }
                 }
             }

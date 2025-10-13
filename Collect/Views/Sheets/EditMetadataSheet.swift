@@ -41,6 +41,7 @@ struct EditMetadataSheet: View {
                         .foregroundColor(AppTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
+                .smartFocusRing()
             }
             .padding(.horizontal, 24)
             .padding(.top, 24)
@@ -228,6 +229,7 @@ struct EditMetadataSheet: View {
                                             )
                                     }
                                     .buttonStyle(.plain)
+                                    .smartFocusRing()
                                 }
                             }
                         }
@@ -235,7 +237,7 @@ struct EditMetadataSheet: View {
                     .padding(.horizontal, 24)
                     .padding(.bottom, 20)
                 }
-                .frame(minHeight: 350, maxHeight: 500)
+                .frame(minHeight: 350)
             } else {
                 // Loading placeholder
                 VStack {

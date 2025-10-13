@@ -32,6 +32,7 @@ struct CreateCategorySheet: View {
                         .foregroundColor(AppTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
+                .smartFocusRing()
             }
             .padding(.horizontal, 24)
             .padding(.top, 24)
@@ -90,6 +91,7 @@ struct CreateCategorySheet: View {
                                 )
                         }
                         .buttonStyle(.plain)
+                        .smartFocusRing()
                     }
                 }
             }

@@ -25,6 +25,7 @@ struct SettingsSheet: View {
                         .foregroundColor(AppTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
+                .smartFocusRing()
             }
             .padding(.horizontal, 24)
             .padding(.top, 24)
@@ -85,6 +86,7 @@ struct SettingsSheet: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .smartFocusRing()
                     }
                 }
                 .padding(.horizontal, 24)
