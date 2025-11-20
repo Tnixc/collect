@@ -154,6 +154,9 @@ struct ContentView: View {
             loadData()
             NSApp.keyWindow?.tabbingMode = .disallowed
 
+            // Configure all scrollbars
+            ScrollbarConfiguration.configureAllScrollbars()
+
             // Add observer for app activation to refresh data
             NotificationCenter.default.addObserver(
                 forName: NSApplication.didBecomeActiveNotification,
@@ -174,6 +177,8 @@ struct ContentView: View {
         }
         .onChange(of: themeManager.effectiveColorScheme) {
             updateWindowBackground()
+            // Reapply scrollbar configuration when theme changes
+            ScrollbarConfiguration.configureAllScrollbars()
         }
         .onChange(of: showingSettings) { isPresented in
             // When Settings is dismissed, reload if the source changed

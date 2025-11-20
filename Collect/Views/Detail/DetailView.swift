@@ -74,7 +74,7 @@ struct DetailView: View {
     }
 
     var body: some View {
-        ScrollView {
+        let scrollContent = ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 DetailHeaderView(onEditCategory: { self.editingCategory = $0 })
 
@@ -118,59 +118,61 @@ struct DetailView: View {
             }
             .padding(.vertical, 24)
         }
-
+        .transparentScrollbars()
         .onDrop(of: [.fileURL], isTargeted: nil) { providers in
             handleFileDrop(providers: providers)
         }
-        .background(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(themeManager.isDarkMode ? Color.black.opacity(0.35) : Color.white.opacity(0.65))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .stroke(themeManager.glassPrimaryStrokeColor, lineWidth: 1)
-                .allowsHitTesting(false)
-        )
-        .padding(.horizontal, 8)
-        .padding(.bottom, 8)
-        .padding(.top, 1)
-        .shadow(color: themeManager.glassShadowColor, radius: 24, y: 12)
-        .sheet(item: $editingFileID) { fileID in
-            EditMetadataSheet(fileID: fileID)
-                .environmentObject(appState)
-        }
-        .sheet(isPresented: $showingCreateCategory) {
-            CreateCategorySheet { name, color in
-                appState.tagColors[name] = color
-                if let fileID = creatingForFileID,
-                   var meta = appState.metadata[fileID]
-                {
-                    if !meta.tags.contains(name) {
-                        meta.tags.append(name)
-                        appState.updateMetadata(for: fileID, metadata: meta)
+
+        return scrollContent
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(themeManager.isDarkMode ? Color.black.opacity(0.35) : Color.white.opacity(0.65))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(themeManager.glassPrimaryStrokeColor, lineWidth: 1)
+                    .allowsHitTesting(false)
+            )
+            .padding(.horizontal, 8)
+            .padding(.bottom, 8)
+            .padding(.top, 1)
+            .shadow(color: themeManager.glassShadowColor, radius: 24, y: 12)
+            .sheet(item: $editingFileID) { fileID in
+                EditMetadataSheet(fileID: fileID)
+                    .environmentObject(appState)
+            }
+            .sheet(isPresented: $showingCreateCategory) {
+                CreateCategorySheet { name, color in
+                    appState.tagColors[name] = color
+                    if let fileID = creatingForFileID,
+                       var meta = appState.metadata[fileID]
+                    {
+                        if !meta.tags.contains(name) {
+                            meta.tags.append(name)
+                            appState.updateMetadata(for: fileID, metadata: meta)
+                        }
                     }
                 }
+                .environmentObject(appState)
             }
-            .environmentObject(appState)
-        }
-        .sheet(item: $editingCategory) { category in
-            EditCategorySheet(category: category) { newName, newColor in
-                appState.renameCategory(
-                    from: category.name,
-                    to: newName,
-                    color: newColor
-                )
+            .sheet(item: $editingCategory) { category in
+                EditCategorySheet(category: category) { newName, newColor in
+                    appState.renameCategory(
+                        from: category.name,
+                        to: newName,
+                        color: newColor
+                    )
+                }
             }
-        }
-        .overlay(
-            // Invisible button to capture Cmd+F
-            Button(action: {
-                isSearchFocused = true
-            }) {}
-                .keyboardShortcut("f", modifiers: .command)
-                .opacity(0)
-                .frame(width: 0, height: 0)
-        )
+            .overlay(
+                // Invisible button to capture Cmd+F
+                Button(action: {
+                    isSearchFocused = true
+                }) {}
+                    .keyboardShortcut("f", modifiers: .command)
+                    .opacity(0)
+                    .frame(width: 0, height: 0)
+            )
     }
 
     private func editMetadata(for fileID: UUID) {

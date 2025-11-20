@@ -23,6 +23,9 @@ struct AppKitListView: NSViewRepresentable {
         scrollView.backgroundColor = .clear
         scrollView.drawsBackground = false
 
+        // Apply transparent scroller styling and overlay mode
+        scrollView.applyTransparentScrollers()
+
         let tableView = NSTableView()
         tableView.style = .plain
         tableView.backgroundColor = .clear

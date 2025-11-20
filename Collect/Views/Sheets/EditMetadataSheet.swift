@@ -238,6 +238,7 @@ struct EditMetadataSheet: View {
                     .padding(.bottom, 20)
                 }
                 .frame(minHeight: 350)
+                .transparentScrollbars()
             } else {
                 // Loading placeholder
                 VStack {
