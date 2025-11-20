@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 @main
@@ -21,9 +22,7 @@ struct CollectApp: App {
 
     private func updateWindowAppearance(_: ColorScheme) {
         DispatchQueue.main.async {
-            if let window = NSApp.windows.first {
-                window.backgroundColor = AppTheme.backgroundSecondaryNSColor
-            }
+            WindowChrome.applyToAllWindows()
         }
     }
 }

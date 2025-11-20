@@ -268,8 +268,16 @@ struct EditMetadataSheet: View {
             .padding(.bottom, 24)
         }
         .frame(width: 600)
-        .background(AppTheme.backgroundPrimary)
-        .cornerRadius(12)
+        .glassBackground(
+            material: .hudWindow,
+            blendingMode: .withinWindow,
+            emphasized: false,
+            cornerRadius: 24,
+            strokeColor: themeManager.glassPrimaryStrokeColor,
+            strokeWidth: 1,
+            overlayColor: themeManager.glassOverlayColor
+        )
+        .shadow(color: themeManager.glassShadowColor, radius: 30, y: 12)
         .id(themeManager.effectiveColorScheme)
         .task {
             // Load metadata immediately when the view appears

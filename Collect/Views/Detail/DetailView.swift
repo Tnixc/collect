@@ -74,67 +74,67 @@ struct DetailView: View {
     }
 
     var body: some View {
-        ZStack {
-            AppTheme.backgroundPrimary
-                .ignoresSafeArea()
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                DetailHeaderView(onEditCategory: { self.editingCategory = $0 })
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    DetailHeaderView(onEditCategory: { self.editingCategory = $0 })
+                Rectangle()
+                    .fill(AppTheme.dividerColor)
+                    .frame(height: 1)
+                    .padding(.horizontal, 32)
 
-                    Rectangle()
-                        .fill(AppTheme.dividerColor)
-                        .frame(height: 1)
-                        .padding(.horizontal, 32)
+                if !appState.showReadingList && !appState.showRecent {
+                    AuthorsSectionView()
+                }
 
-                    if !appState.showReadingList && !appState.showRecent {
-                        AuthorsSectionView()
-                    }
-
-                    if appState.showRecent {
-                        RecentView(
-                            isDropdownExpanded: $isDropdownExpanded,
-                            cardColors: cardColors,
-                            onTap: onTap,
-                            editAction: editAction,
-                            addToCategoryAction: addToCategoryAction,
-                            createCategoryAction: createCategoryAction,
-                            deleteAction: deleteAction,
-                            showInFinderAction: showInFinderAction,
-                            addToReadingListAction: addToReadingListAction,
-                            removeFromReadingListAction: removeFromReadingListAction
-                        )
-                    } else {
-                        ItemsSectionView(
-                            isDropdownExpanded: $isDropdownExpanded,
-                            isSearchFocused: $isSearchFocused,
-                            cardColors: cardColors,
-                            onTap: onTap,
-                            editAction: editAction,
-                            addToCategoryAction: addToCategoryAction,
-                            createCategoryAction: createCategoryAction,
-                            deleteAction: deleteAction,
-                            showInFinderAction: showInFinderAction,
-                            addToReadingListAction: addToReadingListAction,
-                            removeFromReadingListAction: removeFromReadingListAction
-                        )
-                    }
+                if appState.showRecent {
+                    RecentView(
+                        isDropdownExpanded: $isDropdownExpanded,
+                        cardColors: cardColors,
+                        onTap: onTap,
+                        editAction: editAction,
+                        addToCategoryAction: addToCategoryAction,
+                        createCategoryAction: createCategoryAction,
+                        deleteAction: deleteAction,
+                        showInFinderAction: showInFinderAction,
+                        addToReadingListAction: addToReadingListAction,
+                        removeFromReadingListAction: removeFromReadingListAction
+                    )
+                } else {
+                    ItemsSectionView(
+                        isDropdownExpanded: $isDropdownExpanded,
+                        isSearchFocused: $isSearchFocused,
+                        cardColors: cardColors,
+                        onTap: onTap,
+                        editAction: editAction,
+                        addToCategoryAction: addToCategoryAction,
+                        createCategoryAction: createCategoryAction,
+                        deleteAction: deleteAction,
+                        showInFinderAction: showInFinderAction,
+                        addToReadingListAction: addToReadingListAction,
+                        removeFromReadingListAction: removeFromReadingListAction
+                    )
                 }
             }
+            .padding(.vertical, 24)
         }
 
         .onDrop(of: [.fileURL], isTargeted: nil) { providers in
             handleFileDrop(providers: providers)
         }
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(AppTheme.dividerColor, lineWidth: 1)
+        .glassBackground(
+            material: themeManager.glassMaterial,
+            blendingMode: .behindWindow,
+            emphasized: true,
+            cornerRadius: 8,
+            strokeColor: themeManager.glassPrimaryStrokeColor,
+            strokeWidth: 1,
+            overlayColor: themeManager.glassOverlayColor
         )
         .padding(.horizontal, 8)
         .padding(.bottom, 8)
         .padding(.top, 1)
-        .shadow(color: AppTheme.backgroundTertiary.opacity(0.2), radius: 8, y: -4)
+        .shadow(color: themeManager.glassShadowColor, radius: 24, y: 12)
         .sheet(item: $editingFileID) { fileID in
             EditMetadataSheet(fileID: fileID)
                 .environmentObject(appState)

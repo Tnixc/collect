@@ -18,6 +18,14 @@ struct UIDropdown<T: Hashable>: View {
 
     private let itemHeight = 28.0
 
+    private var buttonHoverOverlayColor: Color {
+        Color.white.opacity(
+            isButtonHovered
+                ? (themeManager.isDarkMode ? 0.22 : 0.12)
+                : 0
+        )
+    }
+
     init(
         selectedOption: Binding<T>,
         isExpanded: Binding<Bool>,
@@ -74,23 +82,23 @@ struct UIDropdown<T: Hashable>: View {
             }
             .padding(8)
             .frame(width: width, height: height)
-            .background(
-                isButtonHovered
-                    ? AppTheme.backgroundTertiary.opacity(1.5)
-                    : AppTheme.backgroundTertiary
+            .background(Color.clear)
+            .glassBackground(
+                material: .hudWindow,
+                blendingMode: .withinWindow,
+                emphasized: false,
+                cornerRadius: 8,
+                strokeColor: themeManager.glassSecondaryStrokeColor,
+                strokeWidth: 1,
+                overlayColor: themeManager.glassOverlayColor
             )
-            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
         .smartFocusRing()
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(
-                    isButtonHovered
-                        ? AppTheme.dividerColor.opacity(1.5)
-                        : AppTheme.dividerColor,
-                    lineWidth: 1
-                )
+                .fill(buttonHoverOverlayColor)
+                .allowsHitTesting(false)
         )
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.15)) {
@@ -106,12 +114,16 @@ struct UIDropdown<T: Hashable>: View {
             }
         }
         .padding(4)
-        .background(AppTheme.backgroundPrimary)
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(AppTheme.dividerColor.opacity(0.2), lineWidth: 2)
+        .background(Color.clear)
+        .glassBackground(
+            material: .hudWindow,
+            blendingMode: .withinWindow,
+            emphasized: true,
+            cornerRadius: 10,
+            strokeColor: themeManager.glassPrimaryStrokeColor,
+            strokeWidth: 1,
+            overlayColor: themeManager.glassOverlayColor
         )
-        .clipShape(RoundedRectangle(cornerRadius: 10))
         .frame(width: width)
         .position(
             x: width / 2,
@@ -120,7 +132,7 @@ struct UIDropdown<T: Hashable>: View {
         .transition(.blurReplace)
         .zIndex(1000)
         .frame(maxHeight: height).fixedSize(horizontal: true, vertical: true)
-        .shadow(color: AppTheme.dropdownShadow, radius: 20)
+        .shadow(color: themeManager.glassShadowColor, radius: 20)
     }
 
     private func dropdownMenuItem(for option: T) -> some View {

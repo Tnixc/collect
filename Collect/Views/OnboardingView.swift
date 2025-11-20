@@ -10,7 +10,7 @@ struct OnboardingView: View {
     var body: some View {
         ZStack {
             AppTheme.backgroundPrimary
-                .ignoresSafeArea()
+                .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
 
             VStack(spacing: 32) {
                 Spacer()

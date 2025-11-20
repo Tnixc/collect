@@ -1,3 +1,4 @@
+import AppKit
 import Combine
 import SwiftUI
 
@@ -87,5 +88,25 @@ class ThemeManager: ObservableObject {
 
     var isDarkMode: Bool {
         effectiveColorScheme == .dark
+    }
+
+    var glassOverlayColor: Color {
+        Color.black.opacity(isDarkMode ? 0.15 : 0.05)
+    }
+
+    var glassMaterial: NSVisualEffectView.Material {
+        isDarkMode ? .hudWindow : .popover
+    }
+
+    var glassPrimaryStrokeColor: Color {
+        Color.white.opacity(isDarkMode ? 0.18 : 0.28)
+    }
+
+    var glassSecondaryStrokeColor: Color {
+        Color.white.opacity(isDarkMode ? 0.14 : 0.2)
+    }
+
+    var glassShadowColor: Color {
+        Color.black.opacity(isDarkMode ? 0.45 : 0.08)
     }
 }

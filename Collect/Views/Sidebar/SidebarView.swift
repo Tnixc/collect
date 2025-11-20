@@ -170,7 +170,15 @@ struct SidebarView: View {
                 }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(AppTheme.backgroundSecondary)
+        .glassBackground(
+            material: themeManager.glassMaterial,
+            blendingMode: .behindWindow,
+            emphasized: true,
+            cornerRadius: 0,
+            strokeColor: .clear,
+            strokeWidth: 0,
+            overlayColor: .clear
+        )
         .id(ThemeManager.shared.effectiveColorScheme)
         .ignoresSafeArea(.container, edges: .top)
         .environment(\.lineLimit, 1)

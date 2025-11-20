@@ -12,112 +12,122 @@ struct ContentView: View {
     @State private var currentSourceDirectoryURL: URL?
 
     var body: some View {
-        Group {
-            if needsOnboarding {
-                // Show onboarding if no source directory is selected
-                OnboardingView(onDirectorySelected: {
-                    self.needsOnboarding = false
-                    self.loadData()
-                })
-                .environmentObject(appState)
-            } else {
-                // Show main app interface
-                HStack(spacing: 0) {
-                    // Custom Sidebar (fixed width, not user-resizable)
-                    SidebarView(
-                        showingSettings: $showingSettings,
-                        showingCreateCategory: $showingCreateCategory
-                    )
-                    .environmentObject(appState)
-                    .frame(width: isSidebarVisible ? 240 : 0)
-                    .clipped()
+        ZStack {
+            GlassMaterialView(
+                material: themeManager.glassMaterial,
+                blendingMode: .behindWindow,
+                emphasized: true
+            )
+            .ignoresSafeArea()
 
-                    // Main Detail View
-                    DetailView()
-                        .environmentObject(appState)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-                .sheet(isPresented: $showingSettings) {
-                    SettingsSheet()
-                }
-                .sheet(isPresented: $showingAddURL) {
-                    AddURLSheet()
-                        .environmentObject(appState)
-                }
-                .sheet(isPresented: $showingCreateCategory) {
-                    CreateCategorySheet { name, color in
-                        appState.tagColors[name] = color
-                        MetadataService.shared.tagColors = appState.tagColors
-                        MetadataService.shared.save(metadata: appState.metadata)
-                        appState.updateCategories()
-                    }
+            Group {
+                if needsOnboarding {
+                    // Show onboarding if no source directory is selected
+                    OnboardingView(onDirectorySelected: {
+                        self.needsOnboarding = false
+                        self.loadData()
+                    })
                     .environmentObject(appState)
-                }
-                .animation(.snappy(), value: isSidebarVisible)
-                .toolbar {
-                    ToolbarItem(placement: .navigation) {
-                        UIButton(
-                            action: {
-                                toggleSidebar()
-                            },
-                            style: .ghost,
-                            icon: "sidebar.left",
-                            width: 32
+                } else {
+                    // Show main app interface
+                    HStack(spacing: 0) {
+                        // Custom Sidebar (fixed width, not user-resizable)
+                        SidebarView(
+                            showingSettings: $showingSettings,
+                            showingCreateCategory: $showingCreateCategory
                         )
-                        .help("Toggle Sidebar")
+                        .environmentObject(appState)
+                        .frame(width: isSidebarVisible ? 240 : 0)
+                        .clipped()
+
+                        // Main Detail View
+                        DetailView()
+                            .environmentObject(appState)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
+                    .sheet(isPresented: $showingSettings) {
+                        SettingsSheet()
+                    }
+                    .sheet(isPresented: $showingAddURL) {
+                        AddURLSheet()
+                            .environmentObject(appState)
+                    }
+                    .sheet(isPresented: $showingCreateCategory) {
+                        CreateCategorySheet { name, color in
+                            appState.tagColors[name] = color
+                            MetadataService.shared.tagColors = appState.tagColors
+                            MetadataService.shared.save(metadata: appState.metadata)
+                            appState.updateCategories()
+                        }
+                        .environmentObject(appState)
+                    }
+                    .animation(.snappy(), value: isSidebarVisible)
+                    .toolbar {
+                        ToolbarItem(placement: .navigation) {
+                            UIButton(
+                                action: {
+                                    toggleSidebar()
+                                },
+                                style: .ghost,
+                                icon: "sidebar.left",
+                                width: 32
+                            )
+                            .help("Toggle Sidebar")
+                        }
 
-                    ToolbarItem(placement: .navigation) {
-                        // Breadcrumb
-                        HStack(spacing: 6) {
-                            Text("My Library")
-                                .font(.system(size: 13))
-                                .foregroundStyle(AppTheme.textSecondary)
+                        ToolbarItem(placement: .navigation) {
+                            // Breadcrumb
+                            HStack(spacing: 6) {
+                                Text("My Library")
+                                    .font(.system(size: 13))
+                                    .foregroundStyle(AppTheme.textSecondary)
 
-                            Text("/")
-                                .font(.system(size: 13))
-                                .foregroundStyle(AppTheme.textTertiary)
+                                Text("/")
+                                    .font(.system(size: 13))
+                                    .foregroundStyle(AppTheme.textTertiary)
 
-                            if let category = appState.categories.first(where: {
-                                $0.name == appState.selectedCategory
-                            }) {
-                                HStack(spacing: 4) {
-                                    Circle()
-                                        .fill(
-                                            AppTheme.categoryColor(
-                                                for: category.color
+                                if let category = appState.categories.first(where: {
+                                    $0.name == appState.selectedCategory
+                                }) {
+                                    HStack(spacing: 4) {
+                                        Circle()
+                                            .fill(
+                                                AppTheme.categoryColor(
+                                                    for: category.color
+                                                )
                                             )
-                                        )
-                                        .frame(width: 8, height: 8)
-                                    Text(category.name)
+                                            .frame(width: 8, height: 8)
+                                        Text(category.name)
+                                            .font(.system(size: 13))
+                                            .foregroundStyle(AppTheme.textPrimary)
+                                    }
+                                } else {
+                                    Text("All Items")
                                         .font(.system(size: 13))
                                         .foregroundStyle(AppTheme.textPrimary)
                                 }
-                            } else {
-                                Text("All Items")
-                                    .font(.system(size: 13))
-                                    .foregroundStyle(AppTheme.textPrimary)
                             }
                         }
-                    }
 
-                    ToolbarItem(placement: .automatic) {
-                        Spacer()
+                        ToolbarItem(placement: .automatic) {
+                            Spacer()
+                        }
+                        ToolbarItem(placement: .automatic) {
+                            UIButton(
+                                action: { showingAddURL = true },
+                                style: .plain,
+                                label: "Add Item",
+                                icon: "plus"
+                            )
+                            .help("Add items")
+                        }
                     }
-                    ToolbarItem(placement: .automatic) {
-                        UIButton(
-                            action: { showingAddURL = true },
-                            style: .plain,
-                            label: "Add Item",
-                            icon: "plus"
-                        )
-                        .help("Add items")
-                    }
+                    .toolbarBackground(.clear, for: .windowToolbar)
+                    .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
                 }
-                .toolbarBackground(AppTheme.backgroundSecondary, for: .windowToolbar)
-                .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
             }
         }
+        .configureWindowChrome()
         .frame(minWidth: 900, minHeight: 600)
         .onAppear {
             // Set the background color for the window
@@ -299,12 +309,7 @@ struct ContentView: View {
 
     private func updateWindowBackground() {
         DispatchQueue.main.async {
-            if let window = NSApp.windows.first {
-                window.backgroundColor = NSColor(
-                    AppTheme.backgroundSecondary
-                )
-                window.titlebarSeparatorStyle = .none
-            }
+            WindowChrome.applyToAllWindows()
         }
     }
 }

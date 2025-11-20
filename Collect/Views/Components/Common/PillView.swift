@@ -101,6 +101,7 @@ public final class PillView: NSView {
         layer?.masksToBounds = true
         layer?.cornerRadius = cornerRadius
         layer?.backgroundColor = backgroundColor.cgColor
+        translatesAutoresizingMaskIntoConstraints = false
 
         // Stack
         stack.orientation = .horizontal
