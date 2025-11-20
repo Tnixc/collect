@@ -13,13 +13,29 @@ class TransparentScroller: NSScroller {
     }
 
     override func drawKnob() {
-        let knobRect = rect(for: .knob)
+        let originalKnobRect = rect(for: .knob)
 
         // Only draw if we have a valid knob rect
-        guard !knobRect.isEmpty else { return }
+        guard !originalKnobRect.isEmpty else { return }
+
+        var knobRect = originalKnobRect
+        let thickness: CGFloat = 8 // Thinner width
+
+        // Check orientation based on dimensions
+        if bounds.width < bounds.height {
+            // Vertical scroller
+            let inset = (knobRect.width - thickness) / 2
+            knobRect.origin.x += inset
+            knobRect.size.width = thickness
+        } else {
+            // Horizontal scroller
+            let inset = (knobRect.height - thickness) / 2
+            knobRect.origin.y += inset
+            knobRect.size.height = thickness
+        }
 
         // Draw knob with slight transparency
-        let knobPath = NSBezierPath(roundedRect: knobRect, xRadius: 4, yRadius: 4)
+        let knobPath = NSBezierPath(roundedRect: knobRect, xRadius: thickness / 2, yRadius: thickness / 2)
 
         // Use theme-aware colors
         let knobColor: NSColor

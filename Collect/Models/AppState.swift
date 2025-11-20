@@ -298,7 +298,7 @@ class AppState: ObservableObject {
         let oldFile = files[index]
         do {
             let newURL = try FileSystemService.shared.renameFile(at: oldFile.fileURL, to: newFilename)
-            let newFileItem = FileItem(id: fileID, fileURL: newURL)
+            let newFileItem = FileItem(id: fileID, fileURL: newURL, dateAdded: oldFile.dateAdded)
             files[index] = newFileItem
             // Update metadata title if it was the filename
             if var meta = metadata[fileID], meta.title == oldFile.filename {

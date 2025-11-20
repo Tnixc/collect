@@ -302,7 +302,9 @@ struct ContentView: View {
 
         for url in pdfURLs {
             let id = FileSystemService.shared.ensureFileID(for: url)
-            let file = FileItem(id: id, fileURL: url)
+            // Use existing dateAdded from metadata if available, otherwise default to now
+            let dateAdded = appState.metadata[id]?.dateAdded ?? Date()
+            let file = FileItem(id: id, fileURL: url, dateAdded: dateAdded)
             files.append(file)
 
             // Create default metadata for files without existing metadata
