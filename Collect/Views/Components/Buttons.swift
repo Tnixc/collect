@@ -123,6 +123,7 @@ struct UIButton: View {
             .padding(.horizontal, 12)
             .frame(width: width, height: buttonHeight)
             .background(tintColor)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
             .glassBackground(
                 material: .hudWindow,
                 blendingMode: .withinWindow,

@@ -5,6 +5,7 @@ struct SidebarView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @Binding var showingSettings: Bool
     @Binding var showingCreateCategory: Bool
+    var isSidebarVisible: Bool
     @State private var hoveredItem: String? = nil
     @State private var editingCategory: Category? = nil
     @State private var deletingCategory: Category? = nil
@@ -169,6 +170,8 @@ struct SidebarView: View {
                     hoveredItem = isHovering ? "Settings" : nil
                 }
         }
+        .opacity(isSidebarVisible ? 1 : 0)
+        .offset(x: isSidebarVisible ? 0 : -20)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
             themeManager.isDarkMode ? Color.black.opacity(0.15) : Color.white.opacity(0.25)

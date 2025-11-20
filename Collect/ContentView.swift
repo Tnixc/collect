@@ -47,7 +47,8 @@ struct ContentView: View {
                         // Custom Sidebar (fixed width, not user-resizable)
                         SidebarView(
                             showingSettings: $showingSettings,
-                            showingCreateCategory: $showingCreateCategory
+                            showingCreateCategory: $showingCreateCategory,
+                            isSidebarVisible: isSidebarVisible
                         )
                         .environmentObject(appState)
                         .frame(width: isSidebarVisible ? 240 : 0)
@@ -80,7 +81,7 @@ struct ContentView: View {
                         }
                         .environmentObject(appState)
                     }
-                    .animation(.snappy(), value: isSidebarVisible)
+                    .animation(.easeInOut(duration: 0.2), value: isSidebarVisible)
                     .toolbar {
                         ToolbarItem(placement: .navigation) {
                             UIButton(
@@ -202,7 +203,7 @@ struct ContentView: View {
     }
 
     private func toggleSidebar() {
-        withAnimation(.snappy()) {
+        withAnimation(.easeInOut(duration: 0.2)) {
             isSidebarVisible.toggle()
         }
     }

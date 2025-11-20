@@ -21,8 +21,23 @@ struct SidebarItemBase<Content: View>: View {
         content()
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-            .background(backgroundColor)
-            .cornerRadius(6)
+            .background(
+                ZStack {
+                    if isSelected {
+                        Color.clear
+                            .glassBackground(
+                                material: .hudWindow,
+                                blendingMode: .withinWindow,
+                                emphasized: false,
+                                cornerRadius: 6,
+                                strokeColor: themeManager.glassSecondaryStrokeColor,
+                                strokeWidth: 1,
+                                overlayColor: themeManager.glassOverlayColor
+                            )
+                    }
+                    backgroundColor.cornerRadius(6)
+                }
+            )
             .padding(.horizontal, 8)
             .padding(.vertical, 1)
             .id(themeManager.effectiveColorScheme)
@@ -30,7 +45,7 @@ struct SidebarItemBase<Content: View>: View {
 
     private var backgroundColor: Color {
         if isSelected {
-            return AppTheme.backgroundTertiary
+            return .clear
         } else if isHovered {
             return AppTheme.sidebarItemHover
         } else {
