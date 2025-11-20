@@ -24,33 +24,38 @@ struct SidebarItemBase<Content: View>: View {
             .background(
                 ZStack {
                     if isSelected {
+                        AppTheme.accentPrimary.opacity(0.1)
+
                         Color.clear
                             .glassBackground(
                                 material: .hudWindow,
                                 blendingMode: .withinWindow,
                                 emphasized: false,
-                                cornerRadius: 6,
+                                cornerRadius: 8,
                                 strokeColor: themeManager.glassSecondaryStrokeColor,
                                 strokeWidth: 1,
                                 overlayColor: themeManager.glassOverlayColor
                             )
                     }
-                    backgroundColor.cornerRadius(6)
                 }
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(hoverOverlayColor)
+                    .allowsHitTesting(false)
             )
             .padding(.horizontal, 8)
             .padding(.vertical, 1)
             .id(themeManager.effectiveColorScheme)
     }
 
-    private var backgroundColor: Color {
-        if isSelected {
-            return .clear
-        } else if isHovered {
-            return AppTheme.sidebarItemHover
-        } else {
-            return Color.clear
-        }
+    private var hoverOverlayColor: Color {
+        Color.white.opacity(
+            isHovered
+                ? (themeManager.isDarkMode ? 0.22 : 0.12)
+                : 0
+        )
     }
 }
 

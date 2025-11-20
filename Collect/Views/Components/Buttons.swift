@@ -124,14 +124,20 @@ struct UIButton: View {
             .frame(width: width, height: buttonHeight)
             .background(tintColor)
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .glassBackground(
-                material: .hudWindow,
-                blendingMode: .withinWindow,
-                emphasized: false,
-                cornerRadius: 8,
-                strokeColor: style == .primary ? .clear : themeManager.glassSecondaryStrokeColor,
-                strokeWidth: 1,
-                overlayColor: themeManager.glassOverlayColor
+            .background(
+                Group {
+                    if style != .ghost {
+                        Color.clear.glassBackground(
+                            material: .hudWindow,
+                            blendingMode: .withinWindow,
+                            emphasized: false,
+                            cornerRadius: 8,
+                            strokeColor: style == .primary ? .clear : themeManager.glassSecondaryStrokeColor,
+                            strokeWidth: 1,
+                            overlayColor: themeManager.glassOverlayColor
+                        )
+                    }
+                }
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
