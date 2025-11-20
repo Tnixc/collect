@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ItemsSectionView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var themeManager: ThemeManager
     @Binding var isDropdownExpanded: Bool
     let isSearchFocused: FocusState<Bool>.Binding
     let cardColors: [NSColor]
@@ -14,6 +15,9 @@ struct ItemsSectionView: View {
     let showInFinderAction: (UUID) -> Void
     let addToReadingListAction: (UUID) -> Void
     let removeFromReadingListAction: (UUID) -> Void
+
+    @State private var isSearchHovered = false
+    @State private var isViewModeHovered = false
 
     private var itemsCount: Int {
         appState.showReadingList ? appState.readingListFiles.count : appState.filteredFiles.count
@@ -152,23 +156,38 @@ struct ItemsSectionView: View {
                     }
                     .foregroundColor(appState.viewMode == mode ? AppTheme.textPrimary : AppTheme.textSecondary)
                     .frame(width: 60, height: 32)
-                    .background(appState.viewMode == mode ? AppTheme.backgroundTertiary : Color.clear)
+                    .background(appState.viewMode == mode ? AppTheme.backgroundTertiary.opacity(0.5) : Color.clear)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .contentShape(RoundedRectangle(cornerRadius: 8))
                 }
                 .buttonStyle(.plain)
                 .smartFocusRing()
-                .onHover { _ in
-                    withAnimation(.easeInOut(duration: 0.15)) {}
-                }
             }
         }
-        .background(AppTheme.backgroundSecondary)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .background(Color.clear)
+        .glassBackground(
+            material: .hudWindow,
+            blendingMode: .withinWindow,
+            emphasized: false,
+            cornerRadius: 8,
+            strokeColor: themeManager.glassSecondaryStrokeColor,
+            strokeWidth: 1,
+            overlayColor: themeManager.glassOverlayColor
+        )
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(AppTheme.dividerColor, lineWidth: 1)
+                .fill(
+                    Color.white.opacity(
+                        isViewModeHovered
+                            ? (themeManager.isDarkMode ? 0.22 : 0.12)
+                            : 0
+                    )
+                )
+                .allowsHitTesting(false)
         )
+        .onHover { hovering in
+            isViewModeHovered = hovering
+        }
     }
 
     private var sortDropdown: some View {
@@ -197,12 +216,30 @@ struct ItemsSectionView: View {
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
-        .background(AppTheme.backgroundTertiary)
-        .cornerRadius(8)
+        .background(Color.clear)
+        .glassBackground(
+            material: .hudWindow,
+            blendingMode: .withinWindow,
+            emphasized: false,
+            cornerRadius: 8,
+            strokeColor: themeManager.glassSecondaryStrokeColor,
+            strokeWidth: 1,
+            overlayColor: themeManager.glassOverlayColor
+        )
         .overlay(
             RoundedRectangle(cornerRadius: 8)
-                .stroke(AppTheme.dividerColor, lineWidth: 1.0)
+                .fill(
+                    Color.white.opacity(
+                        isSearchHovered
+                            ? (themeManager.isDarkMode ? 0.22 : 0.12)
+                            : 0
+                    )
+                )
+                .allowsHitTesting(false)
         )
+        .onHover { hovering in
+            isSearchHovered = hovering
+        }
     }
 
     // MARK: - Empty State

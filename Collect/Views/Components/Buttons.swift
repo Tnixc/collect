@@ -38,25 +38,29 @@ struct UIButton: View {
         self.align = align
     }
 
-    private var backgroundColor: Color {
+    private var buttonHoverOverlayColor: Color {
         switch style {
-        case .ghost, .plain:
-            if isHovered {
-                return AppTheme.backgroundTertiary.opacity(0.5)
-            }
-            return .clear
-
-        case .destructive:
-            if isHovered {
-                return AppTheme.destructive.opacity(0.2)
-            }
-            return AppTheme.backgroundTertiary
-
         case .primary:
-            if isHovered {
-                return AppTheme.accentPrimary.opacity(0.8)
-            }
+            return Color.white.opacity(isHovered ? 0.2 : 0)
+        case .destructive:
+            return AppTheme.destructive.opacity(isHovered ? 0.1 : 0)
+        default:
+            return Color.white.opacity(
+                isHovered
+                    ? (themeManager.isDarkMode ? 0.22 : 0.12)
+                    : 0
+            )
+        }
+    }
+
+    private var tintColor: Color {
+        switch style {
+        case .primary:
             return AppTheme.accentPrimary
+        case .destructive:
+            return AppTheme.destructive.opacity(0.1)
+        default:
+            return .clear
         }
     }
 
@@ -70,29 +74,6 @@ struct UIButton: View {
         }
 
         return AppTheme.textPrimary
-    }
-
-    private var borderWidth: CGFloat {
-        switch style {
-        case .plain, .destructive:
-            return 1
-        default:
-            return 0
-        }
-    }
-
-    private var borderColor: Color {
-        switch style {
-        case .plain:
-            return AppTheme.dividerColor
-        case .destructive:
-            if isHovered {
-                return AppTheme.categoryRed
-            }
-            return AppTheme.dividerColor
-        default:
-            return .clear
-        }
     }
 
     private var buttonHeight: CGFloat {
@@ -141,11 +122,20 @@ struct UIButton: View {
             .padding(8)
             .padding(.horizontal, 12)
             .frame(width: width, height: buttonHeight)
-            .background(backgroundColor)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .background(tintColor)
+            .glassBackground(
+                material: .hudWindow,
+                blendingMode: .withinWindow,
+                emphasized: false,
+                cornerRadius: 8,
+                strokeColor: style == .primary ? .clear : themeManager.glassSecondaryStrokeColor,
+                strokeWidth: 1,
+                overlayColor: themeManager.glassOverlayColor
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(borderColor, lineWidth: borderWidth)
+                    .fill(buttonHoverOverlayColor)
+                    .allowsHitTesting(false)
             )
             .contentShape(RoundedRectangle(cornerRadius: 8))
             .scaleEffect(scaleEffect)
