@@ -49,19 +49,29 @@ struct UIDropdown<T: Hashable>: View {
     }
 
     var body: some View {
-        ZStack(alignment: .top) {
-            if isExpanded {
-                selectionButton
-                dropdownMenu
-            } else {
-                selectionButton
+        selectionButton
+            .overlay(
+                Group {
+                    if isExpanded {
+                        Color.black.opacity(0.001)
+                            .frame(width: 10000, height: 10000)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                withAnimation(.snappy(duration: 0.2)) {
+                                    isExpanded = false
+                                }
+                            }
+                    }
+                }
+            )
+            .overlay(alignment: .top) {
+                if isExpanded {
+                    dropdownMenu
+                        .offset(y: height + 4)
+                        .transition(.blurReplace)
+                }
             }
-        }
-        .zIndex(isExpanded ? 999 : -10)
-        .id(themeManager.effectiveColorScheme)
-        .onAppear {
-            setupMouseEventMonitor()
-        }
+            .zIndex(isExpanded ? 999 : 0)
     }
 
     private var selectionButton: some View {
@@ -101,9 +111,7 @@ struct UIDropdown<T: Hashable>: View {
                 .allowsHitTesting(false)
         )
         .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.15)) {
-                isButtonHovered = hovering
-            }
+            isButtonHovered = hovering
         }
     }
 
@@ -125,13 +133,7 @@ struct UIDropdown<T: Hashable>: View {
             overlayColor: themeManager.glassOverlayColor
         )
         .frame(width: width)
-        .position(
-            x: width / 2,
-            y: itemHeight / 2 * CGFloat(options.count) + itemHeight * 2 - 6
-        )
-        .transition(.blurReplace)
-        .zIndex(1000)
-        .frame(maxHeight: height).fixedSize(horizontal: true, vertical: true)
+        .fixedSize(horizontal: false, vertical: true)
         .shadow(color: themeManager.glassShadowColor, radius: 20)
     }
 
@@ -150,15 +152,8 @@ struct UIDropdown<T: Hashable>: View {
         if let onClick = onClick {
             onClick()
         }
-        guard isButtonEnabled else { return }
-
-        withAnimation(.snappy(duration: 0.15)) {
+        withAnimation(.snappy(duration: 0.2)) {
             isExpanded.toggle()
-        }
-
-        isButtonEnabled = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            isButtonEnabled = true
         }
     }
 
@@ -167,20 +162,8 @@ struct UIDropdown<T: Hashable>: View {
         if let onSelect = onSelect {
             onSelect(option)
         }
-        toggleExpanded()
-    }
-
-    private func setupMouseEventMonitor() {
-        NSEvent.addLocalMonitorForEvents(matching: [
-            .leftMouseUp, .rightMouseUp,
-        ]) {
-            event in
-            if isExpanded {
-                DispatchQueue.main.async {
-                    toggleExpanded()
-                }
-            }
-            return event
+        withAnimation(.snappy(duration: 0.2)) {
+            isExpanded = false
         }
     }
 }
@@ -229,11 +212,8 @@ struct DropdownMenuItemView<T: Hashable>: View {
         .buttonStyle(.borderless)
         .smartFocusRing()
         .frame(height: itemHeight)
-        .id(themeManager.effectiveColorScheme)
         .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.1)) {
-                isHovered = hovering
-            }
+            isHovered = hovering
         }
     }
 }
