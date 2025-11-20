@@ -128,17 +128,6 @@ struct AddURLSheet: View {
             }
         }
         .frame(width: 600)
-        .glassBackground(
-            material: .hudWindow,
-            blendingMode: .withinWindow,
-            emphasized: false,
-            cornerRadius: 24,
-            strokeColor: themeManager.glassPrimaryStrokeColor,
-            strokeWidth: 1,
-            overlayColor: themeManager.glassOverlayColor
-        )
-        .shadow(color: themeManager.glassShadowColor, radius: 30, y: 12)
-        .id(themeManager.effectiveColorScheme)
     }
 
     private func downloadFile() {

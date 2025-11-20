@@ -186,17 +186,6 @@ struct EditCategorySheet: View {
             .padding(.bottom, 24)
         }
         .frame(width: 500)
-        .glassBackground(
-            material: .hudWindow,
-            blendingMode: .withinWindow,
-            emphasized: false,
-            cornerRadius: 20,
-            strokeColor: themeManager.glassPrimaryStrokeColor,
-            strokeWidth: 1,
-            overlayColor: themeManager.glassOverlayColor
-        )
-        .shadow(color: themeManager.glassShadowColor, radius: 24, y: 10)
-        .id(themeManager.effectiveColorScheme)
         .alert("Delete Category?", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {

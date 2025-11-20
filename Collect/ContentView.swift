@@ -13,11 +13,24 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
+            // Base glass material for entire window
             GlassMaterialView(
                 material: themeManager.glassMaterial,
                 blendingMode: .behindWindow,
                 emphasized: true
             )
+            .ignoresSafeArea()
+
+            // Overlay for titlebar area above sidebar (left side only)
+            HStack(spacing: 0) {
+                Rectangle()
+                    .fill(themeManager.isDarkMode ? Color.black.opacity(0.15) : Color.white.opacity(0.25))
+                    .frame(width: isSidebarVisible ? 240 : 0)
+                Spacer()
+            }
+            .frame(height: 52)
+            .frame(maxHeight: .infinity, alignment: .top)
+            .allowsHitTesting(false)
             .ignoresSafeArea()
 
             Group {
@@ -44,7 +57,13 @@ struct ContentView: View {
                         DetailView()
                             .environmentObject(appState)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(
+                                themeManager.isDarkMode ? Color.black.opacity(0.15) : Color.white.opacity(0.25)
+                            )
                     }
+                    .background(
+                        themeManager.isDarkMode ? Color.black.opacity(0.15) : Color.white.opacity(0.25)
+                    )
                     .sheet(isPresented: $showingSettings) {
                         SettingsSheet()
                     }

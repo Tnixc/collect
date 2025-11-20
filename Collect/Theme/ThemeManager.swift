@@ -95,7 +95,7 @@ class ThemeManager: ObservableObject {
     }
 
     var glassMaterial: NSVisualEffectView.Material {
-        isDarkMode ? .hudWindow : .popover
+        .fullScreenUI
     }
 
     var glassPrimaryStrokeColor: Color {

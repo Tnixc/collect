@@ -198,17 +198,6 @@ struct SettingsSheet: View {
             .padding(.bottom, 24)
         }
         .frame(width: 500)
-        .glassBackground(
-            material: .hudWindow,
-            blendingMode: .withinWindow,
-            emphasized: false,
-            cornerRadius: 24,
-            strokeColor: themeManager.glassPrimaryStrokeColor,
-            strokeWidth: 1,
-            overlayColor: themeManager.glassOverlayColor
-        )
-        .shadow(color: themeManager.glassShadowColor, radius: 30, y: 12)
-        .id(themeManager.effectiveColorScheme)
         .onAppear {
             loadSettings()
         }

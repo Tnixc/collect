@@ -170,14 +170,8 @@ struct SidebarView: View {
                 }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .glassBackground(
-            material: themeManager.glassMaterial,
-            blendingMode: .behindWindow,
-            emphasized: true,
-            cornerRadius: 0,
-            strokeColor: .clear,
-            strokeWidth: 0,
-            overlayColor: .clear
+        .background(
+            themeManager.isDarkMode ? Color.black.opacity(0.15) : Color.white.opacity(0.25)
         )
         .id(ThemeManager.shared.effectiveColorScheme)
         .ignoresSafeArea(.container, edges: .top)

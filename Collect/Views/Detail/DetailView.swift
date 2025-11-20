@@ -122,14 +122,14 @@ struct DetailView: View {
         .onDrop(of: [.fileURL], isTargeted: nil) { providers in
             handleFileDrop(providers: providers)
         }
-        .glassBackground(
-            material: themeManager.glassMaterial,
-            blendingMode: .behindWindow,
-            emphasized: true,
-            cornerRadius: 8,
-            strokeColor: themeManager.glassPrimaryStrokeColor,
-            strokeWidth: 1,
-            overlayColor: themeManager.glassOverlayColor
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(themeManager.isDarkMode ? Color.black.opacity(0.35) : Color.white.opacity(0.65))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(themeManager.glassPrimaryStrokeColor, lineWidth: 1)
+                .allowsHitTesting(false)
         )
         .padding(.horizontal, 8)
         .padding(.bottom, 8)
