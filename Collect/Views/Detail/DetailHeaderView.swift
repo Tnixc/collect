@@ -6,7 +6,18 @@ struct DetailHeaderView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .top) {
+            HStack(alignment: .center, spacing: 12) {
+                if !appState.showReadingList,
+                   !appState.showRecent,
+                   let categoryName = appState.selectedCategory,
+                   categoryName != "Uncategorized",
+                   let category = appState.categories.first(where: { $0.name == categoryName })
+                {
+                    Circle()
+                        .fill(AppTheme.categoryColor(for: category.color))
+                        .frame(width: 18, height: 18)
+                }
+
                 Text(
                     appState.showRecent
                         ? "Recent"
@@ -34,7 +45,6 @@ struct DetailHeaderView: View {
                         width: 24,
                         height: 24
                     )
-                    .padding(.top, 8)
                 }
 
                 Spacer()
@@ -42,6 +52,6 @@ struct DetailHeaderView: View {
         }
         .padding(.horizontal, 32)
         .padding(.top, 64)
-        .padding(.bottom, 24)
+        .padding(.bottom, 12)
     }
 }

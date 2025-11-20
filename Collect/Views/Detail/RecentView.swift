@@ -21,7 +21,7 @@ struct RecentView: View {
                 Text("Recently Opened")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(AppTheme.textPrimary)
-                    .padding(.top, 24)
+                    .padding(.top, 12)
 
                 if appState.lastOpenedFiles.isEmpty {
                     VStack(spacing: 8) {

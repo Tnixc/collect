@@ -15,6 +15,7 @@ struct DetailView: View {
     @State private var creatingForFileID: UUID?
     @State private var editingCategory: Category?
     @State private var isDropdownExpanded = false
+    @State private var isDropTargeted = false
     @FocusState private var isSearchFocused: Bool
 
     private let cardColors: [NSColor] = AppTheme.cardNSColors
@@ -119,7 +120,7 @@ struct DetailView: View {
             .padding(.vertical, 24)
         }
         .transparentScrollbars()
-        .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+        .onDrop(of: [.fileURL], isTargeted: $isDropTargeted) { providers in
             handleFileDrop(providers: providers)
         }
 
@@ -132,6 +133,32 @@ struct DetailView: View {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .stroke(themeManager.glassPrimaryStrokeColor, lineWidth: 1)
                     .allowsHitTesting(false)
+            )
+            .overlay(
+                Group {
+                    if isDropTargeted {
+                        ZStack {
+                            AppTheme.accentPrimary.opacity(0.1)
+                            RoundedRectangle(cornerRadius: 6)
+                                .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [10]))
+                                .foregroundColor(AppTheme.accentPrimary)
+                                .background(.ultraThinMaterial)
+                            VStack(spacing: 16) {
+                                Image(systemName: "tray.and.arrow.down.fill")
+                                    .font(.system(size: 48))
+                                    .foregroundColor(AppTheme.accentPrimary)
+                                Text("Drop to add to collection")
+                                    .font(.title2)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(AppTheme.accentPrimary)
+                            }
+                        }
+                        .cornerRadius(6)
+                        .padding(24)
+                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                    }
+                }
+                .animation(.easeInOut(duration: 0.2), value: isDropTargeted)
             )
             .padding(.horizontal, 8)
             .padding(.bottom, 8)
@@ -220,11 +247,19 @@ struct DetailView: View {
                         let pages = FileSystemService.shared.getPageCount(
                             for: copiedURL
                         )
-                        let metadata = MetadataService.shared.createMetadata(
+                        var metadata = MetadataService.shared.createMetadata(
                             fileID: fileID,
                             title: filename,
                             pages: pages
                         )
+
+                        // Add to selected category if applicable
+                        if let category = self.appState.selectedCategory,
+                           category != "Uncategorized"
+                        {
+                            metadata.tags.append(category)
+                        }
+
                         self.appState.updateMetadata(
                             for: fileID,
                             metadata: metadata

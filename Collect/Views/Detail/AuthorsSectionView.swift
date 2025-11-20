@@ -8,7 +8,7 @@ struct AuthorsSectionView: View {
             Text("Authors")
                 .font(.system(size: 12, weight: .medium))
                 .foregroundColor(AppTheme.textTertiary)
-                .padding(.top, 16)
+                .padding(.top, 12)
 
             Group {
                 ScrollView(.horizontal, showsIndicators: false) {
