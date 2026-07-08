@@ -297,10 +297,10 @@ struct ContentView: View {
             return
         }
 
-        let pdfURLs = FileSystemService.shared.scanDirectory(at: sourceURL)
+        let documentURLs = FileSystemService.shared.scanDirectory(at: sourceURL)
         var files: [FileItem] = []
 
-        for url in pdfURLs {
+        for url in documentURLs {
             let id = FileSystemService.shared.ensureFileID(for: url)
             // Use existing dateAdded from metadata if available, otherwise default to now
             let dateAdded = appState.metadata[id]?.dateAdded ?? Date()

@@ -33,7 +33,7 @@ struct AddURLSheet: View {
 
             // Description
             Text(
-                "At the moment you can add research as .PDFs or webpages. Links from popular research sharing sites are automatically downloaded as PDFs."
+                "At the moment you can add research as PDFs, Markdown documents, or webpages. Links from popular research sharing sites are automatically downloaded as PDFs."
             )
             .font(.system(size: 13))
             .foregroundColor(AppTheme.textSecondary)
@@ -94,7 +94,7 @@ struct AddURLSheet: View {
             }
 
             // Separator text
-            Text("or import a .pdf file from your computer")
+            Text("or import a PDF or Markdown file from your computer")
                 .font(.system(size: 12))
                 .foregroundColor(AppTheme.textSecondary)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -102,7 +102,7 @@ struct AddURLSheet: View {
 
             // Drop area
             VStack(spacing: 12) {
-                Text("Drag & drop .pdf files to add")
+                Text("Drag & drop PDF or Markdown files to add")
                     .font(.system(size: 13))
                     .foregroundColor(AppTheme.textSecondary)
 
@@ -182,8 +182,8 @@ struct AddURLSheet: View {
                     downloadError = "curl is not available. This should not happen on macOS."
                 case .downloadFailed:
                     downloadError = "Download failed. Please check the URL and try again."
-                case .notAPDF:
-                    downloadError = "The downloaded file is not a PDF. Please provide a direct link to a PDF file."
+                case .unsupportedDocument:
+                    downloadError = "The downloaded file is not a supported document. Please provide a direct link to a PDF or Markdown file."
                 }
                 isDownloading = false
             } catch {
@@ -198,7 +198,7 @@ struct AddURLSheet: View {
         panel.allowsMultipleSelection = true
         panel.canChooseDirectories = false
         panel.canChooseFiles = true
-        panel.allowedContentTypes = [UTType.pdf]
+        panel.allowedContentTypes = FileSystemService.supportedDocumentTypes
 
         panel.begin { response in
             if response == .OK {
@@ -243,7 +243,7 @@ struct AddURLSheet: View {
             provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, error in
                 guard let data = item as? Data,
                       let url = URL(dataRepresentation: data, relativeTo: nil),
-                      url.pathExtension.lowercased() == "pdf"
+                      FileSystemService.shared.isSupportedDocument(url)
                 else {
                     return
                 }

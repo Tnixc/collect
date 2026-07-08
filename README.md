@@ -1,9 +1,9 @@
-Collect is a macOS app for organizing and managing PDF collections.
+Collect is a macOS app for organizing and managing document collections.
 
-- Browse and organize PDFs from a selected directory
+- Browse and organize PDFs and Markdown documents from a selected directory
 - Categorize files with custom tags and colors
 - Reading list
-- Import directly from arXiv and other .pdf links
+- Import directly from arXiv, .pdf links, and Markdown files
 - Supports metadata management and search
 - SwiftUI, light/dark
 

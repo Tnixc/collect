@@ -27,7 +27,7 @@ struct OnboardingView: View {
                         )
                         .foregroundColor(AppTheme.textPrimary)
 
-                    Text("Organize your PDF library with ease")
+                    Text("Organize your document library with ease")
                         .font(.system(size: 18))
                         .foregroundColor(AppTheme.textSecondary)
                         .multilineTextAlignment(.center)
@@ -39,7 +39,7 @@ struct OnboardingView: View {
                     FeatureRow(
                         icon: "folder.fill",
                         title: "Choose Your Library",
-                        description: "Select a folder containing your PDF files"
+                        description: "Select a folder containing your PDF and Markdown files"
                     )
 
                     FeatureRow(
@@ -73,7 +73,7 @@ struct OnboardingView: View {
                     UIButton(
                         action: selectDirectory,
                         style: .primary,
-                        label: "Choose PDF Directory",
+                        label: "Choose Document Directory",
                         icon: "folder.badge.plus"
                     )
                     .frame(width: 200)
@@ -155,12 +155,12 @@ struct DirectorySelectionSheet: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("Select PDF Directory")
+            Text("Select Document Directory")
                 .font(.title)
                 .padding(.top)
 
             Text(
-                "Choose a folder that contains your PDF files. Collect will scan this folder and all its subfolders for PDF documents."
+                "Choose a folder that contains your PDF and Markdown files. Collect will scan this folder and all its subfolders for supported documents."
             )
             .font(.body)
             .foregroundColor(AppTheme.textSecondary)
@@ -216,7 +216,7 @@ struct DirectorySelectionSheet: View {
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
-        panel.message = "Choose the directory containing your PDF files"
+        panel.message = "Choose the directory containing your PDF and Markdown files"
         panel.prompt = "Select"
 
         if panel.runModal() == .OK, let url = panel.url {

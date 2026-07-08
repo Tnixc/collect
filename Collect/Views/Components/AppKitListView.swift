@@ -217,7 +217,7 @@ class FileListRowView: NSView {
         // Background layer
         layer?.addSublayer(backgroundLayer)
 
-        // Icon (PDF thumbnail or generic icon)
+        // Icon (document thumbnail or generic icon)
         // ColorDotIconView configured in configure()
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(iconImageView)

@@ -249,7 +249,7 @@ struct ItemsSectionView: View {
             Image(systemName: appState.showReadingList ? "book" : "doc.text")
                 .font(.system(size: 48))
                 .foregroundColor(AppTheme.textTertiary)
-            Text(appState.showReadingList ? "No items in reading list" : "No PDFs found")
+            Text(appState.showReadingList ? "No items in reading list" : "No documents found")
                 .font(.title2)
                 .foregroundColor(AppTheme.textPrimary)
             Text(appState.showReadingList

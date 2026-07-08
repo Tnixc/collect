@@ -109,7 +109,7 @@ struct SettingsSheet: View {
                     .foregroundColor(AppTheme.textPrimary)
                     .padding(.horizontal, 24)
 
-                Text("Select the directory where your PDF files are stored.")
+                Text("Select the directory where your PDF and Markdown files are stored.")
                     .font(.system(size: 12))
                     .foregroundColor(AppTheme.textSecondary)
                     .padding(.horizontal, 24)
@@ -208,7 +208,7 @@ struct SettingsSheet: View {
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
-        panel.message = "Choose the directory containing your PDF files"
+        panel.message = "Choose the directory containing your PDF and Markdown files"
         panel.prompt = "Select"
 
         if panel.runModal() == .OK, let url = panel.url {

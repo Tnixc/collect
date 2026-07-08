@@ -219,7 +219,7 @@ struct DetailView: View {
             ) { item, error in
                 guard let data = item as? Data,
                       let url = URL(dataRepresentation: data, relativeTo: nil),
-                      url.pathExtension.lowercased() == "pdf"
+                      FileSystemService.shared.isSupportedDocument(url)
                 else {
                     return
                 }

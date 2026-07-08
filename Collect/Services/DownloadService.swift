@@ -26,11 +26,11 @@ class DownloadService {
         process.waitUntilExit()
 
         if process.terminationStatus == 0 {
-            // Validate that the downloaded file is a PDF
-            guard destinationURL.pathExtension.lowercased() == "pdf" else {
-                // Try to delete the non-PDF file
+            // Validate that the downloaded file is a supported document
+            guard FileSystemService.shared.isSupportedDocument(destinationURL) else {
+                // Try to delete the unsupported file
                 try? FileManager.default.removeItem(at: destinationURL)
-                throw DownloadError.notAPDF
+                throw DownloadError.unsupportedDocument
             }
             return destinationURL
         } else {
@@ -74,6 +74,6 @@ class DownloadService {
     enum DownloadError: Error {
         case curlNotFound
         case downloadFailed
-        case notAPDF
+        case unsupportedDocument
     }
 }

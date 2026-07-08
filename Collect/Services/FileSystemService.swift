@@ -1,27 +1,42 @@
 import Foundation
 import PDFKit
+import UniformTypeIdentifiers
 
 class FileSystemService {
     static let shared = FileSystemService()
 
+    static let supportedDocumentExtensions: Set<String> = ["pdf", "md", "markdown"]
+
+    static var supportedDocumentTypes: [UTType] {
+        [
+            .pdf,
+            UTType(filenameExtension: "md"),
+            UTType(filenameExtension: "markdown"),
+        ].compactMap { $0 }
+    }
+
     private init() {}
 
-    // Scan directory recursively for PDF files
+    // Scan directory recursively for supported document files
     func scanDirectory(at url: URL) -> [URL] {
         let fileManager = FileManager.default
-        var pdfURLs: [URL] = []
+        var documentURLs: [URL] = []
 
         guard let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles]) else {
             return []
         }
 
         for case let fileURL as URL in enumerator {
-            if fileURL.pathExtension.lowercased() == "pdf" {
-                pdfURLs.append(fileURL)
+            if isSupportedDocument(fileURL) {
+                documentURLs.append(fileURL)
             }
         }
 
-        return pdfURLs
+        return documentURLs
+    }
+
+    func isSupportedDocument(_ url: URL) -> Bool {
+        Self.supportedDocumentExtensions.contains(url.pathExtension.lowercased())
     }
 
     // Read extended attribute for file ID
@@ -64,6 +79,7 @@ class FileSystemService {
 
     // Get PDF page count
     func getPageCount(for url: URL) -> Int? {
+        guard url.pathExtension.lowercased() == "pdf" else { return nil }
         guard let pdf = PDFDocument(url: url) else { return nil }
         return pdf.pageCount
     }
